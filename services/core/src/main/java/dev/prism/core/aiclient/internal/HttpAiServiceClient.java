@@ -20,8 +20,12 @@ class HttpAiServiceClient implements AiServiceClient {
     private final RestClient unsigned;
 
     HttpAiServiceClient(RestClient.Builder builder, ServiceTokenSigner signer, PrismProperties properties) {
-        JdkClientHttpRequestFactory factory = new JdkClientHttpRequestFactory(
-                HttpClient.newBuilder().connectTimeout(properties.ai().timeout()).build());
+        // HTTP/1.1 is required: the default h2c upgrade attempt is not understood by Uvicorn, which
+        // then loses the request body, and the signed body hash no longer matches.
+        JdkClientHttpRequestFactory factory = new JdkClientHttpRequestFactory(HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_1_1)
+                .connectTimeout(properties.ai().timeout())
+                .build());
         factory.setReadTimeout(properties.ai().timeout());
         RestClient.Builder base = builder.clone()
                 .baseUrl(properties.ai().baseUrl().toString())

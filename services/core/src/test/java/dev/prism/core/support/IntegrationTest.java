@@ -8,11 +8,8 @@ import dev.prism.core.identity.Role;
 import dev.prism.core.identity.internal.IdentityFixtures;
 import jakarta.servlet.http.Cookie;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.GeneralSecurityException;
-import java.security.KeyPairGenerator;
-import java.security.spec.ECGenParameterSpec;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -65,18 +62,8 @@ public abstract class IntegrationTest {
         registry.add("PRISM_BOOTSTRAP_ADMIN_EMAIL", () -> "");
         registry.add("PRISM_ENVIRONMENT", () -> "test");
         registry.add("PRISM_LOG_FORMAT", () -> "");
-        Path key = writeSigningKey();
+        Path key = TestKeys.writeSigningKey();
         registry.add("PRISM_SERVICE_JWT_PRIVATE_KEY_PATH", key::toString);
-    }
-
-    protected static Path writeSigningKey() throws IOException, GeneralSecurityException {
-        KeyPairGenerator generator = KeyPairGenerator.getInstance("EC");
-        generator.initialize(new ECGenParameterSpec("secp256r1"));
-        String encoded = Base64.getMimeEncoder().encodeToString(generator.generateKeyPair().getPrivate().getEncoded());
-        Path file = Files.createTempFile("prism-test-key", ".pem");
-        Files.writeString(file, "-----BEGIN PRIVATE KEY-----\n" + encoded + "\n-----END PRIVATE KEY-----\n");
-        file.toFile().deleteOnExit();
-        return file;
     }
 
     protected Client anonymous() {

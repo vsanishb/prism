@@ -91,5 +91,5 @@ async def require_service_caller(
         return verifier.verify(credentials.credentials, operation, await request.body())
     except jwt.InvalidTokenError as error:
         # The reason is logged but never returned, so callers learn nothing about the check.
-        logger.warning("service_token_rejected", operation=operation, reason=type(error).__name__)
+        logger.warning("service_token_rejected", operation=operation, reason=str(error))
         raise _unauthorized() from error

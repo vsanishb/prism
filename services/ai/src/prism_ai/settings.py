@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     database_url: SecretStr = Field(validation_alias="PRISM_AI_DB_URL")
     service_jwt_public_key_path: Path = Field(validation_alias="PRISM_SERVICE_JWT_PUBLIC_KEY_PATH")
     service_token_max_lifetime_seconds: int = 60
+    host: str = Field(default="127.0.0.1", validation_alias="PRISM_AI_HOST")
+    port: int = Field(default=8090, validation_alias="PRISM_AI_PORT")
 
 
 @lru_cache

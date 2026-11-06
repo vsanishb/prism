@@ -1,0 +1,43 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# Local data: uploaded documents must never be committed
+.data/
+
+# Java
+target/
+*.class
+.mvn/wrapper/maven-wrapper.jar
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+.next/
+out/
+coverage/
+playwright-report/
+test-results/
+*.tsbuildinfo
+
+# Tooling
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+*.log
+.claude/settings.local.json

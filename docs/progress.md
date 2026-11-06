@@ -34,9 +34,8 @@ The factual record of project state. Update after meaningful work. Newest entrie
 |---|---|---|
 | Create a Git remote, then confirm the first CI run | User | Before relying on CI |
 | Provide Neon connection details, then run migrations there | User | Before shared use |
-| Repair Docker Desktop: delete the stale `dockerInference` socket, which may need a restart or admin rights | User | M3, if Temporal runs in Docker |
 | Provide OpenRouter key, set account to ZDR only | User | M3 |
-| Make pgvector available: local build, container, or Neon ([D-041](decisions.md)) | Dev and user | M5 |
+| Make pgvector available without Docker: a native install or Neon ([D-056](decisions.md)) | Dev and user | M5 |
 
 ## Log
 
@@ -64,7 +63,20 @@ Also verified: a valid 23 MB scan and a refused 27 MB file through the real prox
 - PDF parsing runs in the core service on untrusted files. Limits are in place, but it has had no fuzzing or independent review.
 - No malware scanning (M9), and local document storage is not encrypted.
 - `run-web` was not started separately, because a Next.js dev server was already running. It runs `npm run dev`, which was tested in M1.
-- Only the screens in the M2 review were checked at phone width: the claim page, not the list, form, or viewer.
+
+### 2026-11-06: After M2 review
+
+**No Docker:** recorded as [D-056](decisions.md). CI now installs PostgreSQL natively; this change has not run.
+
+**Temporal, tested natively:** server and web UI started from PowerShell with no Docker, and a test workflow survived a full restart. No Prism workflow exists yet.
+
+**Verified:** 16 M2 end-to-end flows on the dev server, including the 23 MB upload and the 27 MB refusal, then all 31 M1 and M2 flows on the production build. Every M2 screen reviewed at phone width, with no sideways page scrolling.
+
+**Defect found and fixed:** phone tables hid claim status and amount off-screen. Claims and policies now use stacked lists on phones, and a test covers this.
+
+**Known gap:** the M1 Users and Audit tables still scroll sideways on phones, so their last columns start off-screen.
+
+**Scheduled:** malformed-PDF tests in M3. Fuzzing, independent review, malware scanning, and encrypted storage in M9.
 
 ### 2026-11-06: M1 Secure platform
 
@@ -95,7 +107,6 @@ Also verified on the running stack with a scripted browser check: stopping the A
 - Setup was run on this machine, not from a truly fresh clone.
 - A Windows-only environment: Linux and macOS are untested locally.
 - WCAG conformance has not been formally audited. Keyboard and label checks are limited to what the E2E tests exercise.
-- Docker Desktop does not start here (see Open items).
 
 ### 2026-11-06: M0 Project foundation
 

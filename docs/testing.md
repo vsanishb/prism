@@ -64,7 +64,7 @@ Cover the happy path, activity failure and retry, exhausted retries, long waits 
 
 ## Frontend verification
 
-For each milestone: Playwright for main flows and permission-based visibility; visual checks at desktop and tablet widths; keyboard and accessibility checks (WCAG 2.1 AA); and loading, empty, error, and failed-processing states.
+For each milestone: Playwright for main flows and permission-based visibility; a visual review of every new screen at desktop and phone width, repeated after any later change to it; keyboard and accessibility checks (WCAG 2.1 AA); and loading, empty, error, and failed-processing states.
 
 ## Test data
 

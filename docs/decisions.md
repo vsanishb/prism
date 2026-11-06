@@ -14,7 +14,7 @@ Checked against Maven Central, PyPI, npm, nodejs.org, Docker Hub, and vendor doc
 | Java | 21 LTS (Temurin 21.0.12, installed) | Installed |
 | Spring Boot | 4.1.2 | Verified with Temporal on Java 21 (D-039) |
 | Temporal Java SDK / starter | 1.40.0 | Verified: workflow and activity ran on Boot 4.1.2 (D-039) |
-| Temporal CLI dev server image | `temporalio/temporal:1.10.0` | Tag exists; not yet run |
+| Temporal CLI (native) | 1.10.0, Server 1.32.2 | Verified on Windows: server, web UI, and a workflow surviving a restart (D-056) |
 | Python | 3.14 (installed) | Planned dependencies resolved wheel-only on Windows, 58 packages |
 | FastAPI | 0.162.0 | Same check |
 | Pydantic | 2.14.3 | Same check |
@@ -28,7 +28,7 @@ Checked against Maven Central, PyPI, npm, nodejs.org, Docker Hub, and vendor doc
 | TypeScript | 5.9.3 | Verified with Next 16 build. 7.0 not adopted: new major, unverified with Next 16 |
 | Neon Postgres | 18 | pgvector 0.8.6 available on PG18. Not yet connected |
 | Local Postgres (native) | 18.3 (installed) | Running. `pg_trgm`, `pgcrypto`, `citext`, `unaccent` present. **pgvector not installed** (D-041) |
-| CI Postgres | `pgvector/pgvector:0.8.6-pg18` | Tag exists; matches Neon's pgvector version. CI not yet run |
+| CI Postgres | PostgreSQL 18 from the PostgreSQL apt repository | CI not yet run (D-056) |
 | uv | 0.13.7 | Installed and verified |
 | Apache PDFBox | 3.0.8 | Verified: parsing and rendering in tests and E2E |
 | ReportLab | 5.1.0 | Dev only. BSD licensed. Generates test documents |
@@ -291,3 +291,8 @@ Next.js's `proxyClientMaxBodySize` defaults to 10 MB. It is raised to 62 MB, abo
 ### D-055 Documents are never deleted in normal use
 **Status:** Accepted · **Source:** Dev
 Replaced and removed documents stay on record, as source documents are authoritative and part of the evidence chain. Retention-based deletion will be designed with the DPDP assessment ([security.md](security.md#privacy-gate)).
+
+### D-056 No Docker
+**Status:** Accepted · **Source:** User
+Everything runs natively and locally: no Dockerfiles, Compose, containers, or Testcontainers until the user says otherwise. This supersedes the container options in D-012, D-041, and D-046, and the container items in the deployment plan.
+Temporal uses the native CLI server, installed by `scripts/prism.py install-temporal` at a pinned version with a checksum check, and persisting to `.data/temporal.db`. CI installs PostgreSQL natively. pgvector for M5 will come from a native install or Neon.

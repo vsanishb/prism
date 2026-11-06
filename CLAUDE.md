@@ -73,6 +73,10 @@ Security is part of every change. See [docs/security.md](docs/security.md).
 
 See [docs/testing.md](docs/testing.md). New behavior needs tests at the right level, and bug fixes need a regression test. Test AI components with schema validation, known inputs, failure handling, and uncertainty handling. Compiling is not completion. Report test results accurately, including failures.
 
+## Local environment
+
+**Do not use or add Docker** (no Dockerfiles, Compose, containers, or Testcontainers) unless the user explicitly says so ([D-056](docs/decisions.md)). All services run natively through `scripts/prism.py`.
+
 ## Versions and dependencies
 
 - Pinned versions and their verification status live in [docs/decisions.md](docs/decisions.md#version-baseline). Do not upgrade casually.

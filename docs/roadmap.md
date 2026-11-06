@@ -17,7 +17,7 @@ Each milestone delivers a substantial, testable slice through the frontend. Comp
 | M8 | Human review and outcomes | Planned | M6, M7 |
 | M9 | Production readiness | Planned | M8 |
 
-Every milestone also requires: tests at the levels in [testing.md](testing.md), synthetic test data, a [frontend test guide](test-guides/README.md), updated docs, and meaningful commits.
+Every milestone also requires: tests at the levels in [testing.md](testing.md), a visual review of every new screen at desktop and phone width, synthetic test data, a [frontend test guide](test-guides/README.md), updated docs, and meaningful commits.
 
 ---
 
@@ -90,7 +90,7 @@ Every milestone also requires: tests at the levels in [testing.md](testing.md), 
 **Plans:** [workflows](plans/temporal-workflows.md), [document intelligence](plans/document-intelligence.md)
 **Needs from user:** OpenRouter API key, with the account set to ZDR only.
 
-- [ ] Add Temporal to local infrastructure and core worker
+- [ ] Add the native Temporal server to local tooling and the worker to core
 - [ ] Implement the outbox relay and stage events
 - [ ] Implement `ClaimProcessingWorkflow` through consolidation
 - [ ] Build the model gateway with routing, ZDR enforcement, and usage records
@@ -100,6 +100,7 @@ Every milestone also requires: tests at the levels in [testing.md](testing.md), 
 - [ ] Build the live processing view and stage retry
 - [ ] Build the extraction review screen with source highlighting
 - [ ] Create the extraction evaluation set
+- [ ] Add malformed-PDF robustness tests, with time and memory bounds
 
 **Frontend test flow:** submit a claim → watch stages progress → inspect each fact beside its source → see missing, uncertain, and conflicting values → add a missing document and watch processing resume.
 
@@ -223,11 +224,12 @@ Every milestone also requires: tests at the levels in [testing.md](testing.md), 
 
 - [ ] Add MFA for privileged roles
 - [ ] Add malware scanning
-- [ ] Implement S3-compatible storage
-- [ ] Containerize all services and write deployment configuration
+- [ ] Fuzz PDF and image parsing
+- [ ] Implement S3-compatible storage with encryption at rest
+- [ ] Write deployment configuration. The packaging approach needs the user's decision, as Docker is not allowed without approval ([D-056](decisions.md))
 - [ ] Add OpenTelemetry, dashboards, and alerts
 - [ ] Run performance tests and tune
-- [ ] Complete threat model review and security testing
+- [ ] Complete threat model review and security testing, including an independent review of document parsing
 - [ ] Resolve the PyMuPDF licensing decision ([D-036](decisions.md))
 - [ ] Test backup and restore
 - [ ] Add an operations screen for AI usage, cost, and workflow health

@@ -155,7 +155,7 @@ Claims contain personal and health data.
 
 Real claim data is prohibited until all of these are complete:
 
-- [ ] Jurisdiction and applicable regulation identified (for example HIPAA or DPDP)
+- [ ] DPDP obligations assessed for the India context, along with sector rules (D-043). Prism claims no regulatory compliance until this is formally established
 - [ ] Legal review of the OpenRouter and provider data flow, including the ZDR exceptions
 - [ ] Required agreements signed with processors
 - [ ] Malware scanning, MFA, and backups active

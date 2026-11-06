@@ -12,8 +12,8 @@ Checked against Maven Central, PyPI, npm, nodejs.org, Docker Hub, and vendor doc
 | Component | Version | Verification |
 |---|---|---|
 | Java | 21 LTS (Temurin 21.0.12, installed) | Installed |
-| Spring Boot | 4.1.2 | Java 21 in supported range. **Temporal pairing unverified: see D-004** |
-| Temporal Java SDK / starter | 1.40.0 | Boot 4 supported since 1.34; built against 4.0.x. **Boot 4.1 unverified** |
+| Spring Boot | 4.1.2 | Verified with Temporal on Java 21 (D-039) |
+| Temporal Java SDK / starter | 1.40.0 | Verified: workflow and activity ran on Boot 4.1.2 (D-039) |
 | Temporal CLI dev server image | `temporalio/temporal:1.10.0` | Tag exists; not yet run |
 | Python | 3.14 (installed) | Planned dependencies resolved wheel-only on Windows, 58 packages |
 | FastAPI | 0.162.0 | Same check |
@@ -21,12 +21,13 @@ Checked against Maven Central, PyPI, npm, nodejs.org, Docker Hub, and vendor doc
 | Uvicorn | 0.54.0 | Same check |
 | psycopg | 3.3.8 | Same check |
 | PyMuPDF | 2.1 | Same check. AGPL or commercial license: see D-036 |
-| Node.js | 24 LTS (installed: 25.7) | Current LTS line. **Install needed: see D-006** |
+| Node.js | 25 (installed: 25.7) | User decision (D-040). Satisfies Next.js ≥ 20.9 |
 | Next.js | 16.4.5 | Requires Node ≥ 20.9 |
 | React | 19.3.1 | Exact pairing confirmed at scaffold |
 | Tailwind CSS | 4.3.x | Latest published |
 | TypeScript | Decided at scaffold | Latest is 7.0.2; confirm Next 16 support first |
-| Neon Postgres | 18 | pgvector 0.8.6 available on PG18 |
+| Neon Postgres | 18 | pgvector 0.8.6 available on PG18. Not yet connected |
+| Local Postgres (native) | 18.3 (installed) | Running. `pg_trgm`, `pgcrypto`, `citext`, `unaccent` present. **pgvector not installed** (D-041) |
 | Local and test Postgres | `pgvector/pgvector:0.8.6-pg18` | Tag exists; matches Neon's pgvector version |
 | Testcontainers | 2.0.5 | Latest published; confirmed in M1 build |
 
@@ -49,7 +50,7 @@ Spring Boot is one deployable with feature packages, with boundaries enforced by
 Spring Boot is the application and business layer, FastAPI handles AI and specialized processing, Next.js is the frontend, Neon PostgreSQL is the database, OpenRouter provides models, and Temporal handles orchestration.
 
 ### D-004 Spring Boot 4.1 with Temporal 1.40
-**Status:** Provisional · **Source:** Dev
+**Status:** Accepted, gate passed (see D-039) · **Source:** Dev
 Spring Boot 3.5 reached end of OSS support on 2026-06-30, and 4.0 follows on 2026-12-31, so 4.1 (supported to 2027-07-31) is the only line that stays supported through the project. Temporal added Boot 4 support in 1.34, but its build targets 4.0.x, so 4.1 is not confirmed.
 **Gate:** the first task in Milestone 1 runs a real workflow on the test server under Boot 4.1.2. A spike during planning was blocked by the local permission policy on running downloaded code, so this has **not** been tested.
 **Fallback:** if it fails, use Boot 4.0.9 temporarily, accepting that OSS support ends 2026-12-31, and record the outcome here.
@@ -59,7 +60,7 @@ Spring Boot 3.5 reached end of OSS support on 2026-06-30, and 4.0 follows on 202
 It is already installed, supported to 2030, and every planned dependency resolves with prebuilt wheels. Choosing no heavy ML framework is what makes this safe: models run behind OpenRouter. Revisit if a future dependency lacks 3.14 wheels.
 
 ### D-006 Node 24 LTS
-**Status:** Accepted · **Source:** Dev
+**Status:** Superseded by D-040 · **Source:** Dev
 Node 25 is a non-LTS release and should not be a project baseline, although it satisfies Next.js's minimum. Node 24 is an established LTS line; 26 only entered LTS in October 2026. Pinned in `.nvmrc`, with Node 24 required before Milestone 1 frontend work.
 
 ### D-007 Frontend libraries
@@ -207,9 +208,40 @@ PyMuPDF has the best rendering and text-layer access, but is AGPL or commercial.
 ## Product scope
 
 ### D-031 Internal users only
-**Status:** Provisional · **Source:** Dev
+**Status:** Accepted, confirmed by D-042 · **Source:** Dev
 Prism serves insurer staff. Claimants have no portal, and staff enter claims on their behalf. The brief describes reviewers and authorized users only. Awaiting user confirmation.
 
 ### D-035 Jurisdiction-neutral design
-**Status:** Provisional · **Source:** Dev
+**Status:** Superseded by D-043 · **Source:** Dev
 The brief names no country. Currency, retention, and regulation are configuration or documentation rather than code assumptions. Awaiting user confirmation of the target market.
+
+## Milestone 1 direction (2026-11-06)
+
+### D-039 Temporal gate passed
+**Status:** Accepted · **Source:** Dev
+A `@SpringBootTest` ran a real workflow and activity through `temporal-spring-boot-starter` 1.40.0 on Spring Boot 4.1.2 and Java 21, using Temporal's test server. The 4.0.9 fallback is not needed. Java 21 stays the baseline: it is LTS and verified, and Java 25 offers nothing this project requires yet.
+
+### D-040 Node.js 25
+**Status:** Accepted · **Source:** User
+Supersedes D-006. Node 25 is the project runtime and `.nvmrc` pins it. It satisfies Next.js's minimum, and no LTS change is needed.
+
+### D-041 Local PostgreSQL for development, Neon as the central database
+**Status:** Accepted · **Source:** User (Neon, local install) / Dev (arrangement)
+Neon PostgreSQL is the central database for all application data and policy knowledge. The installed PostgreSQL 18.3 matches Neon's major version and serves local development through the same connection settings, so switching is configuration only. Integration tests use disposable Testcontainers databases.
+The native install lacks pgvector, which is first needed in M5. Options then are installing the extension locally, or using Neon or the pgvector container. No milestone before M5 depends on it.
+
+### D-042 Staff-only scope confirmed
+**Status:** Accepted · **Source:** User
+Confirms D-031. Prism serves insurer staff, with no claimant or customer portal.
+
+### D-043 India as primary context
+**Status:** Accepted · **Source:** User
+Supersedes D-035. Defaults suit India: INR, Indian date display, and Indian insurance terminology in synthetic data. Privacy-by-design follows DPDP considerations. **Prism makes no claim of regulatory compliance** unless it has been formally established. Currency, locale, and retention stay configurable so that other jurisdictions remain possible.
+
+### D-044 Synthetic data in every milestone
+**Status:** Accepted · **Source:** User
+Extends D-034. Each milestone ships clearly labeled synthetic artifacts and a frontend test guide in [test-guides/](test-guides/README.md). Synthetic data must never be presented as real insurance or medical documentation.
+
+### D-045 PostgreSQL is the knowledge store
+**Status:** Accepted · **Source:** User
+pgvector and PostgreSQL full-text search provide hybrid retrieval, and no separate vector database is added unless a clear technical requirement appears that Neon cannot meet. Retrieval stays modular behind interfaces, so search and embedding parts can change. Reranking stays only if it shows measurable value in evaluation (refines D-023).

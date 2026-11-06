@@ -7,7 +7,7 @@ Each milestone delivers a substantial, testable slice through the frontend. Comp
 | # | Milestone | Status | Depends on |
 |---|---|---|---|
 | M0 | Project foundation | Complete | None |
-| M1 | Secure platform | **Next** | M0 |
+| M1 | Secure platform | **In progress** | M0 |
 | M2 | Claims and documents | Planned | M1 |
 | M3 | Document intelligence and workflows | Planned | M2 |
 | M4 | Policy intelligence | Planned | M3 |
@@ -17,7 +17,7 @@ Each milestone delivers a substantial, testable slice through the frontend. Comp
 | M8 | Human review and outcomes | Planned | M6, M7 |
 | M9 | Production readiness | Planned | M8 |
 
-Every milestone also requires: tests at the levels in [testing.md](testing.md), updated docs, and meaningful commits.
+Every milestone also requires: tests at the levels in [testing.md](testing.md), synthetic test data, a [frontend test guide](test-guides/README.md), updated docs, and meaningful commits.
 
 ---
 
@@ -39,9 +39,9 @@ Every milestone also requires: tests at the levels in [testing.md](testing.md), 
 
 **Objective:** a real, secure application shell that users sign in to, with audit and service trust working from the start.
 **Plans:** [auth](plans/authentication-authorization.md), [audit](plans/audit-logging.md), [frontend](plans/frontend-experience.md), [deployment](plans/deployment-infrastructure.md)
-**Needs from user:** Neon project and connection details; Node 24 installed.
+**Needs from user:** a one-time run of the local database setup script. Neon connection details when ready.
 
-- [ ] Confirm Boot 4.1.2 + Temporal 1.40 gate ([D-004](decisions.md))
+- [x] Confirm Boot 4.1.2 + Temporal 1.40 gate ([D-039](decisions.md))
 - [ ] Scaffold core, AI, and web projects with lint, format, and test tooling
 - [ ] Set up Flyway, schemas, and least-privilege roles
 - [ ] Set up Docker Compose for local dependencies

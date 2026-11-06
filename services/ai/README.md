@@ -1,10 +1,10 @@
 # AI service
 
-FastAPI service for AI and specialized processing. **Not yet implemented** (scaffolded in Milestone 1).
+FastAPI service for AI and specialized processing. Built so far: `api` with service authentication. No AI processing exists yet.
 
 Stateless with respect to claims: it receives inputs from the core service and returns structured results. It persists only policy knowledge, in the `knowledge` schema. It accepts only signed requests from the core service and never calls it back.
 
-Planned packages under `prism_ai`:
+Packages under `prism_ai`, built and planned:
 
 | Package | Responsibility |
 |---|---|

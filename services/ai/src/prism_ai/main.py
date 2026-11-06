@@ -3,10 +3,10 @@ from contextlib import asynccontextmanager
 
 import structlog
 from fastapi import FastAPI
-from psycopg_pool import AsyncConnectionPool
 
 from prism_ai.api.internal import router as internal_router
 from prism_ai.api.service_auth import ServiceTokenVerifier
+from prism_ai.database import create_pool
 from prism_ai.settings import Settings, get_settings
 
 structlog.configure(
@@ -20,9 +20,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         # Open lazily: a brief database outage must not stop the service from starting.
-        pool = AsyncConnectionPool(
-            config.database_url.get_secret_value(), min_size=0, max_size=5, open=False
-        )
+        pool = create_pool(config.database_url.get_secret_value())
         await pool.open(wait=False)
         app.state.db_pool = pool
         app.state.token_verifier = ServiceTokenVerifier(

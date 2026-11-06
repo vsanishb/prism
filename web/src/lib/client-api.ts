@@ -38,18 +38,10 @@ async function toError(response: Response): Promise<ApiError> {
   return new ApiError(body.detail ?? GENERIC_FAILURE, response.status, body.code ?? null, body.fields ?? []);
 }
 
-export async function apiRequest<T>(method: string, path: string, body?: unknown): Promise<T> {
+async function send<T>(path: string, init: RequestInit): Promise<T> {
   let response: Response;
   try {
-    response = await fetch(path, {
-      method,
-      cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
-        "X-XSRF-TOKEN": await csrfToken(),
-      },
-      body: body === undefined ? undefined : JSON.stringify(body),
-    });
+    response = await fetch(path, { ...init, cache: "no-store" });
   } catch {
     throw new ApiError("Prism could not be reached. Check your connection and try again.", 0, null, []);
   }
@@ -57,6 +49,26 @@ export async function apiRequest<T>(method: string, path: string, body?: unknown
     throw await toError(response);
   }
   return response.status === 204 ? (undefined as T) : ((await response.json()) as T);
+}
+
+export async function apiRequest<T>(
+  method: string,
+  path: string,
+  body?: unknown,
+  headers: Record<string, string> = {},
+): Promise<T> {
+  return send<T>(path, {
+    method,
+    headers: { "Content-Type": "application/json", "X-XSRF-TOKEN": await csrfToken(), ...headers },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+}
+
+export async function apiUpload<T>(path: string, file: File): Promise<T> {
+  const form = new FormData();
+  form.append("file", file);
+  // No Content-Type header: the browser must add the multipart boundary itself.
+  return send<T>(path, { method: "POST", headers: { "X-XSRF-TOKEN": await csrfToken() }, body: form });
 }
 
 export function errorMessage(error: unknown): string {

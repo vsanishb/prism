@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, LayoutGrid, LogOut, ScrollText, Users, type LucideIcon } from "lucide-react";
+import { Activity, FileStack, LayoutGrid, LogOut, ScrollText, ShieldCheck, Users, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
@@ -19,6 +19,8 @@ interface NavItem {
 
 const NAVIGATION: NavItem[] = [
   { href: "/overview", label: "Overview", icon: LayoutGrid },
+  { href: "/claims", label: "Claims", icon: FileStack, permission: "CLAIM_READ" },
+  { href: "/policies", label: "Policies", icon: ShieldCheck, permission: "POLICY_READ" },
   { href: "/admin/users", label: "Users", icon: Users, permission: "USERS_MANAGE" },
   { href: "/audit", label: "Audit trail", icon: ScrollText, permission: "AUDIT_READ" },
   { href: "/system", label: "System status", icon: Activity, permission: "SYSTEM_VIEW" },

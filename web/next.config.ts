@@ -13,6 +13,11 @@ if (!coreBaseUrl) {
 
 const config: NextConfig = {
   poweredByHeader: false,
+  experimental: {
+    // Next.js cuts proxied bodies off at 10 MB by default. This must stay above the core
+    // service's multipart limit, so that uploads reach it and get its own size checks.
+    proxyClientMaxBodySize: "62mb",
+  },
   // Same-origin routing keeps the session cookie HttpOnly and avoids CORS entirely.
   async rewrites() {
     return [{ source: "/api/:path*", destination: `${coreBaseUrl}/api/:path*` }];

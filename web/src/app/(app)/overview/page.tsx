@@ -10,6 +10,18 @@ export const metadata: Metadata = { title: "Overview" };
 
 const DESTINATIONS: { permission: Permission; href: string; title: string; description: string }[] = [
   {
+    permission: "CLAIM_READ",
+    href: "/claims",
+    title: "Work with claims",
+    description: "Find claims, open their documents, and follow their history.",
+  },
+  {
+    permission: "POLICY_READ",
+    href: "/policies",
+    title: "Browse policies",
+    description: "See registered policies, versions, and wordings.",
+  },
+  {
     permission: "USERS_MANAGE",
     href: "/admin/users",
     title: "Manage users",

@@ -9,7 +9,14 @@ export const ROLES = [
 ] as const;
 
 export type Role = (typeof ROLES)[number];
-export type Permission = "USERS_MANAGE" | "AUDIT_READ" | "SYSTEM_VIEW";
+export type Permission =
+  | "USERS_MANAGE"
+  | "AUDIT_READ"
+  | "SYSTEM_VIEW"
+  | "POLICY_READ"
+  | "POLICY_MANAGE"
+  | "CLAIM_READ"
+  | "CLAIM_MANAGE";
 
 export interface CurrentUser {
   id: string;
@@ -90,4 +97,101 @@ export interface TokenDetails {
   purpose: "INVITATION" | "PASSWORD_RESET";
   email: string;
   fullName: string | null;
+}
+
+export const CLAIM_STATUSES = [
+  "DRAFT",
+  "SUBMITTED",
+  "PROCESSING",
+  "AWAITING_INFORMATION",
+  "IN_REVIEW",
+  "ESCALATED",
+  "DECIDED",
+  "WITHDRAWN",
+] as const;
+
+export type ClaimStatus = (typeof CLAIM_STATUSES)[number];
+export type ClaimType = "REIMBURSEMENT" | "CASHLESS";
+export type WithdrawalReason = "CLAIMANT_REQUEST" | "DUPLICATE_ENTRY" | "ENTERED_IN_ERROR";
+export type ClaimAction = "EDIT" | "SUBMIT" | "WITHDRAW" | "ADD_DOCUMENT" | "REMOVE_DOCUMENT";
+
+export const CLAIM_DOCUMENT_TYPES = [
+  "CLAIM_FORM",
+  "HOSPITAL_BILL",
+  "ITEMIZED_INVOICE",
+  "DISCHARGE_SUMMARY",
+  "PRESCRIPTION",
+  "DIAGNOSTIC_REPORT",
+  "OTHER",
+] as const;
+
+export type DocumentType = (typeof CLAIM_DOCUMENT_TYPES)[number] | "POLICY_WORDING";
+
+export interface DocumentRecord {
+  id: string;
+  documentType: DocumentType;
+  status: "ACTIVE" | "SUPERSEDED" | "REMOVED";
+  originalFilename: string;
+  mediaType: string;
+  sizeBytes: number;
+  pageCount: number;
+  supersedesId: string | null;
+  uploadedAt: string;
+}
+
+export interface PolicySummary {
+  id: string;
+  policyNumber: string;
+  productName: string;
+  policyholderName: string;
+  createdAt: string;
+}
+
+export interface PolicyVersion {
+  id: string;
+  versionNumber: number;
+  effectiveFrom: string;
+  effectiveTo: string;
+  sumInsured: string;
+  currency: string;
+}
+
+export interface PolicyDetail {
+  policy: PolicySummary;
+  versions: { version: PolicyVersion; documents: DocumentRecord[] }[];
+}
+
+export interface ClaimSummary {
+  id: string;
+  claimNumber: string;
+  status: ClaimStatus;
+  type: ClaimType;
+  patientName: string;
+  hospitalName: string;
+  admissionDate: string;
+  claimedAmount: string;
+  currency: string;
+  createdAt: string;
+}
+
+export interface ClaimDetail {
+  summary: ClaimSummary;
+  claimantName: string;
+  dischargeDate: string;
+  policy: { id: string; policyNumber: string; productName: string; policyholderName: string };
+  policyVersion: PolicyVersion | null;
+  policyVersionFixed: boolean;
+  withdrawalReason: WithdrawalReason | null;
+  submittedAt: string | null;
+  version: number;
+  documents: DocumentRecord[];
+  submissionIssues: string[];
+  availableActions: ClaimAction[];
+}
+
+export interface TimelineEntry {
+  occurredAt: string;
+  action: string;
+  outcome: AuditOutcome;
+  actorName: string | null;
 }

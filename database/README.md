@@ -4,4 +4,4 @@ Flyway is the only migration tool for every schema, and `migrations/` is the onl
 
 Naming: `V<yyyymmddhhmm>__<summary>.sql`. Applied migrations are immutable.
 
-No migrations exist yet. See [architecture](../docs/architecture.md#data-architecture).
+See [architecture](../docs/architecture.md#data-architecture).

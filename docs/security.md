@@ -80,7 +80,7 @@ Authorization is enforced in core at the service layer. Code checks permissions,
 
 - Bean Validation on all inputs, with strict JSON (unknown fields rejected on writes).
 - CSRF protection on state-changing requests, and no permissive CORS.
-- Rate limits on authentication and upload endpoints.
+- Throttling on sign-in. Upload limits arrive with uploads in M2.
 - Security headers: CSP without `unsafe-eval`, HSTS, `nosniff`, frame denial, strict referrer policy.
 - Errors never expose stack traces or internal identifiers.
 - The AI service is never exposed publicly.
@@ -91,7 +91,7 @@ Authorization is enforced in core at the service layer. Code checks permissions,
 2. Claims: `iss=prism-core`, `aud=prism-ai`, `iat`, `exp` (at most 60 seconds), `jti`, `sub` (operation), and a SHA-256 hash of the request body.
 3. AI verifies the signature with a pinned algorithm, plus `iss`, `aud`, `exp`, and body hash, and rejects anything else with `401`.
 4. All `/internal` routes require this; only liveness is exempt.
-5. `kid` headers allow rotation with overlapping keys.
+5. Tokens carry a `kid`, to allow rotation with overlapping keys. The AI service holds one key today; overlap arrives in M9.
 
 Network isolation is an additional layer, never the only one. The same mechanism works locally and when deployed.
 

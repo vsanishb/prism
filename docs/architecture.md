@@ -1,6 +1,6 @@
 # Architecture
 
-The target architecture. Nothing here is implemented yet unless [progress.md](progress.md) says so. Reasons for each choice are in [decisions.md](decisions.md); process-level flows are in [system-flows.md](system-flows.md).
+The target architecture. It is built milestone by milestone, and [progress.md](progress.md) records what exists. Reasons for each choice are in [decisions.md](decisions.md); process-level flows are in [system-flows.md](system-flows.md).
 
 ## System overview
 

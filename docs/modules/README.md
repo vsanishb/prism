@@ -2,6 +2,11 @@
 
 Describes modules **as built**. For intended design, see [plans](../plans/README.md).
 
-Create `<module>.md` when a module is implemented, covering: purpose, entry points, key types, data owned, configuration, failure behavior, and how to test it.
+| Module | Covers |
+|---|---|
+| [Identity](identity.md) | Accounts, sign-in, sessions, roles |
+| [Audit](audit.md) | Tamper-evident event record |
+| [Service authentication](service-auth.md) | Trust between core and AI |
+| [Web foundation](web-foundation.md) | Design system and shell |
 
-No modules are implemented yet.
+When a module is implemented, add `<module>.md` covering its purpose, entry points, key types, data, failure behavior, and how to test it.

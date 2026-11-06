@@ -4,4 +4,6 @@ One guide per completed milestone: the synthetic data it provides, and step-by-s
 
 All test data is synthetic. It must never be presented as real insurance or medical documentation.
 
-No guides exist yet. The first arrives when Milestone 1 is complete.
+| Milestone | Guide |
+|---|---|
+| M1 Secure platform | [m1-secure-platform.md](m1-secure-platform.md) |

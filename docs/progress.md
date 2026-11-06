@@ -6,15 +6,17 @@ The factual record of project state. Update after meaningful work. Newest entrie
 
 ## Current state
 
-**Phase:** M0 complete. M1 not started.
-**Application code:** none. No service, database, or UI exists yet.
+**Phase:** M1 complete, except for its first CI run. M2 is next.
+**Runs on:** local PostgreSQL 18.3. Neon has not been connected.
 
 | Capability | Status | Milestone |
 |---|---|---|
 | Documentation foundation | Implemented | M0 |
-| Authentication, RBAC, audit | Planned | M1 |
-| Service-to-service authentication | Planned | M1 |
-| Design system and app shell | Planned | M1 |
+| CI pipeline | Implemented, never run | M1 |
+| MFA, key rotation, self-service password change | Deferred | M9 |
+| Authentication, RBAC, audit | Tested | M1 |
+| Service-to-service authentication | Tested | M1 |
+| Design system and app shell | Tested | M1 |
 | Claims, policies, documents | Planned | M2 |
 | Temporal workflows | Planned | M3 |
 | Document intelligence | Planned | M3 |
@@ -29,16 +31,44 @@ The factual record of project state. Update after meaningful work. Newest entrie
 
 | Item | Owner | Needed by |
 |---|---|---|
-| Verify Boot 4.1.2 + Temporal 1.40 ([D-004](decisions.md)) | Dev | Start of M1 |
-| Install Node 24 LTS (25.7 installed) | User | M1 frontend |
-| Install uv | Dev or user | M1 |
-| Provide Neon project details | User | M1 |
-| Confirm internal-users-only scope ([D-031](decisions.md)) | User | M2 |
-| Confirm target jurisdiction ([D-035](decisions.md)) | User | M2 |
+| Create a Git remote, then confirm the first CI run | User | Before relying on CI |
+| Provide Neon connection details, then run migrations there | User | Before shared use |
+| Repair Docker Desktop: delete the stale `dockerInference` socket, which may need a restart or admin rights | User | M3, if Temporal runs in Docker |
 | Provide OpenRouter key, set account to ZDR only | User | M3 |
-| Create a Git remote | User | M1 CI |
+| Make pgvector available: local build, container, or Neon ([D-041](decisions.md)) | Dev and user | M5 |
 
 ## Log
+
+### 2026-11-06: M1 Secure platform
+
+**Implemented:** core service (identity, RBAC, audit, AI client, system status), AI service with service authentication, Flyway migrations with least-privilege roles, local tooling, design system, and all M1 screens.
+
+**Test results on the final code:**
+
+| Suite | Result |
+|---|---|
+| Core (JUnit, real PostgreSQL) | 86 passed |
+| AI (pytest, real PostgreSQL for database tests) | 22 passed. `ruff` and `mypy --strict` clean |
+| Web unit (Vitest) | 4 passed. ESLint and `tsc` clean |
+| End-to-end, production build (Playwright) | 14 passed |
+| End-to-end, dev server | 13 passed. CSP test excluded, as dev mode needs `unsafe-eval` |
+
+Also verified on the running stack with a scripted browser check: stopping the AI service shows 3 failing checks, and restarting it recovers. Screenshots were reviewed at desktop width, and the audit page at phone width, before a final round of small styling fixes that was not re-reviewed visually.
+
+**Defects found by testing and fixed:**
+- Session cookie lacked `HttpOnly` and `SameSite` ([D-047](decisions.md)).
+- HTTP/2 upgrade lost the signed request body. Mocks did not show this; the live status check did.
+- Async psycopg failed on the Windows event loop.
+- Public pages were prerendered, which would have broken them under the nonce CSP.
+- Pooled AI connections went stale after a database restart ([D-048](decisions.md)).
+
+**Not verified:**
+- CI has never run, as there is no Git remote.
+- Neon has not been connected. All testing used local PostgreSQL 18.3.
+- Setup was run on this machine, not from a truly fresh clone.
+- A Windows-only environment: Linux and macOS are untested locally.
+- WCAG conformance has not been formally audited. Keyboard and label checks are limited to what the E2E tests exercise.
+- Docker Desktop does not start here (see Open items).
 
 ### 2026-11-06: M0 Project foundation
 

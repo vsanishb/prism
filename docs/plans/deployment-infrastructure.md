@@ -10,10 +10,10 @@ Make Prism simple to run locally and safe to run when deployed.
 ## Design considerations
 
 ### Local development (M1, M3)
-- Docker Compose runs dependencies: Temporal dev server with UI (M3), plus Postgres as an optional offline database.
+- A project-owned PostgreSQL cluster serves local development and tests ([D-046](../decisions.md)).
 - Application services run natively for fast iteration.
-- A Neon development branch is the default database. Tests use Testcontainers.
-- The Docker image for Temporal uses a persisted database file, so workflows survive restarts.
+- Neon uses the same settings when connected: only `.env` changes.
+- Temporal's dev server arrives in M3, with a persisted database file so that workflows survive restarts.
 
 ### Neon specifics
 - Use the pooled endpoint for runtime, direct for migrations.

@@ -22,13 +22,14 @@ Checked against Maven Central, PyPI, npm, nodejs.org, Docker Hub, and vendor doc
 | psycopg | 3.3.8 | Same check |
 | PyMuPDF | 2.1 | Same check. AGPL or commercial license: see D-036 |
 | Node.js | 25 (installed: 25.7) | User decision (D-040). Satisfies Next.js ≥ 20.9 |
-| Next.js | 16.4.5 | Requires Node ≥ 20.9 |
-| React | 19.3.1 | Exact pairing confirmed at scaffold |
+| Next.js | 16.4.5 | Verified on Node 25.7 |
+| React | 19.3.1 | Verified with Next 16.4.5 build and E2E |
 | Tailwind CSS | 4.3.x | Latest published |
-| TypeScript | Decided at scaffold | Latest is 7.0.2; confirm Next 16 support first |
+| TypeScript | 5.9.3 | Verified with Next 16 build. 7.0 not adopted: new major, unverified with Next 16 |
 | Neon Postgres | 18 | pgvector 0.8.6 available on PG18. Not yet connected |
 | Local Postgres (native) | 18.3 (installed) | Running. `pg_trgm`, `pgcrypto`, `citext`, `unaccent` present. **pgvector not installed** (D-041) |
-| CI Postgres | `pgvector/pgvector:0.8.6-pg18` | Tag exists; matches Neon's pgvector version. Not yet run |
+| CI Postgres | `pgvector/pgvector:0.8.6-pg18` | Tag exists; matches Neon's pgvector version. CI not yet run |
+| uv | 0.13.7 | Installed and verified |
 
 Versions move only through a new decision entry. Spring Boot 4.2 was at RC2 on the check date and is deliberately not used.
 
@@ -254,3 +255,15 @@ Tests log in through dedicated roles that inherit the runtime grants, so real pe
 ### D-047 Explicit session cookie configuration
 **Status:** Accepted · **Source:** Dev
 A test showed `server.servlet.session.cookie.*` did not reach the cookie written by Spring Session: it went out as `SESSION` without `HttpOnly` or `SameSite`. A `CookieSerializer` bean now sets these directly, and tests assert them on real responses.
+
+### D-048 Validate pooled AI connections
+**Status:** Accepted · **Source:** Dev
+The AI pool checks connections before use. Idle connections die silently on any database restart, and Neon's scale-to-zero makes that routine. A test kills an idle connection and fails without this setting.
+
+### D-049 Frontend libraries added when needed
+**Status:** Accepted · **Source:** Dev
+Refines D-007. TanStack Query, React Hook Form, and Zod are not installed, because M1's screens work well with Server Components and small forms. Each is added when a screen justifies it. API types are hand-written until the API is large enough for generation to pay off.
+
+### D-050 Links shared by hand until email exists
+**Status:** Accepted · **Source:** Dev
+Prism has no email service. Administrators copy one-time invitation and reset links, and the first administrator's link is written to a gitignored file. This keeps tokens out of logs without adding an email provider.

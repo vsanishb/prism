@@ -4,10 +4,10 @@ Each plan describes the intended design of one capability. Plans are intent, not
 
 | Plan | Milestone | Status |
 |---|---|---|
-| [Authentication and authorization](authentication-authorization.md) | M1 | Planned |
-| [Audit logging](audit-logging.md) | M1 | Planned |
-| [Frontend experience](frontend-experience.md) | M1 onward | Planned |
-| [Deployment and infrastructure](deployment-infrastructure.md) | M1, M9 | Planned |
+| [Authentication and authorization](authentication-authorization.md) | M1 | Built: see [identity](../modules/identity.md) |
+| [Audit logging](audit-logging.md) | M1 | Built: see [audit](../modules/audit.md) |
+| [Frontend experience](frontend-experience.md) | M1 onward | Foundation built: see [web](../modules/web-foundation.md) |
+| [Deployment and infrastructure](deployment-infrastructure.md) | M1, M9 | Local setup built |
 | [Claims management](claims-management.md) | M2 | Planned |
 | [Temporal workflows](temporal-workflows.md) | M3 onward | Planned |
 | [Document intelligence](document-intelligence.md) | M3 | Planned |

@@ -7,8 +7,8 @@ Each milestone delivers a substantial, testable slice through the frontend. Comp
 | # | Milestone | Status | Depends on |
 |---|---|---|---|
 | M0 | Project foundation | Complete | None |
-| M1 | Secure platform | **In progress** | M0 |
-| M2 | Claims and documents | Planned | M1 |
+| M1 | Secure platform | Complete, except first CI run | M0 |
+| M2 | Claims and documents | **Next** | M1 |
 | M3 | Document intelligence and workflows | Planned | M2 |
 | M4 | Policy intelligence | Planned | M3 |
 | M5 | Hybrid retrieval | Planned | M4 |
@@ -39,19 +39,20 @@ Every milestone also requires: tests at the levels in [testing.md](testing.md), 
 
 **Objective:** a real, secure application shell that users sign in to, with audit and service trust working from the start.
 **Plans:** [auth](plans/authentication-authorization.md), [audit](plans/audit-logging.md), [frontend](plans/frontend-experience.md), [deployment](plans/deployment-infrastructure.md)
-**Needs from user:** a one-time run of the local database setup script. Neon connection details when ready.
+**Needs from user:** nothing for local use. Neon connection details and a Git remote when ready.
 
 - [x] Confirm Boot 4.1.2 + Temporal 1.40 gate ([D-039](decisions.md))
-- [ ] Scaffold core, AI, and web projects with lint, format, and test tooling
-- [ ] Set up Flyway, schemas, and least-privilege roles
-- [ ] Set up Docker Compose for local dependencies
-- [ ] Set up CI
-- [ ] Implement users, invitations, Argon2id, sessions, CSRF, and throttling
-- [ ] Implement permissions and RBAC
-- [ ] Implement append-only audit with hash chains
-- [ ] Implement service JWT authentication between core and AI
-- [ ] Build the design system foundation and application shell
-- [ ] Build sign-in, invitation, user administration, audit viewer, and system status screens
+- [x] Scaffold core, AI, and web projects with lint, format, and test tooling
+- [x] Set up Flyway, schemas, and least-privilege roles
+- [x] Set up local dependencies: a project-owned PostgreSQL cluster replaces Docker Compose ([D-046](decisions.md))
+- [ ] Run CI. The workflow is written, but has never run, because there is no Git remote
+- [x] Implement users, invitations, Argon2id, sessions, CSRF, and throttling
+- [x] Implement permissions and RBAC
+- [x] Implement append-only audit with hash chains
+- [x] Implement service JWT authentication between core and AI
+- [x] Build the design system foundation and application shell
+- [x] Build sign-in, invitation, user administration, audit viewer, and system status screens
+- [x] Provide synthetic users and a [test guide](test-guides/m1-secure-platform.md)
 
 **Frontend test flow:** accept an invitation → sign in → see role-appropriate navigation → an admin manages users → an auditor views events and verifies the chain → system status shows a live authenticated core-to-AI check.
 

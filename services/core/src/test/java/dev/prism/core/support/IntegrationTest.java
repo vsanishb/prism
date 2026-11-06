@@ -1,6 +1,7 @@
 package dev.prism.core.support;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import dev.prism.core.aiclient.AiServiceClient;
@@ -21,10 +22,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.AbstractMockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
@@ -35,6 +38,7 @@ import tools.jackson.databind.json.JsonMapper;
 public abstract class IntegrationTest {
 
     protected static final String PASSWORD = "synthetic-Test-passphrase-41";
+    private static final Path DOCUMENT_ROOT = Path.of(System.getProperty("java.io.tmpdir"), "prism-test-documents");
 
     @Autowired
     protected MockMvc mvc;
@@ -62,8 +66,13 @@ public abstract class IntegrationTest {
         registry.add("PRISM_BOOTSTRAP_ADMIN_EMAIL", () -> "");
         registry.add("PRISM_ENVIRONMENT", () -> "test");
         registry.add("PRISM_LOG_FORMAT", () -> "");
+        registry.add("PRISM_DOCUMENT_STORE_PATH", () -> DOCUMENT_ROOT.toString());
         Path key = TestKeys.writeSigningKey();
         registry.add("PRISM_SERVICE_JWT_PRIVATE_KEY_PATH", key::toString);
+    }
+
+    protected ClaimFixtures claimFixtures() {
+        return new ClaimFixtures(this);
     }
 
     protected Client anonymous() {
@@ -71,7 +80,7 @@ public abstract class IntegrationTest {
     }
 
     /** Creates a user with the role and signs them in through the real endpoint. */
-    protected Client signedInAs(Role role) throws Exception {
+    public Client signedInAs(Role role) throws Exception {
         String email = uniqueEmail();
         identity.createUser(email, role, PASSWORD);
         Client client = new Client();
@@ -89,7 +98,7 @@ public abstract class IntegrationTest {
     }
 
     /** A browser stand-in: keeps cookies and attaches the CSRF header, as the web client does. */
-    protected final class Client {
+    public final class Client {
 
         private final List<Cookie> cookies = new ArrayList<>();
         private final String address = "10.%d.%d.%d".formatted(
@@ -125,6 +134,24 @@ public abstract class IntegrationTest {
                     .content(json.writeValueAsString(body)));
         }
 
+        public MockHttpServletResponse postJsonWithHeader(String path, Object body, String header, String value)
+                throws Exception {
+            ensureCsrf();
+            return perform(withCsrf(post(path)
+                    .header(header, value)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(json.writeValueAsString(body))));
+        }
+
+        public MockHttpServletResponse upload(String path, String filename, byte[] content) throws Exception {
+            ensureCsrf();
+            return perform(withCsrf(multipart(path).file(new MockMultipartFile("file", filename, null, content))));
+        }
+
+        public MockHttpServletResponse uploadWithoutCsrf(String path, String filename, byte[] content) throws Exception {
+            return perform(multipart(path).file(new MockMultipartFile("file", filename, null, content)));
+        }
+
         public MockHttpServletResponse send(MockHttpServletRequestBuilder request) throws Exception {
             ensureCsrf();
             return perform(withCsrf(request));
@@ -148,11 +175,11 @@ public abstract class IntegrationTest {
             }
         }
 
-        private MockHttpServletRequestBuilder withCsrf(MockHttpServletRequestBuilder request) {
+        private <B extends AbstractMockHttpServletRequestBuilder<B>> B withCsrf(B request) {
             return request.header("X-XSRF-TOKEN", cookie("XSRF-TOKEN"));
         }
 
-        private MockHttpServletResponse perform(MockHttpServletRequestBuilder request) throws Exception {
+        private MockHttpServletResponse perform(AbstractMockHttpServletRequestBuilder<?> request) throws Exception {
             request.with(servletRequest -> {
                 servletRequest.setRemoteAddr(address);
                 return servletRequest;

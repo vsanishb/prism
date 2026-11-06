@@ -35,7 +35,8 @@ class ArchitectureTest {
     static final ArchRule platformDependsOnNoFeature = noClasses()
             .that().resideInAPackage("..platform..")
             .should().dependOnClassesThat()
-            .resideInAnyPackage("..identity..", "..audit..", "..aiclient..", "..system..");
+            .resideInAnyPackage(
+                    "..identity..", "..audit..", "..aiclient..", "..system..", "..policy..", "..claim..", "..document..");
 
     private static String moduleOf(String packageName) {
         if (!packageName.startsWith(ROOT)) {

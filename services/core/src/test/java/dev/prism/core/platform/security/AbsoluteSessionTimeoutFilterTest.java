@@ -17,11 +17,13 @@ class AbsoluteSessionTimeoutFilterTest {
     private final AbsoluteSessionTimeoutFilter filter = new AbsoluteSessionTimeoutFilter(new PrismProperties(
             "test",
             URI.create("http://localhost"),
+            "INR",
             new PrismProperties.Security("key", false, false, Duration.ofHours(12), Duration.ofHours(1), Duration.ofHours(1)),
             new PrismProperties.ServiceAuth("path", "id", Duration.ofMinutes(1)),
+            new PrismProperties.Documents("store", 1000, 1000, 10, 10, 1000, 100),
             new PrismProperties.Ai(URI.create("http://localhost"), Duration.ofSeconds(1)),
             new PrismProperties.Bootstrap("", ""),
-            new PrismProperties.Seed("")));
+            new PrismProperties.Seed("", "")));
 
     private static HttpSession sessionAged(Duration age) {
         return new MockHttpSession() {

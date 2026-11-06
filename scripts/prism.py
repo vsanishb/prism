@@ -170,6 +170,7 @@ def setup() -> None:
         "PRISM_BOOTSTRAP_ADMIN_EMAIL": "",
         "PRISM_BOOTSTRAP_INVITE_FILE": (DATA / "bootstrap-invitation.txt").as_posix(),
         "PRISM_SEED_CREDENTIALS_FILE": (DATA / "synthetic-users.md").as_posix(),
+        "PRISM_DOCUMENT_STORE_PATH": (DATA / "documents").as_posix(),
     }
     ENV_FILE.write_text("".join(f"{key}={value}\n" for key, value in values.items()))
     print(f"Created .env and a local database on port {PG_PORT}. Next: the migrate command.")

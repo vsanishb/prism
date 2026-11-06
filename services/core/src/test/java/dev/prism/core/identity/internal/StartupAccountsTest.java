@@ -19,7 +19,6 @@ import java.time.Instant;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -29,11 +28,13 @@ class StartupAccountsTest {
         return new PrismProperties(
                 environment,
                 URI.create("http://localhost"),
+                "INR",
                 new PrismProperties.Security("key", false, false, Duration.ofHours(1), Duration.ofHours(1), Duration.ofHours(1)),
                 new PrismProperties.ServiceAuth("path", "id", Duration.ofMinutes(1)),
+                new PrismProperties.Documents("store", 1000, 1000, 10, 10, 1000, 100),
                 new PrismProperties.Ai(URI.create("http://localhost"), Duration.ofSeconds(1)),
                 new PrismProperties.Bootstrap(adminEmail, inviteFile),
-                new PrismProperties.Seed(seedFile));
+                new PrismProperties.Seed(seedFile, ""));
     }
 
     @Test
@@ -83,8 +84,7 @@ class StartupAccountsTest {
                 mock(PasswordEncoder.class),
                 mock(AuditRecorder.class),
                 mock(TransactionTemplate.class),
-                properties("production", "", "", "seed.md"),
-                mock(ConfigurableApplicationContext.class));
+                properties("production", "", "", "seed.md"));
 
         assertThatThrownBy(() -> seeder.run(null))
                 .isInstanceOf(IllegalStateException.class)

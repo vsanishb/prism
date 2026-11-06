@@ -4,5 +4,9 @@ package dev.prism.core.identity;
 public enum Permission {
     USERS_MANAGE,
     AUDIT_READ,
-    SYSTEM_VIEW
+    SYSTEM_VIEW,
+    POLICY_READ,
+    POLICY_MANAGE,
+    CLAIM_READ,
+    CLAIM_MANAGE
 }

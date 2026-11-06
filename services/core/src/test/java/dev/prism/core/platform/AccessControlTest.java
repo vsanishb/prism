@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -33,6 +34,8 @@ class AccessControlTest extends IntegrationTest {
             "POST /api/v1/auth/tokens/inspect",
             "POST /api/v1/auth/tokens/redeem");
 
+    private static final Pattern PATH_VARIABLE = Pattern.compile("[{][^}]+[}]");
+
     @Autowired
     @Qualifier("requestMappingHandlerMapping")
     private RequestMappingHandlerMapping mappings;
@@ -51,7 +54,7 @@ class AccessControlTest extends IntegrationTest {
                     if (PUBLIC_ROUTES.contains(route)) {
                         continue;
                     }
-                    String path = pattern.replace("{id}", UUID.randomUUID().toString());
+                    String path = PATH_VARIABLE.matcher(pattern).replaceAll(UUID.randomUUID().toString());
                     MockHttpServletResponse response = anonymous().send(
                             MockMvcRequestBuilders.request(HttpMethod.valueOf(method.name()), path));
                     if (response.getStatus() != 401) {

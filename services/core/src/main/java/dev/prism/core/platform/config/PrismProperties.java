@@ -3,6 +3,7 @@ package dev.prism.core.platform.config;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.net.URI;
 import java.time.Duration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -14,8 +15,10 @@ import org.springframework.validation.annotation.Validated;
 public record PrismProperties(
         @NotBlank String environment,
         @NotNull URI webBaseUrl,
+        @NotBlank String defaultCurrency,
         @Valid @NotNull Security security,
         @Valid @NotNull ServiceAuth serviceAuth,
+        @Valid @NotNull Documents documents,
         @Valid @NotNull Ai ai,
         @Valid @NotNull Bootstrap bootstrap,
         @Valid @NotNull Seed seed) {
@@ -39,5 +42,14 @@ public record PrismProperties(
 
     public record Bootstrap(String adminEmail, String inviteFile) {}
 
-    public record Seed(String credentialsFile) {}
+    public record Seed(String credentialsFile, String documentsPath) {}
+
+    public record Documents(
+            @NotBlank String storagePath,
+            @Positive long maxClaimDocumentBytes,
+            @Positive long maxPolicyDocumentBytes,
+            @Positive int maxClaimDocumentPages,
+            @Positive int maxPolicyDocumentPages,
+            @Positive long maxImagePixels,
+            @Positive int maxRenderedEdgePixels) {}
 }

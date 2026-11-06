@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Set;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -28,6 +28,7 @@ import org.springframework.util.StringUtils;
  */
 @Component
 @Profile("seed")
+@Order(10)
 class SyntheticUserSeeder implements ApplicationRunner {
 
     private static final List<Seed> SEEDS = List.of(
@@ -44,21 +45,18 @@ class SyntheticUserSeeder implements ApplicationRunner {
     private final AuditRecorder audit;
     private final TransactionTemplate transactions;
     private final PrismProperties properties;
-    private final ConfigurableApplicationContext context;
 
     SyntheticUserSeeder(
             UserRepository users,
             PasswordEncoder encoder,
             AuditRecorder audit,
             TransactionTemplate transactions,
-            PrismProperties properties,
-            ConfigurableApplicationContext context) {
+            PrismProperties properties) {
         this.users = users;
         this.encoder = encoder;
         this.audit = audit;
         this.transactions = transactions;
         this.properties = properties;
-        this.context = context;
     }
 
     @Override
@@ -88,7 +86,6 @@ class SyntheticUserSeeder implements ApplicationRunner {
         Path path = Path.of(file);
         Files.createDirectories(path.toAbsolutePath().getParent());
         Files.writeString(path, sheet);
-        context.close();
     }
 
     private void upsert(Seed seed, String email, String password) {

@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+/* Prism design tokens. Strictly light. Components use these, never raw colors. */
+@theme {
+  --color-canvas: #fafaf8;
+  --color-surface: #ffffff;
+  --color-subtle: #f4f4f1;
+  --color-line: #e7e6e1;
+  --color-line-strong: #d3d2cb;
+
+  --color-ink: #17181c;
+  --color-ink-muted: #5c5e66;
+  --color-ink-faint: #8a8c94;
+
+  --color-accent: #2f3fbf;
+  --color-accent-hover: #27349f;
+  --color-accent-soft: #eef0fb;
+
+  --color-positive: #1c7c54;
+  --color-positive-soft: #e7f4ee;
+  --color-caution: #9a6700;
+  --color-caution-soft: #fbf3df;
+  --color-critical: #b3261e;
+  --color-critical-soft: #fbeceb;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --radius-control: 8px;
+  --radius-panel: 12px;
+
+  --shadow-overlay: 0 12px 32px -8px rgb(23 24 28 / 0.18), 0 2px 6px rgb(23 24 28 / 0.06);
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .select-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%235c5e66' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

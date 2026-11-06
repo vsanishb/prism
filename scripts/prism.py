@@ -3,7 +3,7 @@
 
     uv run --project services/ai python scripts/prism.py <command>
 
-Commands: setup, db-start, db-stop, db-status, migrate, seed.
+Commands: setup, db-start, db-stop, db-status, db-reset, migrate, seed.
 
 `setup` creates a project-owned PostgreSQL cluster under .data/ using the installed
 PostgreSQL binaries. It leaves the machine's PostgreSQL service untouched and needs no
@@ -195,11 +195,26 @@ def seed() -> None:
     maven("spring-boot:run", "-Dspring-boot.run.profiles=seed")
 
 
+def db_reset() -> None:
+    """Restores a clean local database. The audit trail cannot be deleted row by row, by design,
+    so the local database is dropped and rebuilt instead."""
+    env = read_env()
+    if env.get("PRISM_ENVIRONMENT") != "local" or f":{PG_PORT}/" not in env["PRISM_MIGRATION_DB_URL"]:
+        sys.exit("Refusing to reset: this only runs against the project's local database.")
+    owner_password = env["PRISM_MIGRATION_DB_PASSWORD"]
+    psql(owner_password, "postgres", f"DROP DATABASE IF EXISTS {DATABASE} WITH (FORCE)")
+    psql(owner_password, "postgres", f"CREATE DATABASE {DATABASE} ENCODING 'UTF8' TEMPLATE template0")
+    migrate()
+    seed()
+    print("Local database reset and seeded. Passwords are in .data/synthetic-users.md.")
+
+
 COMMANDS = {
     "setup": setup,
     "db-start": db_start,
     "db-stop": db_stop,
     "db-status": db_status,
+    "db-reset": db_reset,
     "migrate": migrate,
     "seed": seed,
 }

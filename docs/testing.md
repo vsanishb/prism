@@ -7,7 +7,7 @@ A milestone is complete only when its frontend flow works and its tests pass. Co
 | Level | Core | AI | Web |
 |---|---|---|---|
 | Unit | JUnit 5, AssertJ | pytest | Vitest, Testing Library |
-| Integration | Testcontainers Postgres (pgvector PG18), Flyway applied | pytest with Postgres container | Mocked API |
+| Integration | Disposable database on real Postgres 18, Flyway applied ([D-046](decisions.md)) | pytest against real Postgres | Mocked API |
 | API and contract | MockMvc; contract tests against AI schemas | FastAPI test client | Generated types |
 | Workflow | Temporal test environment with time skipping, replay tests | n/a | n/a |
 | Architecture | ArchUnit module rules | Import rules | ESLint rules |

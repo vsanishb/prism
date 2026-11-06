@@ -28,8 +28,7 @@ Checked against Maven Central, PyPI, npm, nodejs.org, Docker Hub, and vendor doc
 | TypeScript | Decided at scaffold | Latest is 7.0.2; confirm Next 16 support first |
 | Neon Postgres | 18 | pgvector 0.8.6 available on PG18. Not yet connected |
 | Local Postgres (native) | 18.3 (installed) | Running. `pg_trgm`, `pgcrypto`, `citext`, `unaccent` present. **pgvector not installed** (D-041) |
-| Local and test Postgres | `pgvector/pgvector:0.8.6-pg18` | Tag exists; matches Neon's pgvector version |
-| Testcontainers | 2.0.5 | Latest published; confirmed in M1 build |
+| CI Postgres | `pgvector/pgvector:0.8.6-pg18` | Tag exists; matches Neon's pgvector version. Not yet run |
 
 Versions move only through a new decision entry. Spring Boot 4.2 was at RC2 on the check date and is deliberately not used.
 
@@ -245,3 +244,13 @@ Extends D-034. Each milestone ships clearly labeled synthetic artifacts and a fr
 ### D-045 PostgreSQL is the knowledge store
 **Status:** Accepted · **Source:** User
 pgvector and PostgreSQL full-text search provide hybrid retrieval, and no separate vector database is added unless a clear technical requirement appears that Neon cannot meet. Retrieval stays modular behind interfaces, so search and embedding parts can change. Reranking stays only if it shows measurable value in evaluation (refines D-023).
+
+### D-046 Project-owned local database, no Testcontainers
+**Status:** Accepted · **Source:** Dev
+Refines D-041. `scripts/prism.py setup` creates a private PostgreSQL 18.3 cluster under `.data/` from the installed binaries, on port 5544. The machine's PostgreSQL service is untouched, and no existing password is needed.
+Integration tests create a throwaway database on that server, and CI uses a Postgres service. This replaces Testcontainers: Docker Desktop fails to start here because of a stale `dockerInference` socket, and one test path is simpler than two.
+Tests log in through dedicated roles that inherit the runtime grants, so real permissions are exercised.
+
+### D-047 Explicit session cookie configuration
+**Status:** Accepted · **Source:** Dev
+A test showed `server.servlet.session.cookie.*` did not reach the cookie written by Spring Session: it went out as `SESSION` without `HttpOnly` or `SameSite`. A `CookieSerializer` bean now sets these directly, and tests assert them on real responses.

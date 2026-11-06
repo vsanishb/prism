@@ -13,6 +13,8 @@ if (!coreBaseUrl) {
 
 const config: NextConfig = {
   poweredByHeader: false,
+  // The floating development badge covers the sidebar and page content.
+  devIndicators: false,
   experimental: {
     // Next.js cuts proxied bodies off at 10 MB by default. This must stay above the core
     // service's multipart limit, so that uploads reach it and get its own size checks.

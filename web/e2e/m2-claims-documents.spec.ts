@@ -247,6 +247,18 @@ test("a policy manager registers a policy, adds versions, and uploads a wording"
   await expect(page.getByText("Page 1 of 2")).toBeVisible();
 });
 
+test("phones show each claim's status and amount without sideways scrolling", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await signIn(page, account("CLAIMS_PROCESSOR"));
+  await page.goto("/claims?search=CLM-2026-000001");
+  const row = page.getByRole("link", { name: /CLM-2026-000001/ });
+  await expect(row.getByText("Submitted")).toBeInViewport({ ratio: 1 });
+  await expect(row.getByText("₹1,06,000.00")).toBeInViewport({ ratio: 1 });
+
+  await page.goto("/policies");
+  await expect(page.getByRole("link", { name: /SYN-FFG-2026-0001/ }).getByText("Synthetic Policyholder One")).toBeInViewport({ ratio: 1 });
+});
+
 test("an auditor sees who viewed a document", async ({ page }) => {
   await signIn(page, account("AUDITOR"));
   await page.goto("/audit?action=DOCUMENT_VIEWED");

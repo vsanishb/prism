@@ -109,6 +109,19 @@ export function PolicyRegister({
         {page.items.length === 0 ? (
           <EmptyState icon={ShieldCheck} title={search ? "No policies match this search" : "No policies registered yet"} />
         ) : (
+          <>
+          <ul className="divide-y divide-line sm:hidden">
+            {page.items.map((policy) => (
+              <li key={policy.id}>
+                <Link href={`/policies/${policy.id}`} className="block px-4 py-3.5">
+                  <span className="block text-[13px] font-medium">{policy.policyNumber}</span>
+                  <span className="mt-0.5 block truncate text-[13px]">{policy.productName}</span>
+                  <span className="mt-0.5 block truncate text-xs text-ink-muted">{policy.policyholderName}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <div className="hidden sm:block">
           <Table>
             <thead>
               <tr>
@@ -133,6 +146,8 @@ export function PolicyRegister({
               ))}
             </tbody>
           </Table>
+          </div>
+          </>
         )}
       </Panel>
       <div className="mt-4 flex gap-4 text-[13px] font-medium">

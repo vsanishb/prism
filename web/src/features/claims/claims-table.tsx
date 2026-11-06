@@ -70,6 +70,25 @@ export function ClaimsTable({
         {page.items.length === 0 ? (
           <EmptyState icon={FileStack} title={status || search ? "No claims match these filters" : "No claims yet"} />
         ) : (
+          <>
+          <ul className="divide-y divide-line sm:hidden">
+            {page.items.map((claim) => (
+              <li key={claim.id}>
+                <Link href={`/claims/${claim.id}`} className="block px-4 py-3.5">
+                  <span className="flex items-center justify-between gap-3">
+                    <span className="text-[13px] font-medium">{claim.claimNumber}</span>
+                    <ClaimStatusBadge status={claim.status} />
+                  </span>
+                  <span className="mt-1 block truncate text-[13px]">{claim.patientName}</span>
+                  <span className="mt-0.5 flex justify-between gap-3 text-xs text-ink-muted">
+                    <span>{formatDate(claim.admissionDate)}</span>
+                    <span className="tabular-nums">{formatMoney(claim.claimedAmount, claim.currency)}</span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <div className="hidden sm:block">
           <Table>
             <thead>
               <tr>
@@ -101,6 +120,8 @@ export function ClaimsTable({
               ))}
             </tbody>
           </Table>
+          </div>
+          </>
         )}
       </Panel>
 

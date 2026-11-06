@@ -1,10 +1,10 @@
 # Core service
 
-Spring Boot application and system of record. **Not yet implemented** (scaffolded in Milestone 1).
+Spring Boot application and system of record. Built so far: `identity`, `audit`, `aiclient`, `system`, and `platform`.
 
 Owns authentication, authorization, claims, policies, documents, reviews, audit, and Temporal workflows. It is the only component that accepts user traffic, reads document storage, or calls the AI service.
 
-Planned packages under `dev.prism.core`:
+Packages under `dev.prism.core`, built and planned:
 
 | Package | Responsibility |
 |---|---|
@@ -17,6 +17,7 @@ Planned packages under `dev.prism.core`:
 | `review` | Review tasks and authorized outcomes |
 | `workflow` | Temporal workflows, activities, and the outbox |
 | `aiclient` | Authenticated client for the AI service |
+| `system` | Live status checks |
 | `platform` | Cross-cutting configuration, errors, observability |
 
 See [architecture](../../docs/architecture.md).

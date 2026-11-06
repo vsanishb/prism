@@ -11,18 +11,8 @@ permissions:
 jobs:
   core:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: pgvector/pgvector:0.8.6-pg18
-        env:
-          POSTGRES_USER: prism_ci_owner
-          POSTGRES_PASSWORD: ${{ github.run_id }}
-        ports: ["5432:5432"]
-        options: >-
-          --health-cmd "pg_isready -U prism_ci_owner"
-          --health-interval 5s --health-timeout 5s --health-retries 10
     env:
-      PRISM_TEST_ADMIN_DB_URL: jdbc:postgresql://localhost:5432/postgres
+      PRISM_TEST_ADMIN_DB_URL: jdbc:postgresql://localhost:5544/postgres
       PRISM_TEST_ADMIN_DB_USER: prism_ci_owner
       PRISM_TEST_ADMIN_DB_PASSWORD: ${{ github.run_id }}
     steps:
@@ -32,6 +22,15 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
+      - name: Install PostgreSQL 18
+        run: |
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+          sudo apt-get update
+          sudo apt-get install -y postgresql-18
+          sudo pg_createcluster 18 ci --port=5544 --start
+          sudo -u postgres psql -p 5544 -c "CREATE ROLE prism_ci_owner SUPERUSER LOGIN PASSWORD '${{ github.run_id }}'"
       - run: ./mvnw -B -ntp verify
         working-directory: services/core
 

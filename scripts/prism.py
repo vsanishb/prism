@@ -3,7 +3,8 @@
 
     uv run --project services/ai python scripts/prism.py <command>
 
-Commands: setup, db-start, db-stop, db-status, db-reset, migrate, seed, run-ai, run-core, run-web.
+Commands: setup, db-start, db-stop, db-status, db-reset, migrate, seed, run-ai, run-core, run-web,
+install-temporal, run-temporal.
 
 `setup` creates a project-owned PostgreSQL cluster under .data/ using the installed
 PostgreSQL binaries. It leaves the machine's PostgreSQL service untouched and needs no
@@ -14,11 +15,14 @@ from __future__ import annotations
 
 import argparse
 import base64
+import hashlib
 import os
 import secrets
 import shutil
 import subprocess
 import sys
+import urllib.request
+import zipfile
 from pathlib import Path
 
 from cryptography.hazmat.primitives import serialization
@@ -34,6 +38,12 @@ PG_PORT = 5544
 DATABASE = "prism"
 OWNER = "prism_owner"
 RUNTIME_ROLES = ("prism_core_app", "prism_ai_app", "prism_audit_reader")
+
+TOOLS = DATA / "tools"
+TEMPORAL_VERSION = "1.10.0"
+TEMPORAL_ARCHIVE = f"temporal_cli_{TEMPORAL_VERSION}_windows_amd64.zip"
+TEMPORAL_URL = f"https://github.com/temporalio/cli/releases/download/v{TEMPORAL_VERSION}/{TEMPORAL_ARCHIVE}"
+TEMPORAL_SHA256 = "b95695d08a564621b02322592bbb525a924f76cc892084fc3dd7d2e90f42b8bd"
 
 
 def pg_tool(name: str) -> str:
@@ -222,6 +232,42 @@ def run_web() -> None:
     subprocess.run("npm run dev", cwd=ROOT / "web", check=True, shell=True)
 
 
+def temporal_binary() -> Path:
+    return TOOLS / f"temporal-{TEMPORAL_VERSION}" / "temporal.exe"
+
+
+def install_temporal() -> None:
+    """Installs the native Temporal CLI, which includes a local server. Prism uses no Docker."""
+    binary = temporal_binary()
+    if binary.exists():
+        print(f"Temporal {TEMPORAL_VERSION} is already installed.")
+        return
+    if os.name != "nt":
+        sys.exit(f"Install Temporal CLI {TEMPORAL_VERSION} from temporal.io, and add it to PATH.")
+    TOOLS.mkdir(parents=True, exist_ok=True)
+    archive = TOOLS / TEMPORAL_ARCHIVE
+    urllib.request.urlretrieve(TEMPORAL_URL, archive)  # noqa: S310 - fixed HTTPS URL
+    try:
+        if hashlib.sha256(archive.read_bytes()).hexdigest() != TEMPORAL_SHA256:
+            sys.exit("The Temporal download does not match its published checksum. Nothing was installed.")
+        with zipfile.ZipFile(archive) as contents:
+            contents.extract("temporal.exe", binary.parent)
+    finally:
+        archive.unlink()
+    print(f"Temporal {TEMPORAL_VERSION} installed.")
+
+
+def run_temporal() -> None:
+    binary = shutil.which("temporal") or temporal_binary()
+    if not Path(binary).exists():
+        sys.exit("Temporal is not installed. Run the install-temporal command first.")
+    # A database file keeps workflows across restarts. The server listens on this machine only.
+    subprocess.run(
+        [str(binary), "server", "start-dev", "--ip", "127.0.0.1", "--db-filename", str(DATA / "temporal.db")],
+        check=True,
+    )
+
+
 COMMANDS = {
     "setup": setup,
     "db-start": db_start,
@@ -233,6 +279,8 @@ COMMANDS = {
     "run-ai": run_ai,
     "run-core": run_core,
     "run-web": run_web,
+    "install-temporal": install_temporal,
+    "run-temporal": run_temporal,
 }
 
 

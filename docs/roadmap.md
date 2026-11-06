@@ -8,8 +8,8 @@ Each milestone delivers a substantial, testable slice through the frontend. Comp
 |---|---|---|---|
 | M0 | Project foundation | Complete | None |
 | M1 | Secure platform | Complete, except first CI run | M0 |
-| M2 | Claims and documents | **Next** | M1 |
-| M3 | Document intelligence and workflows | Planned | M2 |
+| M2 | Claims and documents | Complete | M1 |
+| M3 | Document intelligence and workflows | **Next** | M2 |
 | M4 | Policy intelligence | Planned | M3 |
 | M5 | Hybrid retrieval | Planned | M4 |
 | M6 | Policy Agent | Planned | M3, M5 |
@@ -67,13 +67,14 @@ Every milestone also requires: tests at the levels in [testing.md](testing.md), 
 **Objective:** manage policies and claims with secure document intake.
 **Plan:** [claims](plans/claims-management.md)
 
-- [ ] Implement policy and policy version records
-- [ ] Implement the claim lifecycle and state rules
-- [ ] Implement document upload, validation, and storage
-- [ ] Implement document viewing with authorization and audit
-- [ ] Generate seed data for synthetic policies and claims
-- [ ] Build claims list, creation flow, claim detail, upload, and document viewer
-- [ ] Build the policy register and claim activity timeline
+- [x] Implement policy and policy version records
+- [x] Implement the claim lifecycle and state rules
+- [x] Implement document upload, validation, and storage
+- [x] Implement document viewing with authorization and audit
+- [x] Generate seed data for synthetic policies and claims
+- [x] Build claims list, creation flow, claim detail, upload, and document viewer
+- [x] Build the policy register and claim activity timeline
+- [x] Provide a [test guide](test-guides/m2-claims-documents.md)
 
 **Frontend test flow:** create a claim → associate a policy → upload documents, including a rejected invalid file → view pages in the viewer → see the audit timeline → submit.
 

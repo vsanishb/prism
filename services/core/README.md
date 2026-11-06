@@ -1,6 +1,6 @@
 # Core service
 
-Spring Boot application and system of record. Built so far: `identity`, `audit`, `aiclient`, `system`, and `platform`.
+Spring Boot application and system of record. Built so far: `identity`, `audit`, `policy`, `claim`, `document`, `aiclient`, `system`, and `platform`.
 
 Owns authentication, authorization, claims, policies, documents, reviews, audit, and Temporal workflows. It is the only component that accepts user traffic, reads document storage, or calls the AI service.
 

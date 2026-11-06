@@ -30,6 +30,8 @@ Checked against Maven Central, PyPI, npm, nodejs.org, Docker Hub, and vendor doc
 | Local Postgres (native) | 18.3 (installed) | Running. `pg_trgm`, `pgcrypto`, `citext`, `unaccent` present. **pgvector not installed** (D-041) |
 | CI Postgres | `pgvector/pgvector:0.8.6-pg18` | Tag exists; matches Neon's pgvector version. CI not yet run |
 | uv | 0.13.7 | Installed and verified |
+| Apache PDFBox | 3.0.8 | Verified: parsing and rendering in tests and E2E |
+| ReportLab | 5.1.0 | Dev only. BSD licensed. Generates test documents |
 
 Versions move only through a new decision entry. Spring Boot 4.2 was at RC2 on the check date and is deliberately not used.
 
@@ -267,3 +269,25 @@ Refines D-007. TanStack Query, React Hook Form, and Zod are not installed, becau
 ### D-050 Links shared by hand until email exists
 **Status:** Accepted · **Source:** Dev
 Prism has no email service. Administrators copy one-time invitation and reset links, and the first administrator's link is written to a gitignored file. This keeps tokens out of logs without adding an email provider.
+
+## Milestone 2
+
+### D-051 Server-side page rendering
+**Status:** Accepted · **Source:** Dev
+Supersedes the pdf.js part of D-007. Core renders pages to PNG with PDFBox. Untrusted PDFs never run in the browser, TIFF works (browsers cannot display it), no CSP relaxation is needed, and no page can be viewed without an audit record. Cost: CPU in core, bounded by a concurrency limit and output size cap. Revisit if viewing load grows.
+
+### D-052 Owners decide document access
+**Status:** Accepted · **Source:** Dev
+The `document` module depends on no owner. Owning modules implement `DocumentAccessGuard`, so document rules always match claim and policy rules.
+
+### D-053 Drafts are private to intake
+**Status:** Accepted · **Source:** Dev
+Only `CLAIM_MANAGE` holders can see drafts, and others get 404. An unsubmitted claim is unfinished work that reviewers should not act on. Finer rules, such as teams or assignment, arrive with review tasks in M8 if needed.
+
+### D-054 Upload limits are layered
+**Status:** Accepted · **Source:** Dev
+Next.js's `proxyClientMaxBodySize` defaults to 10 MB. It is raised to 62 MB, above Spring's 60 MB multipart limit, which sits above the 25 MB and 50 MB type limits. Each layer lets the next give the precise error.
+
+### D-055 Documents are never deleted in normal use
+**Status:** Accepted · **Source:** Dev
+Replaced and removed documents stay on record, as source documents are authoritative and part of the evidence chain. Retention-based deletion will be designed with the DPDP assessment ([security.md](security.md#privacy-gate)).

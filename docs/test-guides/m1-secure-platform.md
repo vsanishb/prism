@@ -30,22 +30,22 @@ python -m uv run --project services/ai python scripts/prism.py seed
 npm install --prefix web
 ```
 
-Each time you work, run these in separate terminals:
+Each time you work, run these from the repository root, each in its own terminal. They work in PowerShell, Command Prompt, and Bash:
 
 ```bash
 python -m uv run --project services/ai python scripts/prism.py db-start
 ```
 
 ```bash
-cd services/ai && python -m uv run python -m prism_ai.serve
+python -m uv run --project services/ai python scripts/prism.py run-ai
 ```
 
 ```bash
-cd services/core && ./mvnw spring-boot:run
+python -m uv run --project services/ai python scripts/prism.py run-core
 ```
 
 ```bash
-npm run dev --prefix web
+python -m uv run --project services/ai python scripts/prism.py run-web
 ```
 
 Open <http://localhost:3000>.

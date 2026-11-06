@@ -29,7 +29,7 @@ Dependencies point one way: web → core → AI. The AI service never calls back
 
 ### Core: modular monolith
 
-One deployable with feature packages (`identity`, `audit`, `policy`, `claim`, `document`, `intelligence`, `review`, `workflow`, `aiclient`, `platform`). Modules use each other's public APIs only, and ArchUnit tests enforce this. The domain does not justify more microservices.
+One deployable with feature packages (`identity`, `audit`, `policy`, `claim`, `document`, `intelligence`, `review`, `workflow`, `aiclient`, `system`, `platform`). Modules use each other's public APIs only, and ArchUnit tests enforce this. The domain does not justify more microservices.
 
 ### AI: stateless pipelines plus one knowledge store
 
@@ -60,8 +60,8 @@ One Neon database on Postgres 18, with two schemas, each with its own runtime ro
 |---|---|
 | Identity | `users`, `user_roles`, `invitations`, `login_attempts`, session tables |
 | Policies | `policies`, `policy_versions` |
-| Claims | `claims`, `claim_parties`, `claim_line_items`, `claim_facts` |
-| Documents | `documents`, `document_pages` |
+| Claims | `claims`. M3 adds `claim_line_items` and `claim_facts` |
+| Documents | `documents` |
 | Intelligence | `ai_runs`, `document_extractions`, `validation_findings`, `policy_assessments`, `assessment_citations`, `risk_assessments`, `risk_indicators` |
 | Workflow | `workflow_refs`, `stage_events`, `outbox_events` |
 | Review | `review_tasks`, `review_notes`, `document_requests`, `authorized_outcomes` |

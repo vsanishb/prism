@@ -2,11 +2,11 @@
 
 Prism is an AI-assisted Health Insurance Claims Intelligence Platform. It turns claim documents and insurance policies into structured, evidence-backed assessments, and leaves consequential decisions with authorized human reviewers.
 
-> **Status:** Milestone 1 (secure platform) is complete. See [docs/progress.md](docs/progress.md). Development uses synthetic data only.
+> **Status:** Milestones 1 and 2 (secure platform, claims and documents) are complete. See [docs/progress.md](docs/progress.md). Development uses synthetic data only.
 
 ## Run it
 
-You need Java 21, Python 3.14, Node 25, and PostgreSQL 18 installed. The [M1 test guide](docs/test-guides/m1-secure-platform.md) has the setup steps and flows to try.
+You need Java 21, Python 3.14, Node 25, and PostgreSQL 18 installed. The [test guides](docs/test-guides/README.md) have the setup steps and flows to try.
 
 ## Repository layout
 
@@ -16,7 +16,8 @@ You need Java 21, Python 3.14, Node 25, and PostgreSQL 18 installed. The [M1 tes
 | [`services/ai`](services/ai/README.md) | FastAPI service: document intelligence, RAG, Policy Agent, risk analysis |
 | [`web`](web/README.md) | Next.js frontend |
 | [`database`](database/README.md) | Flyway migrations for all schemas |
-| `scripts` | Local development tool |
+| `scripts` | Local development tool and synthetic document generator |
+| [`test-data`](test-data/README.md) | Synthetic documents |
 | [`infra`](infra/README.md) | Deployment configuration |
 | [`docs`](docs/README.md) | Architecture, plans, roadmap, decisions, and progress |
 

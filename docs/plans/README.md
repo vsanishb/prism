@@ -8,7 +8,7 @@ Each plan describes the intended design of one capability. Plans are intent, not
 | [Audit logging](audit-logging.md) | M1 | Built: see [audit](../modules/audit.md) |
 | [Frontend experience](frontend-experience.md) | M1 onward | Foundation built: see [web](../modules/web-foundation.md) |
 | [Deployment and infrastructure](deployment-infrastructure.md) | M1, M9 | Local setup built |
-| [Claims management](claims-management.md) | M2 | Planned |
+| [Claims management](claims-management.md) | M2 | Built: see [claims](../modules/claims.md), [documents](../modules/documents.md), and [policies](../modules/policies.md) |
 | [Temporal workflows](temporal-workflows.md) | M3 onward | Planned |
 | [Document intelligence](document-intelligence.md) | M3 | Planned |
 | [Policy intelligence](policy-intelligence.md) | M4 | Planned |

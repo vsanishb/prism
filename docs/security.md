@@ -66,7 +66,7 @@ Authorization is enforced in core at the service layer. Code checks permissions,
 
 | Role | Purpose | Key permissions |
 |---|---|---|
-| `ADMIN` | User and system administration | Manage users and roles. **No claim decisions** |
+| `ADMIN` | User and system administration | Manage users and roles. **No access to claims or policies** |
 | `POLICY_MANAGER` | Policy knowledge | Upload, validate, publish policy versions |
 | `CLAIMS_PROCESSOR` | Intake | Create claims, upload documents, respond to information requests |
 | `REVIEWER` | Assessment | Review claims, record outcomes within authority |
@@ -116,8 +116,9 @@ TLS is required on every connection. Queries are parameterized. Neon provides en
 ## File upload security
 
 - Allowed: PDF, PNG, JPEG, TIFF. Type is detected from content, not from name or client header.
-- Size and page limits are configurable (initially 25 MB for claim documents, 50 MB for policies).
-- Reject encrypted or malformed files and decompression bombs. Parsing limits and timeouts apply in the AI service.
+- Size and page limits are configurable (initially 25 MB for claim documents, 50 MB for policies). Policy wordings must be PDFs.
+- Reject encrypted or malformed files. Images are measured from headers, so decompression bombs are refused without decoding.
+- Pages are rendered to images on the server, so uploaded PDFs never run in a browser ([D-051](decisions.md)).
 - Random object keys; original names are stored only as sanitized metadata.
 - Download only through authorized endpoints, with `Content-Disposition: attachment` and `nosniff`.
 - Malware scanning is added before real-data use (M9).

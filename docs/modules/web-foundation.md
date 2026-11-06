@@ -29,7 +29,7 @@ Design tokens live in `app/globals.css`. Use them, never raw colors.
 
 ## Deferred from the plan
 
-API types are written by hand in `lib/types.ts`. TanStack Query and form libraries ([D-007](../decisions.md)) are not installed yet: M1 has no need for them, so each is added when a screen requires it.
+API types are written by hand in `lib/types.ts`. TanStack Query and form libraries are not installed ([D-049](../decisions.md)), and pdf.js was replaced by server-side rendering ([D-051](../decisions.md)).
 
 ## Testing
 

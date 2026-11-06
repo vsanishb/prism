@@ -6,7 +6,7 @@ The factual record of project state. Update after meaningful work. Newest entrie
 
 ## Current state
 
-**Phase:** M1 complete, except for its first CI run. M2 is next.
+**Phase:** M2 complete. M3 is next. M1's CI workflow has still never run.
 **Runs on:** local PostgreSQL 18.3. Neon has not been connected.
 
 | Capability | Status | Milestone |
@@ -17,7 +17,8 @@ The factual record of project state. Update after meaningful work. Newest entrie
 | Authentication, RBAC, audit | Tested | M1 |
 | Service-to-service authentication | Tested | M1 |
 | Design system and app shell | Tested | M1 |
-| Claims, policies, documents | Planned | M2 |
+| Claims, policies, documents | Tested | M2 |
+| Synthetic document set | Implemented | M2 |
 | Temporal workflows | Planned | M3 |
 | Document intelligence | Planned | M3 |
 | Policy intelligence | Planned | M4 |
@@ -38,6 +39,32 @@ The factual record of project state. Update after meaningful work. Newest entrie
 | Make pgvector available: local build, container, or Neon ([D-041](decisions.md)) | Dev and user | M5 |
 
 ## Log
+
+### 2026-11-06: M2 Claims and documents
+
+**Implemented:** policy register, claim lifecycle, secure document pipeline, server-side page rendering, claim history, synthetic documents and seed data, and all M2 screens. Also PowerShell-safe `run-ai`, `run-core`, and `run-web` commands, after the M1 guide's commands failed in Windows PowerShell.
+
+**Test results on the final code:**
+
+| Suite | Result |
+|---|---|
+| Core (JUnit, real PostgreSQL) | 179 passed |
+| AI (pytest) | 22 passed. `ruff` and `mypy --strict` clean |
+| Web unit (Vitest) | 7 passed. ESLint and `tsc` clean |
+| End-to-end, production build (Playwright) | 30 passed, covering M1 and M2 |
+
+Also verified: a valid 23 MB scan and a refused 27 MB file through the real proxy, and `run-ai` and `run-core` started from Windows PowerShell. Screens were reviewed at desktop width, and the claim page at phone width.
+
+**Defects found by testing and fixed:**
+- Next.js cut proxied uploads off at 10 MB, so valid files of 10 to 25 MB would have failed ([D-054](decisions.md)).
+- A non-compiling test was committed by a chained command, and corrected before anything was shared.
+
+**Not verified:**
+- Everything listed under M1 still applies, including CI and Neon.
+- PDF parsing runs in the core service on untrusted files. Limits are in place, but it has had no fuzzing or independent review.
+- No malware scanning (M9), and local document storage is not encrypted.
+- `run-web` was not started separately, because a Next.js dev server was already running. It runs `npm run dev`, which was tested in M1.
+- Only the screens in the M2 review were checked at phone width: the claim page, not the list, form, or viewer.
 
 ### 2026-11-06: M1 Secure platform
 

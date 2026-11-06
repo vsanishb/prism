@@ -3,7 +3,7 @@
 
     uv run --project services/ai python scripts/prism.py <command>
 
-Commands: setup, db-start, db-stop, db-status, db-reset, migrate, seed.
+Commands: setup, db-start, db-stop, db-status, db-reset, migrate, seed, run-ai, run-core, run-web.
 
 `setup` creates a project-owned PostgreSQL cluster under .data/ using the installed
 PostgreSQL binaries. It leaves the machine's PostgreSQL service untouched and needs no
@@ -210,6 +210,18 @@ def db_reset() -> None:
     print("Local database reset and seeded. Passwords are in .data/synthetic-users.md.")
 
 
+def run_ai() -> None:
+    subprocess.run([sys.executable, "-m", "prism_ai.serve"], cwd=ROOT / "services/ai", check=True)
+
+
+def run_core() -> None:
+    maven("spring-boot:run")
+
+
+def run_web() -> None:
+    subprocess.run("npm run dev", cwd=ROOT / "web", check=True, shell=True)
+
+
 COMMANDS = {
     "setup": setup,
     "db-start": db_start,
@@ -218,6 +230,9 @@ COMMANDS = {
     "db-reset": db_reset,
     "migrate": migrate,
     "seed": seed,
+    "run-ai": run_ai,
+    "run-core": run_core,
+    "run-web": run_web,
 }
 
 

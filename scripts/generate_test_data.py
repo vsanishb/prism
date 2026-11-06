@@ -6,12 +6,13 @@
 Every person, organization, and policy here is fictional, and every page is watermarked.
 These files must never be presented as real insurance or medical documents.
 
---oversized also writes a large file into .data/, which is too big to commit.
+--oversized also writes large files into .data/, which are too big to commit.
 """
 
 from __future__ import annotations
 
 import argparse
+import random
 import zipfile
 from collections.abc import Callable
 from pathlib import Path
@@ -280,7 +281,9 @@ def write_invalid_files(directory: Path) -> None:
         encrypt="synthetic-password",
     )
     with zipfile.ZipFile(directory / "unsupported-office-file.docx", "w") as archive:
-        archive.writestr("note.txt", "Synthetic file in an unsupported format.")
+        # A fixed timestamp keeps regenerated output byte-identical.
+        note = zipfile.ZipInfo("note.txt", date_time=(2026, 1, 1, 0, 0, 0))
+        archive.writestr(note, "Synthetic file in an unsupported format.")
 
 
 def write_oversized_file(path: Path) -> None:
@@ -288,6 +291,14 @@ def write_oversized_file(path: Path) -> None:
     source = (OUTPUT / "claims/appendectomy/hospital-bill.pdf").read_bytes()
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(source + b"\n%" + b"x" * (26 * 1024 * 1024) + b"\n")
+
+
+def write_large_valid_scan(path: Path) -> None:
+    """A valid image above the proxy's default limit but within the claim limit."""
+    width = height = 2800
+    noise = Image.frombytes("RGB", (width, height), random.Random(7).randbytes(width * height * 3))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    noise.save(path, compress_level=0)
 
 
 def main() -> None:
@@ -320,6 +331,7 @@ def main() -> None:
     write_invalid_files(OUTPUT / "invalid")
     if arguments.oversized:
         write_oversized_file(ROOT / ".data/oversized-synthetic.pdf")
+        write_large_valid_scan(ROOT / ".data/large-valid-scan.png")
     print(f"Synthetic documents written to {OUTPUT}")
 
 

@@ -1,0 +1,4 @@
+# Used only by the synthetic data seeder: it runs, writes its data, and exits.
+spring:
+  main:
+    web-application-type: none

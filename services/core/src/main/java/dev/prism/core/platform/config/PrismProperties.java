@@ -1,0 +1,43 @@
+package dev.prism.core.platform.config;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import java.net.URI;
+import java.time.Duration;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
+
+/** Application settings. Validation fails startup rather than letting a bad value surface later. */
+@Validated
+@ConfigurationProperties("prism")
+public record PrismProperties(
+        @NotBlank String environment,
+        @NotNull URI webBaseUrl,
+        @Valid @NotNull Security security,
+        @Valid @NotNull ServiceAuth serviceAuth,
+        @Valid @NotNull Ai ai,
+        @Valid @NotNull Bootstrap bootstrap,
+        @Valid @NotNull Seed seed) {
+
+    public boolean isLocal() {
+        return "local".equals(environment);
+    }
+
+    public record Security(
+            @NotBlank String throttleHmacKey,
+            boolean cookieSecure,
+            boolean forwardedHeaderTrusted,
+            @NotNull Duration absoluteSessionTimeout,
+            @NotNull Duration invitationValidity,
+            @NotNull Duration passwordResetValidity) {}
+
+    public record ServiceAuth(
+            @NotBlank String privateKeyPath, @NotBlank String keyId, @NotNull Duration tokenTtl) {}
+
+    public record Ai(@NotNull URI baseUrl, @NotNull Duration timeout) {}
+
+    public record Bootstrap(String adminEmail, String inviteFile) {}
+
+    public record Seed(String credentialsFile) {}
+}

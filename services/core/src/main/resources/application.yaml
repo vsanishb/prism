@@ -1,0 +1,79 @@
+spring:
+  application:
+    name: prism-core
+  config:
+    # Local development reads the repository .env. Deployed environments use real variables.
+    import: optional:file:../../.env[.properties]
+  datasource:
+    url: ${PRISM_CORE_DB_URL}
+    username: ${PRISM_CORE_DB_USER}
+    password: ${PRISM_CORE_DB_PASSWORD}
+    hikari:
+      # Kept small for Neon's pooled endpoint. Timeouts tolerate compute cold starts.
+      maximum-pool-size: 10
+      connection-timeout: 15000
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  session:
+    timeout: 30m
+    jdbc:
+      table-name: core.spring_session
+      initialize-schema: never
+  mvc:
+    problemdetails:
+      enabled: true
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+
+server:
+  address: 127.0.0.1
+  port: 8080
+  error:
+    include-message: never
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+
+logging:
+  structured:
+    format:
+      console: ${PRISM_LOG_FORMAT:ecs}
+
+prism:
+  environment: ${PRISM_ENVIRONMENT:deployed}
+  web-base-url: ${PRISM_WEB_BASE_URL}
+  security:
+    throttle-hmac-key: ${PRISM_THROTTLE_HMAC_KEY}
+    cookie-secure: ${PRISM_COOKIE_SECURE:true}
+    forwarded-header-trusted: ${PRISM_FORWARDED_HEADER_TRUSTED:false}
+    absolute-session-timeout: 12h
+    invitation-validity: 72h
+    password-reset-validity: 1h
+  service-auth:
+    private-key-path: ${PRISM_SERVICE_JWT_PRIVATE_KEY_PATH}
+    key-id: core-1
+    token-ttl: 60s
+  ai:
+    base-url: ${PRISM_AI_BASE_URL}
+    timeout: 5s
+  bootstrap:
+    admin-email: ${PRISM_BOOTSTRAP_ADMIN_EMAIL:}
+    invite-file: ${PRISM_BOOTSTRAP_INVITE_FILE:}
+  seed:
+    credentials-file: ${PRISM_SEED_CREDENTIALS_FILE:}

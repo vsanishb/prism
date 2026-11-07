@@ -369,3 +369,82 @@ export interface PolicyKnowledge {
   publishedAt: string | null;
   rejectionReason: string | null;
 }
+
+export type SearchIndexStatus = "NOT_PUBLISHED" | "QUEUED" | "INDEXING" | "READY" | "FAILED";
+
+export interface SearchIndex {
+  status: SearchIndexStatus;
+  chunkCount: number | null;
+  embeddingModel: string | null;
+  failureCode: string | null;
+  requestedAt: string | null;
+  completedAt: string | null;
+}
+
+export interface StageScore {
+  rank: number;
+  score: number;
+}
+
+export interface RelatedLink {
+  provisionId: string;
+  relation: PolicyRelation["relation"];
+  direction: "OUTGOING" | "INCOMING";
+}
+
+export interface SearchResultItem {
+  provisionId: string;
+  key: string | null;
+  type: ProvisionType;
+  title: string;
+  sectionPath: string[];
+  pageStart: number;
+  pageEnd: number;
+  text: string;
+  part: number;
+  parts: number;
+  finalRank: number;
+  pinned: boolean;
+  exact: "CLAUSE" | "TERM" | null;
+  semantic: StageScore | null;
+  lexical: StageScore | null;
+  fused: StageScore;
+  rerank: StageScore | null;
+  quote: string | null;
+  region: string[] | number[] | null;
+  related: RelatedLink[];
+}
+
+export interface StageHit {
+  provisionId: string;
+  key: string | null;
+  type: ProvisionType;
+  title: string;
+  rank: number;
+  score: number;
+}
+
+export interface RelatedProvision {
+  provisionId: string;
+  key: string | null;
+  type: ProvisionType;
+  title: string;
+  pageStart: number;
+  pageEnd: number;
+  text: string;
+  quote: string | null;
+  region: string[] | number[] | null;
+}
+
+export interface PolicySearchResult {
+  versionId: string;
+  documentId: string;
+  query: string;
+  degraded: ("SEMANTIC_UNAVAILABLE" | "RERANK_UNAVAILABLE")[];
+  embeddingModel: string;
+  rerankModel: string | null;
+  results: SearchResultItem[];
+  semantic: StageHit[];
+  lexical: StageHit[];
+  related: RelatedProvision[];
+}

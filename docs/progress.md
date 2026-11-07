@@ -6,7 +6,7 @@ The factual record of project state. Update after meaningful work. Newest entrie
 
 ## Current state
 
-**Phase:** M4 complete. M5 is next. M1's CI workflow has still never run.
+**Phase:** M5 complete. M6 is next. M1's CI workflow has still never run.
 **Runs on:** local PostgreSQL 18.3, the only database ([D-074](decisions.md)).
 
 | Capability | Status | Milestone |
@@ -22,7 +22,7 @@ The factual record of project state. Update after meaningful work. Newest entrie
 | Temporal workflows | Tested | M3 |
 | Document intelligence | Tested, on synthetic documents only | M3 |
 | Policy intelligence | Tested, on synthetic policies only | M4 |
-| Hybrid retrieval | Planned | M5 |
+| Hybrid retrieval | Tested, on synthetic policies only | M5 |
 | Policy Agent | Planned | M6 |
 | Fraud and risk | Planned | M7 |
 | Human review | Planned | M8 |
@@ -36,6 +36,32 @@ The factual record of project state. Update after meaningful work. Newest entrie
 | Confirm the OpenRouter account is set to "ZDR only". Prism enforces ZDR per request regardless | User | Before real use |
 
 ## Log
+
+### 2026-11-07: M5 Hybrid retrieval
+
+**Implemented:** a search index built when a version is published, by `PolicyIndexingWorkflow`; structure-aware chunking; embeddings in pgvector; semantic, full-text, and exact retrievers; reciprocal rank fusion; reranking; expansion to related provisions; isolation checked in the AI service and again in core; index status and retry; usage records; the retrieval explorer ([retrieval](modules/retrieval.md), [D-075](decisions.md) to [D-078](decisions.md)).
+
+**Models:** `openai/text-embedding-3-small` for embeddings, chosen over two others on speed with equal recall, and `qwen/qwen3-reranker-8b`. Both pass the zero-retention check.
+
+**Test results on the final code:**
+
+| Suite | Result |
+|---|---|
+| Core (JUnit, real PostgreSQL, Temporal test server) | 48 passed, covering M1 to M5 |
+| AI (pytest, real PostgreSQL with pgvector, scripted models) | 206 passed. `ruff` and `mypy --strict` clean |
+| Web | ESLint and `tsc` clean. 12 unit tests, unchanged |
+| End-to-end, production build, real Temporal, AI service, and pgvector, stand-in model provider | 355 passed, including 15 new search and 4 new indexing workflow tests |
+| Retrieval evaluation, real models, 4 synthetic wordings, 50 questions | Recall@10 100%, 0 wrong-version results, 6 of 6 related provisions, 0 degraded searches. $0.03 |
+
+**Defects found by testing and fixed:**
+- Flyway's default schema put the extensions in `core`, which the AI role cannot read, so indexing failed in the browser test. The AI tests now run migrations as Flyway does, and caught it once they did.
+- About one rerank in fifty failed transiently on the real provider. Model calls in a search now get one retry before the stage is skipped.
+
+**Not verified:**
+- Accuracy on real wordings. The golden set is small, and semantic search alone already scores 98% on it, so it shows the pipeline works and is safe more than it ranks methods.
+- Search by the Policy Agent, with queries from de-identified claim facts: M6.
+- The user's local database is not migrated: `db-reset` is needed before running M5.
+- Everything listed under earlier milestones, including CI.
 
 ### 2026-11-07: Local PostgreSQL only, and pgvector
 

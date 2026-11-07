@@ -101,15 +101,17 @@ Only `PUBLISHED` versions can be retrieved for a claim. Coverage amounts, limits
 flowchart TD
     Q[Query from de-identified claim facts] --> F[Metadata filter: exact policy version]
     F --> S[Semantic search: pgvector]
-    F --> L[Lexical search: full-text and trigram]
+    F --> L[Lexical search: full text]
+    F --> N[Exact lookup: named clauses, defined terms by trigram]
     S --> R[Reciprocal rank fusion]
     L --> R
+    N --> R
     R --> X[Rerank against claim context]
     X --> E[Expand related provisions: exceptions, definitions, limits]
     E --> V[Evidence set with source references]
 ```
 
-The metadata filter runs first, so evidence from another policy or version cannot appear. Expansion matters: an exclusion is incomplete without its exception, and a term without its definition can mislead.
+The metadata filter runs first, so evidence from another policy or version cannot appear, and core checks every result belongs to the version it asked about ([D-075](decisions.md)). A failed embedding or rerank is tried once more, then skipped and reported as `degraded` ([D-076](decisions.md)). The index is built when a version is published, by `PolicyIndexingWorkflow`. Expansion matters: an exclusion is incomplete without its exception, and a term without its definition can mislead.
 
 ## Policy Agent
 

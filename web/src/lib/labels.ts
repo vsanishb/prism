@@ -9,9 +9,11 @@ import type {
   PolicyFinding,
   PolicyProvision,
   PolicyRelation,
+  PolicySearchResult,
   PolicyValueKind,
   ProvisionType,
   Role,
+  SearchIndexStatus,
   StageName,
   WithdrawalReason,
 } from "./types";
@@ -237,6 +239,28 @@ export const RELATION_LABELS: Record<PolicyRelation["relation"], string> = {
   EXCEPTS: "Exception in",
   DEFINES: "Uses a term defined in",
   REFERENCES: "Refers to",
+};
+
+/** For a related provision that cites the result: read as "<label> <result>". */
+export const INCOMING_RELATION_LABELS: Record<PolicyRelation["relation"], string> = {
+  QUALIFIES: "Sets conditions on",
+  LIMITS: "Limits",
+  EXCEPTS: "Makes an exception to",
+  DEFINES: "Defines a term used in",
+  REFERENCES: "Referred to by",
+};
+
+export const SEARCH_INDEX_LABELS: Record<SearchIndexStatus, string> = {
+  NOT_PUBLISHED: "Not searchable until published",
+  QUEUED: "Waiting to be indexed",
+  INDEXING: "Indexing for search",
+  READY: "Searchable",
+  FAILED: "Indexing failed",
+};
+
+export const DEGRADED_LABELS: Record<PolicySearchResult["degraded"][number], string> = {
+  SEMANTIC_UNAVAILABLE: "Meaning-based search was unavailable, so results come from word matching only.",
+  RERANK_UNAVAILABLE: "Reranking was unavailable, so results are in the combined order of the first stages.",
 };
 
 const DURATION_UNITS: Record<string, [string, string]> = {

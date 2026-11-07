@@ -32,6 +32,7 @@ Checked against Maven Central, PyPI, npm, nodejs.org, Docker Hub, and vendor doc
 | Local Postgres (native) | 18.3 (installed) | The only database (D-074). `pg_trgm`, `pgcrypto`, `citext`, `unaccent` present |
 | pgvector | 0.8.6 | Built from source for PostgreSQL 18 on Windows, installed under `.data/pgvector`. Verified: extension, distance, and an HNSW index (D-074) |
 | Visual Studio 2022 Build Tools | C++ workload | Installed on this machine through winget, to build pgvector |
+| pg_trgm | Bundled with PostgreSQL 18 | Created by the M5 migration. Word similarity for defined terms (D-076) |
 | CI Postgres | PostgreSQL 18 from the PostgreSQL apt repository | CI not yet run (D-056) |
 | uv | 0.13.7 | Installed and verified |
 | Apache PDFBox | 3.0.8 | Verified: parsing and rendering in tests and E2E |
@@ -163,11 +164,11 @@ Real claim data is prohibited until the privacy gate in [security.md](security.m
 `pg_search` was retired from Neon on 2026-09-21. Options were `lakebase_text` (Neon BM25) or built-in `tsvector` with `pg_trgm`. Built-in search runs identically in local and test containers, and per-version corpora are small enough that BM25's scale advantage does not apply. Ranking sits behind a `LexicalRetriever` interface. `lakebase_text` will be evaluated only if the retrieval evaluation shows lexical ranking is the limit.
 
 ### D-023 Reciprocal rank fusion, then reranking
-**Status:** Provisional · **Source:** Dev
+**Status:** Accepted, confirmed by measurement in D-078 · **Source:** Dev
 RRF needs no score calibration across search types. Validated by the M5 evaluation.
 
 ### D-024 Exact vector search first
-**Status:** Provisional · **Source:** Dev
+**Status:** Accepted, confirmed by measurement in D-078 · **Source:** Dev
 Queries filter to one policy version, usually only hundreds or thousands of chunks, so an exact scan is fast and has perfect recall, avoiding filtered-HNSW recall loss. Add an index if measurements call for it.
 
 ### D-025 No agent or RAG framework
@@ -175,7 +176,7 @@ Queries filter to one policy version, usually only hundreds or thousands of chun
 A thin typed gateway and plain pipelines instead of LangChain or LlamaIndex. The core logic is domain-specific, traceability needs full control, and these frameworks add churn and hidden prompts.
 
 ### D-026 Model routing
-**Status:** Provisional, extraction route superseded by D-057 · **Source:** User (per-task selection) / Dev (choices)
+**Status:** Provisional, extraction route superseded by D-057, embedding route by D-077 · **Source:** User (per-task selection) / Dev (choices)
 Routes live in configuration. Choices come from the OpenRouter catalog on 2026-11-06, and each claim-data route has a listed ZDR endpoint. **All are starting points to be confirmed by the evaluation sets in the milestone that introduces them.** Prices are USD per million input/output tokens.
 
 | Task | Primary | Escalation | Rationale |
@@ -402,3 +403,31 @@ One function decides whether a value breaks a rule, such as a sublimit above the
 Supersedes D-041 and the Neon part of D-008. The user dropped Neon: every schema, including the M5 search index, lives in the local PostgreSQL 18 cluster, and there is no plan to connect a hosted database. Production hosting remains an M9 decision.
 pgvector has no official Windows binaries, and conda-forge builds only for PostgreSQL 16. So `scripts/prism.py install-pgvector` builds the official 0.8.6 release source with Visual Studio 2022 Build Tools (C++ workload, installed via winget with the user's approval), checks the archive against a pinned SHA-256, and installs into `.data/pgvector`. PostgreSQL 18's `extension_control_path` and `dynamic_library_path` point the cluster there, set with `ALTER SYSTEM` so they persist. The machine's PostgreSQL installation is untouched, and no administrator rights are needed after the build tools. The control file's `module_pathname` is changed to a bare name, so that it resolves through `dynamic_library_path` and not the installation's `$libdir`.
 Verified on 2026-11-07: `CREATE EXTENSION vector` at 0.8.6, a vector distance, and an HNSW index query, in a scratch database on the project cluster. CI installs `postgresql-18-pgvector` from the PostgreSQL apt repository instead; that has not run.
+
+### D-075 The search index is built at publication, by the AI service
+**Status:** Accepted · **Source:** Dev
+Refines the RAG plan, which embedded during ingestion. Only published versions may be searched, and review can correct values until then, so the index is built once, from what was published. Publishing writes an outbox event in the same transaction, and `PolicyIndexingWorkflow` sends the published provisions and resolved relations to the AI service, which chunks, embeds, and replaces the version's index in one transaction. The index lives in the `knowledge` schema, as D-071 intended; core keeps only its status and the model usage. A failed index waits for a policy manager's retry, as a failed ingestion does.
+Isolation is enforced twice. Every query in the AI service's store takes the version ID and filters on it in SQL. Core then checks that every provision in a result belongs to the version it asked about, and refuses the whole result otherwise. A search query is sent in a POST body, never a URL, because the Policy Agent's queries will carry claim facts.
+
+### D-076 Retrieval pipeline
+**Status:** Accepted · **Source:** Dev
+Three retrievers run over one version. Semantic: exact cosine distance with pgvector (D-024). Lexical: full-text search, where any query word may match, stemmed with `english`, with tokens containing digits also matched as written with `simple` (D-022), ranked by `ts_rank_cd`. Exact: a clause the query names as a clause ("clause 4.5"), and a defined term within trigram word similarity 0.6 of some part of the query, so that a misspelling still finds it. A bare number is not treated as a clause, so that "2.5 lakh" is not clause 2.5.
+The three rankings are fused by RRF with k = 60 (D-023), the top 20 are reranked, and the top 10 are returned. A clause named by number comes first, whatever the reranker thinks. Each result brings the provisions related to it, one hop in both directions: an exclusion brings its exception, and an exception brings its exclusion.
+The query is embedded with the model that built the index, not the current route, so that a route change cannot mix vector spaces. Search is interactive, so a failed query embedding or rerank gets one immediate second attempt, then the search continues without that stage and says so (`degraded`). The evaluation saw about one rerank failure in fifty searches before this retry, and none after it.
+
+### D-077 Embedding model: text-embedding-3-small
+**Status:** Accepted · **Source:** Dev (measured)
+Supersedes the embedding route in D-026. Measured on the retrieval golden set on 2026-11-07, at 1536 dimensions, with the same reranker:
+
+| Model | Semantic only | Fused | Final | Search latency, median / max | Price per million tokens |
+|---|---|---|---|---|---|
+| `openai/text-embedding-3-small` | 98.3% | 96.6% | 100% | 1.2 s / 3.0 s | $0.02 |
+| `openai/text-embedding-3-large` | 100% | 94.9% | 100% | 1.4 s / 4.2 s | $0.13 |
+| `qwen/qwen3-embedding-8b` | 100% | 98.3% | 100% | 1.7 s / 14.1 s | $0.01 |
+
+All three reach every target after reranking, so the choice rests on speed for an interactive search. The small model is fastest, produces 1536 dimensions natively rather than by truncation, and costs fractions of a cent per policy. Each has zero-data-retention endpoints with no safety retention, and the gateway checks this before each call. The reranker stays `qwen/qwen3-reranker-8b`, the only reranker with such endpoints. The column type fixes 1536 dimensions: a change needs a migration and a rebuild of every index.
+
+### D-078 Fusion and exact search confirmed
+**Status:** Accepted · **Source:** Dev (measured)
+On the golden set, with the chosen models: recall@10 of 98.3% for semantic search alone, 84.7% for full-text alone, 96.6% for the fused list, and 100% after reranking, with zero results from another version, all 6 required related provisions present, and no degraded searches. Fusion followed by reranking (D-023) beats either retriever alone. Exact scans answered a search in about 1.2 seconds in total, most of it in the two model calls, so no vector index is needed (D-024).
+The set is synthetic and small: four wordings, 127 provisions, 50 questions. Semantic search alone already scores highly on it, so it shows that the pipeline works and is safe, more than it ranks the methods. Real wordings, which are longer and less tidy, are the test that matters, and are not yet available.

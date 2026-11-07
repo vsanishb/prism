@@ -11,8 +11,9 @@ Describes modules **as built**. For intended design, see [plans](../plans/README
 | [Claims](claims.md) | Claim lifecycle and intake |
 | [Documents](documents.md) | Upload, validation, storage, viewing |
 | [Policies](policies.md) | Policy register |
+| [Workflows](workflows.md) | Durable claim processing, outbox, restart behavior |
+| [Document intelligence](document-intelligence.md) | Model gateway, extraction, grounding, consolidation, evaluation |
+| [Policy knowledge](policy-knowledge.md) | Policy ingestion, assembly, validation, review, and publication |
+| [Retrieval](retrieval.md) | Search index, hybrid search, and the retrieval explorer |
 
 When a module is implemented, add `<module>.md` covering its purpose, entry points, key types, data, failure behavior, and how to test it.
-| [workflows.md](workflows.md) | Durable claim processing, outbox, restart behavior |
-| [document-intelligence.md](document-intelligence.md) | Model gateway, extraction, grounding, consolidation, evaluation |
-| [policy-knowledge.md](policy-knowledge.md) | Policy ingestion, assembly, validation, review, and publication |

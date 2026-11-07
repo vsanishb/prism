@@ -30,7 +30,7 @@ Find the most relevant, contractually meaningful evidence for a claim, rather th
 - Queries are built from de-identified facts ([security](../security.md#data-privacy)).
 - `RetrievalResult` keeps per-stage ranks and scores, for the explorer and for audit.
 
-**Embeddings.** Stored with their model name. Use a 1536-dimension `vector` if the route supports dimension control, and confirm this in M5. Embedding happens during ingestion, but only `PUBLISHED` versions are searchable for claims.
+**Embeddings.** Stored with their model name, as a 1536-dimension `vector`. Indexing happens at publication, since only `PUBLISHED` versions are searchable ([D-075](../decisions.md)). As built: [retrieval module](../modules/retrieval.md).
 
 ## Dependencies
 M4 published provisions.

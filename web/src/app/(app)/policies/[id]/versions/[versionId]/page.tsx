@@ -5,10 +5,11 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/feedback";
 import { AccessDenied, LoadFailed } from "@/components/ui/layout";
 import { PolicyKnowledgeReview } from "@/features/policies/policy-knowledge";
+import { SearchIndexStatus } from "@/features/policies/search-index-status";
 import { formatMoney } from "@/lib/format";
 import { KNOWLEDGE_STATUS_LABELS } from "@/lib/labels";
 import { requireCurrentUser, serverFetch } from "@/lib/server-api";
-import type { PolicyDetail, PolicyKnowledge } from "@/lib/types";
+import type { PolicyDetail, PolicyKnowledge, SearchIndex } from "@/lib/types";
 
 export const metadata: Metadata = { title: "Policy knowledge" };
 
@@ -16,9 +17,10 @@ const TONES = { NO_WORDING: "neutral", PROCESSING: "accent", IN_REVIEW: "caution
 
 export default async function PolicyVersionPage({ params }: { params: Promise<{ id: string; versionId: string }> }) {
   const { id, versionId } = await params;
-  const [policy, knowledge, user] = await Promise.all([
+  const [policy, knowledge, index, user] = await Promise.all([
     serverFetch<PolicyDetail>(`/api/v1/policies/${id}`),
     serverFetch<PolicyKnowledge>(`/api/v1/policies/${id}/versions/${versionId}/knowledge`),
+    serverFetch<SearchIndex>(`/api/v1/policies/${id}/versions/${versionId}/search-index`),
     requireCurrentUser(),
   ]);
   if (!policy.ok || !knowledge.ok) {
@@ -29,6 +31,7 @@ export default async function PolicyVersionPage({ params }: { params: Promise<{ 
     return status === 403 ? <AccessDenied /> : <LoadFailed />;
   }
   const data = knowledge.data;
+  const canManage = Boolean(user?.permissions.includes("POLICY_MANAGE"));
 
   return (
     <>
@@ -50,7 +53,14 @@ export default async function PolicyVersionPage({ params }: { params: Promise<{ 
           before publishing.
         </p>
       </header>
-      <PolicyKnowledgeReview policyId={id} knowledge={data} canManage={Boolean(user?.permissions.includes("POLICY_MANAGE"))} />
+      {data.knowledgeStatus === "PUBLISHED" ? (
+        index.ok ? (
+          <SearchIndexStatus policyId={id} versionId={versionId} index={index.data} canManage={canManage} />
+        ) : (
+          <p className="mb-6 text-[13px] text-ink-muted">Search status could not be loaded. Refresh to try again.</p>
+        )
+      ) : null}
+      <PolicyKnowledgeReview policyId={id} knowledge={data} canManage={canManage} />
     </>
   );
 }

@@ -69,18 +69,16 @@ One local PostgreSQL 18 database, with two schemas, each with its own runtime ro
 
 ### `knowledge` schema (owner: AI service)
 
-Policy structure, values, and reviews live in `core`, beside the review and audit that govern them ([D-071](decisions.md)). This schema will hold the M5 search index, built from published versions.
+Policy structure, values, and reviews live in `core`, beside the review and audit that govern them ([D-071](decisions.md)). This schema holds the search index, built from published versions ([D-075](decisions.md)).
 
-Separate layers preserve traceability from source to search result.
+| Table | Contents |
+|---|---|
+| `search_indexes` | One per published version: embedding model, pipeline version, chunk count |
+| `indexed_provisions` | The published provisions, with section paths, under core's IDs |
+| `indexed_relations` | `QUALIFIES`, `LIMITS`, `EXCEPTS`, `DEFINES`, `REFERENCES`, between resolved provisions |
+| `chunks` | Heading and verbatim text, a stored `tsvector`, and a `vector(1536)` embedding |
 
-| Layer | Table (planned) | Contents |
-|---|---|---|
-| Raw | `page_extractions` | Unmodified model output per page, with model and prompt version |
-| Structured | `provisions` | Normalized units with type, clause, pages, and values |
-| Relationships | `provision_relations` | `QUALIFIES`, `LIMITS`, `EXCEPTS`, `DEFINES`, `REFERENCES` |
-| Searchable | `chunks` | Text, `tsvector`, embedding, and filter metadata |
-
-The original PDF stays in the document store. `policy_version_id` links to `core` logically with no foreign key, so the service boundary stays intact.
+The original PDF stays in the document store. Version and provision IDs link to `core` logically with no foreign key, so the service boundary stays intact. Core keeps each index's status in `core.policy_search_indexes`.
 
 ### Key data rules
 

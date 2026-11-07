@@ -1,39 +1,16 @@
-import path from "node:path";
 import { expect, test, type Page } from "@playwright/test";
-import { account, accountByEmail, signIn } from "./support";
+import { READING_TIMEOUT, account, accountByEmail, signIn, uploadFreshVersion } from "./support";
 
 /**
  * Runs through the real stack, with a stand-in for the model provider that reads the Gold wording.
  * See docs/test-guides/m4-policy-intelligence.md.
  */
 
-const DATA = path.resolve(process.cwd(), "../test-data");
-const READING_TIMEOUT = 45_000;
-
 async function openGoldVersion(page: Page, version: 1 | 2): Promise<void> {
   await page.goto("/policies");
   await page.getByRole("link", { name: /SYN-FFG-2026-0001/ }).first().click();
   await page.getByRole("group", { name: `Version ${version}`, exact: true }).getByRole("link", { name: /knowledge/ }).click();
   await expect(page.getByRole("heading", { name: `Version ${version}` })).toBeVisible();
-}
-
-/** A fresh version on the Silver policy, in a far-future period so that repeated runs never overlap. */
-async function uploadFreshVersion(page: Page): Promise<void> {
-  const year = 2100 + (Date.now() % 800);
-  await page.goto("/policies");
-  await page.getByRole("link", { name: /SYN-IND-2026-0002/ }).first().click();
-  await page.getByRole("button", { name: "Add version" }).click();
-  await page.getByLabel("Effective from").fill(`${year}-01-01`);
-  await page.getByLabel("Effective to").fill(`${year}-12-31`);
-  await page.getByLabel("Sum insured (₹)").fill("500000");
-  await page.getByRole("button", { name: "Add version" }).last().click();
-  const row = page.getByRole("group").filter({ hasText: `1 Jan ${year}` });
-  await expect(row.getByText("No wording uploaded")).toBeVisible();
-  await row.getByRole("button", { name: "Upload wording" }).click();
-  await page.getByLabel("Upload policy wording").setInputFiles(path.join(DATA, "policies/family-floater-gold-v1.pdf"));
-  await row.getByRole("link", { name: /knowledge/ }).click();
-  // The list shows the same status badge, so wait for the version page itself.
-  await expect(page).toHaveURL(/\/versions\//);
 }
 
 test("a seeded wording is read into reviewable knowledge, traced to its pages", async ({ page }) => {

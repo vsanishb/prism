@@ -9,7 +9,7 @@ Turns a policy wording into validated, human-approved knowledge. Core: `dev.pris
 3. The AI service returns provisions with typed values, exceptions, and references. A value is `PRESENT` only if its quote is on the page and the value is inside the quote.
 4. Core assembles the batches, finds relations, validates, and opens the version for review.
 5. A policy manager confirms each critical value, or corrects it with a reason.
-6. A different policy manager publishes. A published version is final.
+6. A different policy manager publishes. A published version is final, and is indexed for search.
 
 ## Knowledge status
 
@@ -65,4 +65,4 @@ On DeepSeek V4.1 Flash, 2026-11-07: 49 of 49 critical values, 53 of 53 provision
 
 - Scanned policies: values are marked uncertain for review, with no second reading.
 - Cross-batch joining is tested with scripted results. The real policies so far fit one batch.
-- Search over published knowledge arrives in M5.
+- Search over published knowledge is in [retrieval](retrieval.md).

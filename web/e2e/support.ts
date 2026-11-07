@@ -40,3 +40,25 @@ export async function signIn(page: Page, { email, password }: SyntheticAccount) 
 export function uniqueEmail(prefix: string): string {
   return `${prefix}.${Date.now()}@synthetic.prism.test`;
 }
+
+const DATA = path.resolve(process.cwd(), "../test-data");
+export const READING_TIMEOUT = 45_000;
+
+/** A fresh version on the Silver policy, in a far-future period so that repeated runs never overlap. */
+export async function uploadFreshVersion(page: Page): Promise<void> {
+  const year = 2100 + (Date.now() % 800);
+  await page.goto("/policies");
+  await page.getByRole("link", { name: /SYN-IND-2026-0002/ }).first().click();
+  await page.getByRole("button", { name: "Add version" }).click();
+  await page.getByLabel("Effective from").fill(`${year}-01-01`);
+  await page.getByLabel("Effective to").fill(`${year}-12-31`);
+  await page.getByLabel("Sum insured (₹)").fill("500000");
+  await page.getByRole("button", { name: "Add version" }).last().click();
+  const row = page.getByRole("group").filter({ hasText: `1 Jan ${year}` });
+  await expect(row.getByText("No wording uploaded")).toBeVisible();
+  await row.getByRole("button", { name: "Upload wording" }).click();
+  await page.getByLabel("Upload policy wording").setInputFiles(path.join(DATA, "policies/family-floater-gold-v1.pdf"));
+  await row.getByRole("link", { name: /knowledge/ }).click();
+  // The list shows the same status badge, so wait for the version page itself.
+  await expect(page).toHaveURL(/\/versions\//);
+}

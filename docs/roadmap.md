@@ -11,8 +11,8 @@ Each milestone delivers a substantial, testable slice through the frontend. Comp
 | M2 | Claims and documents | Complete | M1 |
 | M3 | Document intelligence and workflows | Complete | M2 |
 | M4 | Policy intelligence | Complete | M3 |
-| M5 | Hybrid retrieval | **Next** | M4 |
-| M6 | Policy Agent | Planned | M3, M5 |
+| M5 | Hybrid retrieval | Complete | M4 |
+| M6 | Policy Agent | **Next** | M3, M5 |
 | M7 | Fraud and risk intelligence | Planned | M3 |
 | M8 | Human review and outcomes | Planned | M6, M7 |
 | M9 | Production readiness | Planned | M8 |
@@ -137,13 +137,13 @@ Every milestone also requires: tests at the levels in [testing.md](testing.md), 
 **Objective:** find the right provisions, with measured quality.
 **Plan:** [RAG retrieval](plans/rag-retrieval.md)
 
-- [ ] Implement structure-aware chunking
-- [ ] Implement embeddings and storage
-- [ ] Implement semantic and lexical retrievers
-- [ ] Implement metadata filtering
-- [ ] Implement fusion, reranking, and relationship expansion
-- [ ] Build the retrieval evaluation harness and golden set
-- [ ] Build the retrieval explorer
+- [x] Implement structure-aware chunking
+- [x] Implement embeddings and storage
+- [x] Implement semantic and lexical retrievers
+- [x] Implement metadata filtering
+- [x] Implement fusion, reranking, and relationship expansion
+- [x] Build the retrieval evaluation harness and golden set
+- [x] Build the retrieval explorer
 
 **Frontend test flow:** select a policy version → run a query → compare semantic, lexical, and final rankings → open a result at its source page → confirm related exceptions and definitions appear.
 

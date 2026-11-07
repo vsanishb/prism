@@ -14,7 +14,7 @@ import pytest
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ec
 from fastapi.testclient import TestClient
-from pydantic import SecretStr
+from pydantic import AnyHttpUrl, SecretStr
 
 from prism_ai.main import create_app
 from prism_ai.settings import Settings
@@ -48,6 +48,9 @@ def client(
         database_url=SecretStr("postgresql://nobody@127.0.0.1:1/none"),
         service_jwt_public_key_path=public_path,
         service_token_max_lifetime_seconds=60,
+        openrouter_api_key=SecretStr("not-a-real-key"),
+        openrouter_base_url=AnyHttpUrl("https://openrouter.test/api/v1"),
+        model_request_timeout_seconds=1.0,
     )
 
     async def database_up(_: object) -> bool:

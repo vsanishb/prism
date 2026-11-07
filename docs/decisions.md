@@ -20,7 +20,10 @@ Checked against Maven Central, PyPI, npm, nodejs.org, Docker Hub, and vendor doc
 | Pydantic | 2.14.3 | Same check |
 | Uvicorn | 0.54.0 | Same check |
 | psycopg | 3.3.8 | Same check |
-| PyMuPDF | 2.1 | Same check. AGPL or commercial license: see D-036 |
+| pypdfium2 | 5.15.0 | Verified on Windows with real documents and malformed files (D-058) |
+| Pillow | 13.0.0 | Runtime since M3: decodes uploaded images in the render worker |
+| httpx | 0.28.1 | Runtime since M3: model gateway |
+| psutil | 7.2.2 | Runtime since M3: memory limit on the render worker |
 | Node.js | 25 (installed: 25.7) | User decision (D-040). Satisfies Next.js ≥ 20.9 |
 | Next.js | 16.4.5 | Verified on Node 25.7 |
 | React | 19.3.1 | Verified with Next 16.4.5 build and E2E |
@@ -171,7 +174,7 @@ Queries filter to one policy version, usually only hundreds or thousands of chun
 A thin typed gateway and plain pipelines instead of LangChain or LlamaIndex. The core logic is domain-specific, traceability needs full control, and these frameworks add churn and hidden prompts.
 
 ### D-026 Model routing
-**Status:** Provisional · **Source:** User (per-task selection) / Dev (choices)
+**Status:** Provisional, extraction route superseded by D-057 · **Source:** User (per-task selection) / Dev (choices)
 Routes live in configuration. Choices come from the OpenRouter catalog on 2026-11-06, and each claim-data route has a listed ZDR endpoint. **All are starting points to be confirmed by the evaluation sets in the milestone that introduces them.** Prices are USD per million input/output tokens.
 
 | Task | Primary | Escalation | Rationale |
@@ -204,7 +207,7 @@ An undetected extraction error in a policy would affect every related claim, so 
 A planned, limited retrieval loop with a fixed tool set, rather than an open-ended agent. This keeps cost, latency, and audit trails predictable.
 
 ### D-036 PyMuPDF license
-**Status:** Provisional · **Source:** Dev
+**Status:** Superseded by D-058 · **Source:** Dev
 PyMuPDF has the best rendering and text-layer access, but is AGPL or commercial. Acceptable for development. **Before any distribution or hosted production use**, buy a license or replace it with `pypdfium2`, behind a small adapter.
 
 ## Product scope
@@ -296,3 +299,34 @@ Replaced and removed documents stay on record, as source documents are authorita
 **Status:** Accepted · **Source:** User
 Everything runs natively and locally: no Dockerfiles, Compose, containers, or Testcontainers until the user says otherwise. This supersedes the container options in D-012, D-041, and D-046, and the container items in the deployment plan.
 Temporal uses the native CLI server, installed by `scripts/prism.py install-temporal` at a pinned version with a checksum check, and persisting to `.data/temporal.db`. CI installs PostgreSQL natively. pgvector for M5 will come from a native install or Neon.
+
+## Milestone 3
+
+### D-057 Claim routes exclude endpoints that retain flagged content
+**Status:** Accepted, routes provisional · **Source:** Dev
+Supersedes the extraction route in D-026. OpenRouter's ZDR catalog marks every `google/gemini-3.8-flash` endpoint with `safety_retention: true`, meaning content flagged by the provider's safety screening may be kept. That is not acceptable for health data, even under a ZDR label. `anthropic/claude-haiku-5.5`, `anthropic/claude-sonnet-5.5`, and `openai/gpt-6.1-sol` were `false` on all ZDR endpoints on 2026-11-07.
+The gateway reads the catalog (cached for an hour) and refuses a model unless every ZDR endpoint is explicitly `false`, because a request cannot choose among them. An unreadable catalog stops processing rather than allowing the call. Requests carry both `zdr: true` and `data_collection: "deny"`: a test showed `deny` alone routing to an endpoint outside the ZDR list.
+
+| Task | Primary | Escalation |
+|---|---|---|
+| Classification | Haiku 5.5 | Sonnet 5.5 |
+| Extraction | Sonnet 5.5 | GPT-6.1 Sol (second vendor) |
+| Scan re-read | Haiku 5.5, so that the check is not the same model repeating itself | Sonnet 5.5 |
+
+Sonnet and Haiku both met every target on the evaluation set, at $0.33 and $0.03 for 17 documents. Sonnet stays primary because a misread value does not trigger escalation, so accuracy must come from the first model, and a small clean synthetic set cannot separate the two. Revisit with harder documents. `require_parameters` is not sent: it removes every ZDR endpoint for these models. Output is validated by the gateway regardless.
+
+### D-058 pypdfium2 replaces PyMuPDF
+**Status:** Accepted · **Source:** Dev
+Supersedes D-036. PyMuPDF 2.1 hard-depends on ONNX Runtime, protobuf, NetworkX, and layout packages, which is far too much attack surface and weight for rendering, on top of its AGPL license. pypdfium2 is one package with no dependencies under a permissive license, and provides rendering, the text layer, and character boxes. This also removes the licensing item from M9.
+
+### D-059 Documents are parsed in a killable process
+**Status:** Accepted · **Source:** Dev
+Native parsers can hang or exhaust memory on hostile files, and a thread cannot be stopped. The AI service renders in a short-lived child process, killed at 60 seconds or 1.5 GB. Content travels over pipes, so it never touches disk in the AI service. Cost: about a second of startup per window of eight pages, which is small next to a model call.
+
+### D-060 Code decides what is PRESENT
+**Status:** Accepted · **Source:** Dev
+Models report text as written, with a page and a quote. Code then finds the quote in the page's text layer, checks the value is inside it, and normalizes dates and amounts. Failing any check gives `UNCERTAIN`, with the reason stored. On scans, which have no text to check against, critical values must survive an independent second reading. Dates are read day-first (D-043), and ambiguous amounts such as `12,34` are refused.
+
+### D-061 Nullable fields travel as blanks to models
+**Status:** Accepted · **Source:** Dev
+Anthropic's structured output allows at most 16 nullable parameters per schema, and the bill schema had 23. Model schemas use `""` and `0` for "none", converted to real nulls at the validation boundary, so nothing past it sees this convention.

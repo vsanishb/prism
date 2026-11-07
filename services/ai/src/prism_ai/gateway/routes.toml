@@ -1,0 +1,21 @@
+# Model routes (D-026, D-057). Provisional until confirmed by the evaluation set in services/ai/evals.
+# Every claim-data route must be zero-data-retention, and the gateway checks this before each use.
+
+[tasks.classification]
+primary = "anthropic/claude-haiku-5.5"
+escalation = "anthropic/claude-sonnet-5.5"
+claim_data = true
+max_tokens = 300
+
+[tasks.extraction]
+primary = "anthropic/claude-sonnet-5.5"
+# A second vendor: output that defeats one model gets an independent attempt.
+escalation = "openai/gpt-6.1-sol"
+claim_data = true
+max_tokens = 8000
+
+[tasks.reread]
+primary = "anthropic/claude-haiku-5.5"
+escalation = "anthropic/claude-sonnet-5.5"
+claim_data = true
+max_tokens = 1500

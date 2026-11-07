@@ -29,7 +29,8 @@ class TemporalWorkflowDispatcher implements WorkflowDispatcher {
 
     @Override
     public void dispatch(Outbox.Event event, UUID claimId) {
-        // The aggregate is a claim for claim events, and a wording document for policy events.
+        // The aggregate is a claim for claim events, a wording document for ingestion events, and a
+        // policy version for indexing events.
         switch (event) {
             case CLAIM_SUBMITTED -> start(claimId);
             case CLAIM_DOCUMENTS_CHANGED -> signal(claimId, ClaimProcessingWorkflow::documentsChanged);
@@ -37,6 +38,8 @@ class TemporalWorkflowDispatcher implements WorkflowDispatcher {
             case CLAIM_WITHDRAWN -> signal(claimId, ClaimProcessingWorkflow::claimWithdrawn);
             case POLICY_WORDING_ATTACHED -> startIngestion(claimId);
             case POLICY_INGESTION_RETRY_REQUESTED -> retryIngestion(claimId);
+            case POLICY_VERSION_PUBLISHED -> startIndexing(claimId);
+            case POLICY_INDEX_RETRY_REQUESTED -> retryIndexing(claimId);
         }
     }
 
@@ -65,6 +68,34 @@ class TemporalWorkflowDispatcher implements WorkflowDispatcher {
             workflow.retryRequested();
         } catch (WorkflowNotFoundException finished) {
             log.info("No running ingestion for document {}", documentId);
+        }
+    }
+
+    static String indexingId(UUID versionId) {
+        return "policy-index-" + versionId;
+    }
+
+    private void startIndexing(UUID versionId) {
+        PolicyIndexingWorkflow workflow = client.newWorkflowStub(
+                PolicyIndexingWorkflow.class,
+                WorkflowOptions.newBuilder()
+                        .setWorkflowId(indexingId(versionId))
+                        .setTaskQueue(ClaimProcessingWorkflowImpl.WORKFLOW_QUEUE)
+                        .setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_REJECT_DUPLICATE)
+                        .build());
+        try {
+            WorkflowClient.start(workflow::index, versionId.toString());
+        } catch (WorkflowExecutionAlreadyStarted duplicate) {
+            log.debug("Indexing already started for version {}", versionId);
+        }
+    }
+
+    private void retryIndexing(UUID versionId) {
+        PolicyIndexingWorkflow workflow = client.newWorkflowStub(PolicyIndexingWorkflow.class, indexingId(versionId));
+        try {
+            workflow.retryRequested();
+        } catch (WorkflowNotFoundException finished) {
+            log.info("No running indexing for version {}", versionId);
         }
     }
 

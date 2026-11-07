@@ -23,6 +23,20 @@ public interface AiServiceClient {
      */
     PolicyExtraction.Result extractPolicyPages(PolicyExtraction.Request request);
 
+    /**
+     * Builds or replaces a published version's search index. Safe to repeat.
+     *
+     * @throws DocumentExtraction.Failure with a stable code, and whether a retry could help
+     */
+    PolicySearch.IndexResult indexPolicyVersion(PolicySearch.IndexRequest request);
+
+    /**
+     * Searches one version's index.
+     *
+     * @throws DocumentExtraction.Failure with a stable code, and whether a retry could help
+     */
+    PolicySearch.SearchResult searchPolicyVersion(PolicySearch.SearchRequest request);
+
     record PingResult(boolean reachable, boolean authenticated, boolean knowledgeDatabaseConnected, String detail) {}
 
     record ProbeResult(boolean reachable, boolean rejected, int statusCode) {}

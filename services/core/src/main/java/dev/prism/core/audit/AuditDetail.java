@@ -22,5 +22,6 @@ public enum AuditDetail {
     PIPELINE_VERSION,
     CONSOLIDATION_SEQUENCE,
     VALUE_ID,
-    PAGES
+    PAGES,
+    CHUNK_COUNT
 }

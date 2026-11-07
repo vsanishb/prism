@@ -7,6 +7,7 @@ import com.nimbusds.jwt.SignedJWT;
 import com.sun.net.httpserver.HttpServer;
 import dev.prism.core.aiclient.DocumentExtraction;
 import dev.prism.core.aiclient.DocumentExtraction.Failure;
+import dev.prism.core.aiclient.PolicySearch;
 import dev.prism.core.platform.config.PrismProperties;
 import dev.prism.core.support.TestKeys;
 import java.net.InetSocketAddress;
@@ -15,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.AfterEach;
@@ -47,7 +49,7 @@ class AiExtractionClientTest {
     @BeforeEach
     void start() throws Exception {
         server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
-        server.createContext("/internal/v1/documents/extract", exchange -> {
+        server.createContext("/internal/v1/", exchange -> {
             body.set(exchange.getRequestBody().readAllBytes());
             authorization.set(exchange.getRequestHeaders().getFirst("Authorization"));
             byte[] bytes = response.getBytes(StandardCharsets.UTF_8);
@@ -74,7 +76,7 @@ class AiExtractionClientTest {
                 new PrismProperties.Security("key", false, false, Duration.ofHours(1), Duration.ofHours(1), Duration.ofHours(1)),
                 new PrismProperties.ServiceAuth(key.toString(), "core-test", Duration.ofSeconds(60)),
                 new PrismProperties.Documents("store", 1000, 1000, 10, 10, 1000, 100),
-                new PrismProperties.Ai(target, Duration.ofSeconds(2), Duration.ofSeconds(4)),
+                new PrismProperties.Ai(target, Duration.ofSeconds(2), Duration.ofSeconds(4), Duration.ofSeconds(3)),
                 new PrismProperties.Temporal(false, "localhost:1", "default", Duration.ofDays(1), 1, Duration.ofSeconds(1)),
                 new PrismProperties.Bootstrap("", ""),
                 new PrismProperties.Seed("", ""));
@@ -165,6 +167,54 @@ class AiExtractionClientTest {
                 .isInstanceOfSatisfying(Failure.class, failure -> {
                     assertThat(failure.code()).isEqualTo("ai_service_unavailable");
                     assertThat(failure.retryable()).isTrue();
+                });
+    }
+
+    private static final String SEARCH = """
+            {"versionId":"018f0000-0000-7000-8000-0000000000e1","degraded":["RERANK_UNAVAILABLE"],
+             "embeddingModel":"openai/text-embedding-3-small","rerankModel":null,
+             "results":[{"provisionId":"018f0000-0000-7000-8000-0000000000a1","chunkId":"018f0000-0000-7000-8000-0000000000c1",
+                         "key":"4.1","type":"EXCLUSION","title":"Cosmetic","sectionPath":["4 Exclusions"],"pageStart":2,
+                         "pageEnd":2,"text":"Cosmetic treatment","part":1,"parts":1,"finalRank":1,"pinned":false,
+                         "exact":null,"semantic":{"rank":1,"score":0.71},"lexical":null,"fused":{"rank":1,"score":0.016},
+                         "rerank":null,"related":[{"provisionId":"018f0000-0000-7000-8000-0000000000a2",
+                                                   "relation":"EXCEPTS","direction":"OUTGOING"}]}],
+             "semantic":[{"provisionId":"018f0000-0000-7000-8000-0000000000a1","key":"4.1","type":"EXCLUSION",
+                          "title":"Cosmetic","rank":1,"score":0.71}],
+             "lexical":[],"related":[],
+             "runs":[{"task":"embedding","model":"openai/text-embedding-3-small","provider":"Azure","promptVersion":"none",
+                      "attempt":1,"outcome":"SUCCEEDED","inputTokens":4,"outputTokens":null,"costUsd":"0.0000001",
+                      "latencyMs":300}]}
+            """;
+
+    private static PolicySearch.SearchRequest search() {
+        return new PolicySearch.SearchRequest(UUID.randomUUID(), "cosmetic surgery", List.of(), 10);
+    }
+
+    @Test
+    void aSearchResultIsReadWithEveryStage() throws Exception {
+        response = SEARCH;
+
+        PolicySearch.SearchResult result = client.searchPolicyVersion(search());
+
+        assertThat(result.degraded()).containsExactly("RERANK_UNAVAILABLE");
+        assertThat(result.results().getFirst().semantic().score()).isEqualTo(0.71);
+        assertThat(result.results().getFirst().lexical()).isNull();
+        assertThat(result.results().getFirst().related().getFirst().relation()).isEqualTo("EXCEPTS");
+        assertThat(result.runs().getFirst().outputTokens()).isNull();
+        SignedJWT token = SignedJWT.parse(authorization.get().substring("Bearer ".length()));
+        assertThat(token.getJWTClaimsSet().getSubject()).isEqualTo("POST /internal/v1/policies/search");
+    }
+
+    @Test
+    void aMissingIndexIsAPermanentFailure() {
+        status = 404;
+        response = "{\"code\":\"index_not_found\",\"retryable\":false,\"runs\":[]}";
+
+        assertThatThrownBy(() -> client.searchPolicyVersion(search()))
+                .isInstanceOfSatisfying(Failure.class, failure -> {
+                    assertThat(failure.code()).isEqualTo("index_not_found");
+                    assertThat(failure.retryable()).isFalse();
                 });
     }
 }

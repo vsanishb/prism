@@ -107,6 +107,8 @@ class PolicyKnowledgeService {
             throw ApiException.conflict("not_ready_to_publish", blockers.getFirst().message());
         }
         lifecycle.publish(versionId, actor);
+        // Indexing for search starts from this event, so that a published version is never left unindexed.
+        outbox.append(Outbox.Event.POLICY_VERSION_PUBLISHED, versionId);
     }
 
     @PreAuthorize("hasAuthority('POLICY_MANAGE')")

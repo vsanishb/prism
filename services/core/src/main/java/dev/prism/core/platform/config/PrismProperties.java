@@ -39,7 +39,11 @@ public record PrismProperties(
     public record ServiceAuth(
             @NotBlank String privateKeyPath, @NotBlank String keyId, @NotNull Duration tokenTtl) {}
 
-    public record Ai(@NotNull URI baseUrl, @NotNull Duration timeout, @NotNull Duration extractionTimeout) {}
+    public record Ai(
+            @NotNull URI baseUrl,
+            @NotNull Duration timeout,
+            @NotNull Duration extractionTimeout,
+            @NotNull Duration searchTimeout) {}
 
     public record Temporal(
             boolean enabled,

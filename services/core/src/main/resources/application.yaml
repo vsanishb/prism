@@ -88,6 +88,8 @@ prism:
     timeout: 5s
     # Below the activity's five-minute limit, so that a slow call fails here, with a clear reason.
     extraction-timeout: 4m
+    # Covers an embedding and a rerank, each with one retry, so that a search fails rather than hangs.
+    search-timeout: 30s
   temporal:
     enabled: ${PRISM_TEMPORAL_ENABLED:true}
     target: ${PRISM_TEMPORAL_TARGET:127.0.0.1:7233}

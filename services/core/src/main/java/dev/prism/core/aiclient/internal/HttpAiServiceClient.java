@@ -5,6 +5,7 @@ import dev.prism.core.aiclient.DocumentExtraction;
 import dev.prism.core.aiclient.DocumentExtraction.Failure;
 import dev.prism.core.aiclient.DocumentExtraction.ModelRun;
 import dev.prism.core.aiclient.PolicyExtraction;
+import dev.prism.core.aiclient.PolicySearch;
 import dev.prism.core.platform.config.PrismProperties;
 import java.net.http.HttpClient;
 import java.time.Duration;
@@ -24,10 +25,13 @@ class HttpAiServiceClient implements AiServiceClient {
     private static final String PING_PATH = "/internal/v1/ping";
     private static final String EXTRACT_PATH = "/internal/v1/documents/extract";
     private static final String POLICY_PAGES_PATH = "/internal/v1/policies/extract-pages";
+    private static final String INDEX_PATH = "/internal/v1/policies/index";
+    private static final String SEARCH_PATH = "/internal/v1/policies/search";
 
     private final RestClient signed;
     private final RestClient unsigned;
     private final RestClient extraction;
+    private final RestClient search;
 
     HttpAiServiceClient(RestClient.Builder builder, ServiceTokenSigner signer, PrismProperties properties) {
         Duration timeout = properties.ai().timeout();
@@ -41,6 +45,9 @@ class HttpAiServiceClient implements AiServiceClient {
         this.signed = authenticated.clone().requestFactory(requestFactory(timeout, timeout)).build();
         this.extraction = authenticated.clone()
                 .requestFactory(requestFactory(timeout, properties.ai().extractionTimeout()))
+                .build();
+        this.search = authenticated.clone()
+                .requestFactory(requestFactory(timeout, properties.ai().searchTimeout()))
                 .build();
     }
 
@@ -65,9 +72,24 @@ class HttpAiServiceClient implements AiServiceClient {
         return post(POLICY_PAGES_PATH, request, PolicyExtraction.Result.class);
     }
 
+    @Override
+    public PolicySearch.IndexResult indexPolicyVersion(PolicySearch.IndexRequest request) {
+        return post(extraction, INDEX_PATH, request, PolicySearch.IndexResult.class);
+    }
+
+    /** On its own client: a person is waiting, so it fails long before an extraction would. */
+    @Override
+    public PolicySearch.SearchResult searchPolicyVersion(PolicySearch.SearchRequest request) {
+        return post(search, SEARCH_PATH, request, PolicySearch.SearchResult.class);
+    }
+
     private <T> T post(String path, Object request, Class<T> resultType) {
+        return post(extraction, path, request, resultType);
+    }
+
+    private <T> T post(RestClient client, String path, Object request, Class<T> resultType) {
         try {
-            return extraction.post()
+            return client.post()
                     .uri(path)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(request)

@@ -40,22 +40,28 @@ class TemporalConfig {
             ClaimActivities claimActivities,
             ExtractionActivities extractionActivities,
             PolicyActivitiesImpl policyActivities,
+            IndexingActivitiesImpl indexingActivities,
             PrismProperties properties) {
         WorkerFactory factory = WorkerFactory.newInstance(client);
         Worker workflows = factory.newWorker(ClaimProcessingWorkflowImpl.WORKFLOW_QUEUE);
-        workflows.registerWorkflowImplementationTypes(ClaimProcessingWorkflowImpl.class, PolicyIngestionWorkflowImpl.class);
+        workflows.registerWorkflowImplementationTypes(
+                ClaimProcessingWorkflowImpl.class, PolicyIngestionWorkflowImpl.class, PolicyIndexingWorkflowImpl.class);
 
         Worker database = factory.newWorker(ClaimProcessingWorkflowImpl.DATABASE_QUEUE);
         database.registerActivitiesImplementations(claimActivities);
         // Registered under its database interface only. Its model calls run on the AI queue below.
         database.registerActivitiesImplementations(new PolicyDatabaseActivities(policyActivities));
+        database.registerActivitiesImplementations(new IndexingDatabaseActivities(indexingActivities));
 
         Worker ai = factory.newWorker(
                 ClaimProcessingWorkflowImpl.AI_QUEUE,
                 WorkerOptions.newBuilder()
                         .setMaxConcurrentActivityExecutionSize(properties.temporal().maxConcurrentExtractions())
                         .build());
-        ai.registerActivitiesImplementations(extractionActivities, new PolicyModelActivities(policyActivities));
+        ai.registerActivitiesImplementations(
+                extractionActivities,
+                new PolicyModelActivities(policyActivities),
+                new IndexBuildModelActivities(indexingActivities));
         return factory;
     }
 
@@ -116,6 +122,25 @@ class TemporalConfig {
         @Override
         public void extractPolicyBatch(String documentId, String range) {
             delegate.extractPolicyBatch(documentId, range);
+        }
+    }
+
+    record IndexingDatabaseActivities(IndexingActivitiesImpl delegate) implements IndexingActivities {
+        @Override
+        public boolean beginIndexing(String versionId) {
+            return delegate.beginIndexing(versionId);
+        }
+
+        @Override
+        public void recordIndexingFailed(String versionId, String code) {
+            delegate.recordIndexingFailed(versionId, code);
+        }
+    }
+
+    record IndexBuildModelActivities(IndexingActivitiesImpl delegate) implements IndexBuildActivities {
+        @Override
+        public void buildIndex(String versionId) {
+            delegate.buildIndex(versionId);
         }
     }
 

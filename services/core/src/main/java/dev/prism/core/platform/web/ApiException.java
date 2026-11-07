@@ -26,6 +26,11 @@ public class ApiException extends RuntimeException {
         return new ApiException(HttpStatus.UNPROCESSABLE_CONTENT, code, message);
     }
 
+    /** A dependency is down. The caller may try again later. */
+    public static ApiException unavailable(String code, String message) {
+        return new ApiException(HttpStatus.SERVICE_UNAVAILABLE, code, message);
+    }
+
     public HttpStatus status() {
         return status;
     }

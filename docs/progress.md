@@ -6,7 +6,7 @@ The factual record of project state. Update after meaningful work. Newest entrie
 
 ## Current state
 
-**Phase:** M3 complete. M4 is next. M1's CI workflow has still never run.
+**Phase:** M4 complete. M5 is next. M1's CI workflow has still never run.
 **Runs on:** local PostgreSQL 18.3. Neon has not been connected.
 
 | Capability | Status | Milestone |
@@ -21,7 +21,7 @@ The factual record of project state. Update after meaningful work. Newest entrie
 | Synthetic document set | Implemented | M2 |
 | Temporal workflows | Tested | M3 |
 | Document intelligence | Tested, on synthetic documents only | M3 |
-| Policy intelligence | Planned | M4 |
+| Policy intelligence | Tested, on synthetic policies only | M4 |
 | Hybrid retrieval | Planned | M5 |
 | Policy Agent | Planned | M6 |
 | Fraud and risk | Planned | M7 |
@@ -38,6 +38,38 @@ The factual record of project state. Update after meaningful work. Newest entrie
 | Make pgvector available without Docker: a native install or Neon ([D-056](decisions.md)) | Dev and user | M5 |
 
 ## Log
+
+### 2026-11-07: M4 Policy intelligence, and cheaper models
+
+**Models:** at the user's request on cost, every route now uses DeepSeek V4.1 Flash ([D-070](decisions.md)). It passes the zero-retention check, so the check stays on. On it, claim extraction met every target at $0.025 for 17 documents. Before that choice, eight cheap models were compared ([D-069](decisions.md)).
+
+**Implemented:** policy page extraction, `PolicyIngestionWorkflow`, assembly across overlapping batches, relations, validation against the register, value review with correction, publication with separation of duties, immutability enforced by the database too, model usage records for policies, and the policy review screens.
+
+**Test results on the final code:**
+
+| Suite | Result |
+|---|---|
+| Core (JUnit, real PostgreSQL, Temporal test server) | 334 passed |
+| AI (pytest, no network) | 176 passed. `ruff` and `mypy --strict` clean |
+| Web unit (Vitest) | 12 passed. ESLint and `tsc` clean |
+| End-to-end, production build, real Temporal and AI service, stand-in model provider | 43 passed, covering M1 to M4 |
+| Policy evaluation, real model, 3 synthetic policies | All targets met: 49 of 49 critical values, 53 of 53 provisions. $0.06 |
+
+Also verified: the Platinum policy read through the browser on the real model, with clause 4.5 whole across its page break and its exception separate. Screens reviewed at desktop and phone width on that output.
+
+**Defects found by testing and fixed:**
+- A row lock inside a read-only transaction, refused by PostgreSQL.
+- An assembly failure was recorded as a page batch, which would have shown reviewers a false page range.
+- Choosing a value on a phone did not bring its page into view.
+- The rejection reason error was not shown beside its field.
+- Policy model usage was not recorded. Found by review of the finished work.
+- Durations written with words between number and unit, or as a bare number, were refused.
+
+**Not verified:**
+- Accuracy on real policies, which are longer and messier. All real-model runs fit one batch, so cross-batch joining is tested only with scripted results.
+- Restart tests were not repeated for policy ingestion. It uses the same workflow, outbox, and heartbeat code as claims.
+- The user's local database is not migrated: `db-reset` or `migrate` is needed before running M4.
+- Everything listed under earlier milestones, including CI and Neon.
 
 ### 2026-11-07: M3 Document intelligence and workflows
 

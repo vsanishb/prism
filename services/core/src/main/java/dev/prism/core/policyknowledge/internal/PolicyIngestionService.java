@@ -1,6 +1,7 @@
 package dev.prism.core.policyknowledge.internal;
 
 import dev.prism.core.aiclient.AiServiceClient;
+import dev.prism.core.aiclient.DocumentExtraction.Failure;
 import dev.prism.core.aiclient.PolicyExtraction;
 import dev.prism.core.audit.AuditAction;
 import dev.prism.core.audit.AuditDetail;
@@ -77,10 +78,18 @@ class PolicyIngestionService implements PolicyIngestion {
         store.recordBatch(ingestion.id(), range.first(), range.last(), "PROCESSING", null);
         DocumentService.StoredContent content = documents.readForProcessing(
                 DocumentOwner.Type.POLICY_VERSION, ingestion.versionId(), documentId);
-        PolicyExtraction.Result result = ai.extractPolicyPages(new PolicyExtraction.Request(
-                documentId, content.document().mediaType(), range.first(), range.last(), content.content()));
+        PolicyExtraction.Result result;
+        try {
+            result = ai.extractPolicyPages(new PolicyExtraction.Request(
+                    documentId, content.document().mediaType(), range.first(), range.last(), content.content()));
+        } catch (Failure failure) {
+            // Failed attempts were still made, and paid for.
+            store.saveRuns(ingestion.id(), documentId, failure.runs());
+            throw failure;
+        }
         transactions.executeWithoutResult(status -> {
             store.saveBatch(ingestion.id(), result, range.first(), range.last());
+            store.saveRuns(ingestion.id(), documentId, result.runs());
             store.recordBatch(ingestion.id(), range.first(), range.last(), "COMPLETED", null);
             VersionState version = versions.state(ingestion.versionId());
             audit.record(AuditEntry.of("policy:" + version.policyId(), AuditAction.POLICY_PAGES_EXTRACTED, AuditOutcome.SUCCESS)

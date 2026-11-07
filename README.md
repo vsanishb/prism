@@ -2,7 +2,7 @@
 
 Prism is an AI-assisted Health Insurance Claims Intelligence Platform. It turns claim documents and insurance policies into structured, evidence-backed assessments, and leaves consequential decisions with authorized human reviewers.
 
-> **Status:** Milestones 1 to 3 (secure platform, claims and documents, document intelligence) are complete. See [docs/progress.md](docs/progress.md). Development uses synthetic data only.
+> **Status:** Milestones 1 to 4 (secure platform, claims and documents, document intelligence, policy intelligence) are complete. See [docs/progress.md](docs/progress.md). Development uses synthetic data only.
 
 ## Run it
 

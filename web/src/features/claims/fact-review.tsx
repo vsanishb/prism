@@ -1,8 +1,9 @@
 "use client";
 
-import { CircleAlert, FileSearch, TriangleAlert } from "lucide-react";
+import { FileSearch, TriangleAlert } from "lucide-react";
 import { useRef, useState } from "react";
-import { Badge, EmptyState, Skeleton } from "@/components/ui/feedback";
+import { SourcePage } from "@/components/source-page";
+import { Badge, EmptyState } from "@/components/ui/feedback";
 import { Panel, SectionTitle } from "@/components/ui/layout";
 import { formatDate, formatMoney } from "@/lib/format";
 import {
@@ -108,8 +109,6 @@ function SourceView({
   kind: ClaimFact["kind"] | undefined;
 }) {
   const [sourceIndex, setSourceIndex] = useState(0);
-  const [loaded, setLoaded] = useState<string | null>(null);
-  const [failed, setFailed] = useState<string | null>(null);
 
   if (!selection) {
     return (
@@ -125,8 +124,6 @@ function SourceView({
     return null;
   }
   const document = documents.find((candidate) => candidate.id === source.documentId);
-  const imageUrl = `/api/v1/documents/${source.documentId}/pages/${source.page ?? 1}`;
-  const region = source.region?.map(Number);
 
   return (
     <Panel>
@@ -174,38 +171,12 @@ function SourceView({
         </p>
       ) : null}
       <div className="max-h-[70vh] overflow-auto rounded-b-panel bg-subtle p-3">
-        {failed === imageUrl ? (
-          <EmptyState icon={CircleAlert} title="This page could not be shown">
-            Open the document from the claim to try again.
-          </EmptyState>
-        ) : (
-          <div className="relative">
-            {loaded !== imageUrl ? <Skeleton className="absolute inset-0 min-h-96" /> : null}
-            {/* Authenticated, per-request content: next/image optimization does not apply. */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              key={imageUrl}
-              src={imageUrl}
-              alt={`Page ${source.page ?? 1} of ${document?.originalFilename ?? "the document"}`}
-              onLoad={() => setLoaded(imageUrl)}
-              onError={() => setFailed(imageUrl)}
-              className="block min-h-96 w-full bg-white shadow-sm"
-            />
-            {region?.length === 4 && region[0] !== undefined && region[1] !== undefined && region[2] !== undefined && region[3] !== undefined ? (
-              <span
-                data-testid="source-highlight"
-                aria-hidden
-                className="pointer-events-none absolute rounded-[2px] bg-accent/20 outline-2 outline-accent"
-                style={{
-                  left: `${region[0] * 100}%`,
-                  top: `${region[1] * 100}%`,
-                  width: `${(region[2] - region[0]) * 100}%`,
-                  height: `${(region[3] - region[1]) * 100}%`,
-                }}
-              />
-            ) : null}
-          </div>
-        )}
+        <SourcePage
+          documentId={source.documentId}
+          page={source.page ?? 1}
+          region={source.region}
+          label={`Page ${source.page ?? 1} of ${document?.originalFilename ?? "the document"}`}
+        />
       </div>
     </Panel>
   );
@@ -282,7 +253,8 @@ export function FactReview({ facts, currency }: { facts: ClaimFacts; currency: s
     setSelectedKind(kind);
     // On a phone the source sits below the list, out of view.
     if (window.matchMedia("(max-width: 1023px)").matches) {
-      sourcePane.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      // After the new source renders, and without animation, which a later layout change can cut short.
+      requestAnimationFrame(() => sourcePane.current?.scrollIntoView({ block: "start" }));
     }
   }
 

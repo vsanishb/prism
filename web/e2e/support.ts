@@ -18,6 +18,17 @@ export function account(role: string): SyntheticAccount {
   return { email: match[1], password: match[2] };
 }
 
+/** For roles held by more than one seeded account, such as the second policy manager. */
+export function accountByEmail(prefix: string): SyntheticAccount {
+  const file = process.env.PRISM_E2E_CREDENTIALS ?? "../.data/synthetic-users.md";
+  const sheet = readFileSync(path.resolve(process.cwd(), file), "utf8");
+  const match = sheet.match(new RegExp(`\\| (${prefix}@\\S+) \\| \`([^\`]+)\``));
+  if (!match?.[1] || !match[2]) {
+    throw new Error(`No synthetic account ${prefix}. Run the seed command first.`);
+  }
+  return { email: match[1], password: match[2] };
+}
+
 export async function signIn(page: Page, { email, password }: SyntheticAccount) {
   await page.goto("/sign-in");
   await page.getByLabel("Email").fill(email);

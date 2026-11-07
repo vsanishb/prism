@@ -74,7 +74,7 @@ class KnowledgeStore {
     }
 
     void saveBatch(UUID ingestionId, PolicyExtraction.Result result, int first, int last) {
-        // Usage belongs with the AI service's own records; this is what the pages said.
+        // Usage is stored in ai_runs. This is what the pages said.
         PolicyExtraction.Result content = new PolicyExtraction.Result(
                 result.pipelineVersion(), result.pageCount(), result.firstPage(), result.lastPage(), result.provisions(), List.of());
         jdbc.sql("""
@@ -84,6 +84,20 @@ class KnowledgeStore {
                         """)
                 .params(ingestionId, first, last, result.pipelineVersion(), json.writeValueAsString(content))
                 .update();
+    }
+
+    void saveRuns(UUID ingestionId, UUID documentId, List<dev.prism.core.aiclient.DocumentExtraction.ModelRun> runs) {
+        for (var run : runs) {
+            jdbc.sql("""
+                            INSERT INTO core.ai_runs (ingestion_id, document_id, task, model, provider, prompt_version, attempt,
+                                outcome, input_tokens, output_tokens, cost_usd, latency_ms)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            """)
+                    .params(
+                            ingestionId, documentId, run.task(), run.model(), run.provider(), run.promptVersion(), run.attempt(),
+                            run.outcome(), run.inputTokens(), run.outputTokens(), run.costUsd(), run.latencyMs())
+                    .update();
+        }
     }
 
     List<PolicyExtraction.Result> batches(UUID ingestionId) {

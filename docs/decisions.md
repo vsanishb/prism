@@ -383,3 +383,15 @@ The same caution applies as before: a small, clean synthetic set cannot separate
 **Status:** Accepted, routes provisional · **Source:** User
 Supersedes D-069's routes. The user chose `deepseek/deepseek-v4.1-flash-1017` for every task, on cost: $0.15 in and $0.60 out per million tokens. The user also said the retention check could be ignored for synthetic data, but this model passes it, with 43 ZDR endpoints and none retaining flagged content, so the check stays on at no cost. It must stay on before any real document is processed ([privacy gate](security.md#privacy-gate)). Haiku remains the escalation.
 Evaluated on 2026-11-07: all claim targets met, at $0.025 for 17 documents. One misread date was caught by grounding and became `UNCERTAIN`. Policy extraction met all targets: 49 of 49 critical values, 53 of 53 provisions, every exception, reference, and footnote, at $0.06 for three policies. That needed two code fixes, both deterministic: a percentage or duration is taken from text with extra words only when exactly one candidate is present, and a bare number reported as a duration takes its unit from the quote only when the quote holds one number and one unit.
+
+### D-071 Policy knowledge lives in core
+**Status:** Accepted · **Source:** Dev
+Refines the architecture, which placed provisions in the AI-owned `knowledge` schema. M4's core work is human review: confirmation, correction, rejection, and publication, each audited in the same transaction as the change. Core cannot read `knowledge`, and the AI service must not write claim-side decisions. So core assembles and stores provisions, values, relations, findings, and reviews, and the AI service stays stateless, as it is for claims (D-013). The `knowledge` schema will hold only the M5 search index, built from published versions that core sends.
+
+### D-072 Policy reading in overlapping batches
+**Status:** Accepted · **Source:** Dev
+Batches of up to six pages, each starting on the previous batch's last page. A clause cut by a page break is seen whole by the next batch, and duplicates merge by clause key, keeping the fuller text and everything each reading found. A provision marked as continuing joins the next batch's continuation. Assembly is plain code, and is tested with scripted batches.
+
+### D-073 Rules apply to corrections too
+**Status:** Accepted · **Source:** Dev
+One function decides whether a value breaks a rule, such as a sublimit above the sum insured. It runs on the extracted value when assembling, and again on the reviewed value at publication, so that a correction cannot introduce what a reading would have been flagged for. Publication also requires every critical value to be reviewed, all pages read, and a publisher other than the uploader. A second synthetic policy manager exists so that this can be tested.

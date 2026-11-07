@@ -69,6 +69,8 @@ One Neon database on Postgres 18, with two schemas, each with its own runtime ro
 
 ### `knowledge` schema (owner: AI service)
 
+Policy structure, values, and reviews live in `core`, beside the review and audit that govern them ([D-071](decisions.md)). This schema will hold the M5 search index, built from published versions.
+
 Separate layers preserve traceability from source to search result.
 
 | Layer | Table (planned) | Contents |

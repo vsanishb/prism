@@ -9,3 +9,4 @@ All test data is synthetic. It must never be presented as real insurance or medi
 | M1 Secure platform | [m1-secure-platform.md](m1-secure-platform.md) |
 | M2 Claims and documents | [m2-claims-documents.md](m2-claims-documents.md) |
 | M3 Document intelligence and workflows | [m3-document-intelligence.md](m3-document-intelligence.md) |
+| M4 Policy intelligence | [m4-policy-intelligence.md](m4-policy-intelligence.md) |

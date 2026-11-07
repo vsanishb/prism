@@ -143,6 +143,34 @@ class PolicyKnowledgeFlowTest extends IntegrationTest {
     }
 
     @Test
+    void modelUsageIsRecordedForSuccessAndFailure() throws Exception {
+        UUID document = uploadWording();
+        ingestion.begin(document);
+        var run = new dev.prism.core.aiclient.DocumentExtraction.ModelRun(
+                "policy_extraction", "m", "p", "policy.v1", 1, "UNAVAILABLE", null, null, null, 10);
+        var batch = goldWording();
+        var withRuns = new dev.prism.core.aiclient.PolicyExtraction.Result(batch.pipelineVersion(), batch.pageCount(),
+                batch.firstPage(), batch.lastPage(), batch.provisions(),
+                List.of(new dev.prism.core.aiclient.DocumentExtraction.ModelRun(
+                        "policy_extraction", "m", "p", "policy.v1", 1, "SUCCEEDED", 100, 20, new java.math.BigDecimal("0.0012"), 900)));
+        when(aiService.extractPolicyPages(any()))
+                .thenThrow(new Failure("model_unavailable", true, List.of(run)))
+                .thenReturn(withRuns);
+
+        assertThatThrownBy(() -> ingestion.extractBatch(document, new PageRange(1, 2))).isInstanceOf(Failure.class);
+        ingestion.extractBatch(document, new PageRange(1, 2));
+
+        assertThat(jdbc.sql("""
+                        SELECT r.outcome FROM core.ai_runs r JOIN core.policy_ingestions i ON i.id = r.ingestion_id
+                        WHERE i.document_id = ? ORDER BY r.id
+                        """)
+                        .param(document)
+                        .query(String.class)
+                        .list())
+                .containsExactly("UNAVAILABLE", "SUCCEEDED");
+    }
+
+    @Test
     void theUploaderCannotPublishButAnotherManagerCan() throws Exception {
         ingest();
         confirmAll(uploader);

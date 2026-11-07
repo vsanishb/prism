@@ -10,8 +10,8 @@ Each milestone delivers a substantial, testable slice through the frontend. Comp
 | M1 | Secure platform | Complete, except first CI run | M0 |
 | M2 | Claims and documents | Complete | M1 |
 | M3 | Document intelligence and workflows | Complete | M2 |
-| M4 | Policy intelligence | **Next** | M3 |
-| M5 | Hybrid retrieval | Planned | M4 |
+| M4 | Policy intelligence | Complete | M3 |
+| M5 | Hybrid retrieval | **Next** | M4 |
 | M6 | Policy Agent | Planned | M3, M5 |
 | M7 | Fraud and risk intelligence | Planned | M3 |
 | M8 | Human review and outcomes | Planned | M6, M7 |
@@ -115,14 +115,14 @@ Every milestone also requires: tests at the levels in [testing.md](testing.md), 
 **Objective:** policy PDFs become validated, structured, human-approved knowledge.
 **Plan:** [policy intelligence](plans/policy-intelligence.md)
 
-- [ ] Implement `PolicyIngestionWorkflow`
-- [ ] Implement layout-aware page extraction, including tables
-- [ ] Assemble structure across pages
-- [ ] Implement provisions and relationships
-- [ ] Implement validation and integrity checks
-- [ ] Implement review, correction, approval, and publication
-- [ ] Build ingestion progress, structure explorer, and side-by-side validation screens
-- [ ] Create the policy evaluation set
+- [x] Implement `PolicyIngestionWorkflow`
+- [x] Implement layout-aware page extraction, including tables
+- [x] Assemble structure across pages
+- [x] Implement provisions and relationships
+- [x] Implement validation and integrity checks
+- [x] Implement review, correction, approval, and publication
+- [x] Build ingestion progress, structure explorer, and side-by-side validation screens
+- [x] Create the policy evaluation set
 
 **Frontend test flow:** upload a policy → watch ingestion → browse the structure → compare a benefit table with its source → correct a flagged value → publish.
 

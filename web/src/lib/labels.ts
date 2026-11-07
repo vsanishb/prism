@@ -5,6 +5,12 @@ import type {
   DocumentType,
   FactState,
   Finding,
+  KnowledgeStatus,
+  PolicyFinding,
+  PolicyProvision,
+  PolicyRelation,
+  PolicyValueKind,
+  ProvisionType,
   Role,
   StageName,
   WithdrawalReason,
@@ -45,6 +51,13 @@ const ACTION_LABELS: Record<string, string> = {
   SYNTHETIC_USER_SEEDED: "Synthetic user created",
   POLICY_CREATED: "Policy created",
   POLICY_VERSION_CREATED: "Policy version added",
+  POLICY_PAGES_EXTRACTED: "Policy pages read",
+  POLICY_KNOWLEDGE_READY_FOR_REVIEW: "Policy ready for review",
+  POLICY_VALUE_CONFIRMED: "Policy value confirmed",
+  POLICY_VALUE_CORRECTED: "Policy value corrected",
+  POLICY_VERSION_PUBLISHED: "Policy version published",
+  POLICY_VERSION_REJECTED: "Policy version rejected",
+  POLICY_INGESTION_RETRY_REQUESTED: "Policy reading retried",
   CLAIM_CREATED: "Claim created",
   CLAIM_UPDATED: "Claim edited",
   CLAIM_SUBMITTED: "Claim submitted",
@@ -195,6 +208,98 @@ export function findingMessage(finding: Finding, documents: DocumentReference[])
       return `The claimed amount is ${moneyOrText(finding.expectedValue)}, but the bills total ${moneyOrText(finding.actualValue)}.`;
     case "DOCUMENT_TYPE_DIFFERS":
       return `${name} was uploaded as ${typeLabel(finding.expectedValue)}, but reads as ${typeLabel(finding.actualValue)}.`;
+    default:
+      return finding.code;
+  }
+}
+
+export const KNOWLEDGE_STATUS_LABELS: Record<KnowledgeStatus, string> = {
+  NO_WORDING: "No wording",
+  PROCESSING: "Reading",
+  IN_REVIEW: "In review",
+  PUBLISHED: "Published",
+  REJECTED: "Rejected",
+};
+
+export const PROVISION_TYPE_LABELS: Record<ProvisionType, string> = {
+  SCHEDULE: "Schedule",
+  DEFINITION: "Definitions",
+  BENEFIT: "Benefits",
+  WAITING_PERIOD: "Waiting periods",
+  EXCLUSION: "Exclusions",
+  PROCEDURE: "Claim procedure",
+  CLAUSE: "Other clauses",
+};
+
+export const RELATION_LABELS: Record<PolicyRelation["relation"], string> = {
+  QUALIFIES: "Conditions in",
+  LIMITS: "Limited by",
+  EXCEPTS: "Exception in",
+  DEFINES: "Uses a term defined in",
+  REFERENCES: "Refers to",
+};
+
+const DURATION_UNITS: Record<string, [string, string]> = {
+  HOURS: ["hour", "hours"],
+  DAYS: ["day", "days"],
+  MONTHS: ["month", "months"],
+  YEARS: ["year", "years"],
+};
+
+/** A policy value for reading: money in rupees, percentages, and durations with their unit. */
+export function policyValueText(kind: PolicyValueKind, value: string, unit: string | null, currency: string): string {
+  switch (kind) {
+    case "AMOUNT":
+      return new Intl.NumberFormat("en-IN", { style: "currency", currency }).format(Number(value));
+    case "PERCENTAGE":
+      return `${Number(value)}%`;
+    case "DURATION": {
+      const [one, many] = DURATION_UNITS[unit ?? ""] ?? ["", ""];
+      return `${value} ${Number(value) === 1 ? one : many}`.trim();
+    }
+    default:
+      return value;
+  }
+}
+
+export const POLICY_VALUE_PROBLEMS: Record<string, string> = {
+  NO_SOURCE: "No source could be given for this value.",
+  QUOTE_NOT_FOUND: "The quoted text was not found on the page.",
+  VALUE_NOT_IN_QUOTE: "The quoted text does not contain this value.",
+  UNREADABLE_FORMAT: "This could not be read as a number.",
+  SCANNED_PAGE: "Scanned page: check the value against the page.",
+};
+
+export function policyFindingMessage(finding: PolicyFinding, provisions: PolicyProvision[], currency: string): string {
+  const provision = provisions.find((item) => item.id === finding.provisionId);
+  const where = provision ? `Clause ${provision.key ?? provision.title}` : "The wording";
+  const money = (value: string | null) =>
+    value === null ? "" : new Intl.NumberFormat("en-IN", { style: "currency", currency }).format(Number(value));
+  switch (finding.code) {
+    case "PAGES_NOT_READ":
+      return `Pages ${finding.actualValue?.replace(/[[\]]/g, "")} were not read.`;
+    case "SUM_INSURED_DIFFERS_FROM_REGISTER":
+      return `The schedule states a sum insured of ${money(finding.actualValue)}, but the register has ${money(finding.expectedValue)}.`;
+    case "LIMIT_EXCEEDS_SUM_INSURED":
+      return `${where} sets a limit of ${money(finding.actualValue)}, above the sum insured of ${money(finding.expectedValue)}.`;
+    case "PERCENTAGE_OVER_100":
+      return `${where} states a percentage above 100.`;
+    case "VALUE_UNCERTAIN":
+      return `${where}: a value could not be confirmed against the page.`;
+    case "PROVISION_TEXT_UNVERIFIED":
+      return `${where}: its text does not fully match the page. Compare it with the source.`;
+    case "EXCEPTION_NOT_CAPTURED":
+      return `${where} mentions an exception that was not captured separately.`;
+    case "WAITING_PERIOD_WITHOUT_DURATION":
+      return `${where} is a waiting period with no duration found.`;
+    case "BENEFIT_WITHOUT_LIMIT":
+      return `${where} is a benefit with no limit found.`;
+    case "UNRESOLVED_REFERENCE":
+      return `${where} cites Clause ${finding.expectedValue}, which was not found.`;
+    case "REFERENCE_NOT_IN_TEXT":
+      return `${where} was linked to Clause ${finding.expectedValue}, but its text does not cite it.`;
+    case "NUMBERING_GAP":
+      return `Clause ${finding.expectedValue} is missing from the numbering. Check whether it was skipped.`;
     default:
       return finding.code;
   }

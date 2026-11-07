@@ -147,6 +147,8 @@ export interface PolicySummary {
   createdAt: string;
 }
 
+export type KnowledgeStatus = "NO_WORDING" | "PROCESSING" | "IN_REVIEW" | "PUBLISHED" | "REJECTED";
+
 export interface PolicyVersion {
   id: string;
   versionNumber: number;
@@ -154,6 +156,7 @@ export interface PolicyVersion {
   effectiveTo: string;
   sumInsured: string;
   currency: string;
+  knowledgeStatus: KnowledgeStatus;
 }
 
 export interface PolicyDetail {
@@ -281,4 +284,88 @@ export interface ClaimFacts {
   lineItems: LineItem[];
   findings: Finding[];
   documents: DocumentReference[];
+}
+
+export type ProvisionType = "SCHEDULE" | "DEFINITION" | "BENEFIT" | "WAITING_PERIOD" | "EXCLUSION" | "PROCEDURE" | "CLAUSE";
+export type PolicyValueKind = "AMOUNT" | "PERCENTAGE" | "DURATION" | "TEXT";
+
+export interface ValueReview {
+  decision: "CONFIRMED" | "CORRECTED";
+  correctedValue: string | null;
+  note: string | null;
+  reviewerName: string;
+  reviewedAt: string;
+}
+
+export interface PolicyValue {
+  id: string;
+  name: string;
+  kind: PolicyValueKind;
+  rawValue: string;
+  value: string | null;
+  unit: string | null;
+  qualifier: string | null;
+  state: "PRESENT" | "UNCERTAIN";
+  page: number | null;
+  quote: string | null;
+  region: string[] | number[] | null;
+  grounding: Grounding;
+  problem: string | null;
+  critical: boolean;
+  review: ValueReview | null;
+}
+
+export interface PolicyProvision {
+  id: string;
+  key: string | null;
+  type: ProvisionType;
+  title: string;
+  text: string;
+  pageStart: number;
+  pageEnd: number;
+  quote: string;
+  region: string[] | number[] | null;
+  grounding: Grounding;
+  textVerified: boolean;
+  parentKey: string | null;
+  exceptions: string[];
+  values: PolicyValue[];
+}
+
+export interface PolicyRelation {
+  fromProvisionId: string;
+  targetKey: string;
+  toProvisionId: string | null;
+  relation: "QUALIFIES" | "LIMITS" | "EXCEPTS" | "DEFINES" | "REFERENCES";
+  origin: "MODEL" | "RULE";
+  statedInText: boolean;
+}
+
+export interface PolicyFinding {
+  code: string;
+  severity: "ERROR" | "WARNING" | "INFO";
+  provisionId: string | null;
+  valueId: string | null;
+  expectedValue: string | null;
+  actualValue: string | null;
+}
+
+export interface PolicyKnowledge {
+  versionId: string;
+  versionNumber: number;
+  knowledgeStatus: KnowledgeStatus;
+  sumInsured: string;
+  currency: string;
+  documentId: string | null;
+  documentName: string | null;
+  pageCount: number | null;
+  uploadedByName: string | null;
+  batches: { firstPage: number; lastPage: number; status: "PROCESSING" | "COMPLETED" | "FAILED"; detailCode: string | null }[];
+  provisions: PolicyProvision[];
+  relations: PolicyRelation[];
+  findings: PolicyFinding[];
+  blockers: { code: string; message: string }[];
+  publishedByName: string | null;
+  publishedAt: string | null;
+  rejectionReason: string | null;
 }

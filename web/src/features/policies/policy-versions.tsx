@@ -1,16 +1,17 @@
 "use client";
 
-import { FileText, Layers, Plus, Upload } from "lucide-react";
+import { FileSearch, FileText, Layers, Plus, Upload } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
-import { EmptyState, Notice } from "@/components/ui/feedback";
+import { Badge, EmptyState, Notice } from "@/components/ui/feedback";
 import { Field, Input } from "@/components/ui/field";
 import { Panel, SectionTitle } from "@/components/ui/layout";
 import { ApiError, apiRequest, apiUpload, errorMessage } from "@/lib/client-api";
 import { formatDate, formatMoney } from "@/lib/format";
+import { KNOWLEDGE_STATUS_LABELS } from "@/lib/labels";
 import type { PolicyDetail } from "@/lib/types";
 
 function AddVersionDialog({ policyId, open, onOpenChange }: { policyId: string; open: boolean; onOpenChange: (open: boolean) => void }) {
@@ -74,6 +75,14 @@ function AddVersionDialog({ policyId, open, onOpenChange }: { policyId: string; 
   );
 }
 
+const KNOWLEDGE_TONES = {
+  NO_WORDING: "neutral",
+  PROCESSING: "accent",
+  IN_REVIEW: "caution",
+  PUBLISHED: "positive",
+  REJECTED: "critical",
+} as const;
+
 export function PolicyVersions({
   policyId,
   versions,
@@ -134,15 +143,32 @@ export function PolicyVersions({
           versions.map(({ version, documents }) => {
             const wording = documents.find((document) => document.status === "ACTIVE");
             return (
-              <div key={version.id} className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
+              <div
+                key={version.id}
+                role="group"
+                aria-label={`Version ${version.versionNumber}`}
+                className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
+              >
                 <div>
-                  <p className="font-medium">Version {version.versionNumber}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-medium">Version {version.versionNumber}</p>
+                    <Badge tone={KNOWLEDGE_TONES[version.knowledgeStatus]}>{KNOWLEDGE_STATUS_LABELS[version.knowledgeStatus]}</Badge>
+                  </div>
                   <p className="text-[13px] text-ink-muted">
                     {formatDate(version.effectiveFrom)} to {formatDate(version.effectiveTo)} · Sum insured{" "}
                     {formatMoney(version.sumInsured, version.currency)}
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  {version.knowledgeStatus !== "NO_WORDING" ? (
+                    <Link
+                      href={`/policies/${policyId}/versions/${version.id}`}
+                      className="inline-flex items-center gap-1.5 text-[13px] font-medium text-accent"
+                    >
+                      <FileSearch aria-hidden className="size-4" />
+                      {version.knowledgeStatus === "IN_REVIEW" ? "Review knowledge" : "View knowledge"}
+                    </Link>
+                  ) : null}
                   {wording ? (
                     <Link
                       href={`/documents/${wording.id}?back=/policies/${policyId}`}
@@ -154,7 +180,7 @@ export function PolicyVersions({
                   ) : (
                     <span className="text-[13px] text-ink-muted">No wording uploaded</span>
                   )}
-                  {canManage ? (
+                  {canManage && version.knowledgeStatus !== "PUBLISHED" ? (
                     <Button
                       variant="ghost"
                       loading={uploading === version.id}

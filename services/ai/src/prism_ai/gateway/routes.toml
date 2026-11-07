@@ -26,3 +26,15 @@ primary = "deepseek/deepseek-v4.1-flash-1017"
 escalation = "anthropic/claude-haiku-5.5"
 claim_data = true
 max_tokens = 16000
+
+# Search (M5, D-075). Queries will carry claim facts in M6, so these are held to the same rules.
+# The index records its embedding model, and a query is embedded with that model, not this one.
+[embedding]
+model = "openai/text-embedding-3-small"
+dimensions = 1536
+claim_data = true
+batch_size = 64
+
+[rerank]
+model = "qwen/qwen3-reranker-8b"
+claim_data = true

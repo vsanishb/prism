@@ -20,7 +20,7 @@ from uuid import uuid4
 from prism_ai.gateway.client import ModelGateway
 from prism_ai.gateway.errors import ProcessingError
 from prism_ai.gateway.retention import RetentionCatalog
-from prism_ai.gateway.routes import RouteTable, Task, load_routes
+from prism_ai.gateway.routes import Task, load_routes
 from prism_ai.main import model_http_client
 from prism_ai.policies.pipeline import MAX_BATCH_PAGES, PIPELINE_VERSION, PolicyPipeline
 from prism_ai.policies.schemas import ExtractedProvision, PolicyPagesRequest, ProvisionType, ValueState
@@ -150,7 +150,7 @@ async def main() -> int:
         tasks = dict(routes.tasks)
         route = tasks[Task.POLICY_EXTRACTION]
         tasks[Task.POLICY_EXTRACTION] = route.model_copy(update={"primary": arguments.model})
-        routes = RouteTable(tasks=tasks)
+        routes = routes.model_copy(update={"tasks": tasks})
 
     tally = Tally()
     async with model_http_client(get_settings()) as http:

@@ -12,7 +12,7 @@ from pydantic import BaseModel, ConfigDict
 from prism_ai.gateway.client import ModelGateway, StructuredRequest
 from prism_ai.gateway.errors import ModelOutputInvalid, ModelRejected, ModelUnavailable, RouteNotPermitted
 from prism_ai.gateway.retention import RetentionCatalog
-from prism_ai.gateway.routes import Route, RouteTable, Task, load_routes
+from prism_ai.gateway.routes import Route, Task, load_routes
 from prism_ai.gateway.usage import ModelRun, RunOutcome
 from tests.support.scripted import ScriptedProvider, catalog_entries, completion
 
@@ -60,7 +60,7 @@ def test_a_route_not_cleared_for_claim_data_is_refused_before_any_call() -> None
 
     async def call() -> None:
         async with provider.client() as http:
-            gateway = ModelGateway(http, RouteTable(tasks=tasks), RetentionCatalog(http))
+            gateway = ModelGateway(http, ROUTES.model_copy(update={"tasks": tasks}), RetentionCatalog(http))
             await gateway.complete(request(), [])
 
     with pytest.raises(RouteNotPermitted):
@@ -228,3 +228,74 @@ def test_routes_cover_every_task_and_are_all_cleared_for_claim_data() -> None:
 def test_shipped_routes_avoid_models_known_to_retain() -> None:
     models = {entry["model_id"] for entry in catalog_entries(ROUTES)}
     assert "google/gemini-3.8-flash" not in models
+
+
+def embed(provider: ScriptedProvider, texts: list[str], runs: list[ModelRun]) -> list[list[float]]:
+    async def call() -> list[list[float]]:
+        async with provider.client() as http:
+            return await provider.gateway(http).embed(texts, runs)
+
+    return asyncio.run(call())
+
+
+def vectors(body: dict[str, Any], size: int = 1536) -> httpx.Response:
+    data = [{"index": index, "embedding": [0.5] * size} for index in reversed(range(len(body["input"])))]
+    return httpx.Response(200, json={"data": data, "usage": {"prompt_tokens": 3, "cost": 0.00001}})
+
+
+def test_embeddings_are_private_batched_and_returned_in_input_order() -> None:
+    provider = ScriptedProvider(respond=vectors)
+    runs: list[ModelRun] = []
+    texts = [f"text {index}" for index in range(ROUTES.embedding.batch_size + 1)]
+
+    result = embed(provider, texts, runs)
+
+    assert len(result) == len(texts)
+    assert [len(body["input"]) for body in provider.bodies] == [ROUTES.embedding.batch_size, 1]
+    assert all(body["provider"] == {"zdr": True, "data_collection": "deny"} for body in provider.bodies)
+    assert all(body["dimensions"] == 1536 for body in provider.bodies)
+    assert [run.outcome for run in runs] == [RunOutcome.SUCCEEDED, RunOutcome.SUCCEEDED]
+
+
+def test_embeddings_of_the_wrong_size_are_refused() -> None:
+    provider = ScriptedProvider(respond=lambda body: vectors(body, size=3))
+    runs: list[ModelRun] = []
+    with pytest.raises(ModelUnavailable):
+        embed(provider, ["text"], runs)
+    assert [run.outcome for run in runs] == [RunOutcome.INVALID_OUTPUT]
+
+
+def test_an_embedding_model_with_safety_retention_is_refused_before_any_call() -> None:
+    entries = [
+        {"model_id": model, "safety_retention": model == ROUTES.embedding.model} for model in ROUTES.models()
+    ]
+    provider = ScriptedProvider(respond=vectors, catalog=entries)
+    with pytest.raises(RouteNotPermitted):
+        embed(provider, ["text"], [])
+    assert provider.bodies == []
+
+
+def test_rerank_scores_come_back_in_document_order() -> None:
+    reply = {"results": [{"index": 1, "relevance_score": 0.9}, {"index": 0, "relevance_score": 0.1}]}
+    provider = ScriptedProvider([httpx.Response(200, json=reply)])
+
+    async def call() -> list[float]:
+        async with provider.client() as http:
+            return await provider.gateway(http).rerank("query", ["a", "b"], [])
+
+    assert asyncio.run(call()) == [0.1, 0.9]
+    assert provider.bodies[0]["provider"] == {"zdr": True, "data_collection": "deny"}
+
+
+def test_rerank_that_skips_a_document_is_refused() -> None:
+    reply = {"results": [{"index": 0, "relevance_score": 0.9}]}
+    provider = ScriptedProvider([httpx.Response(200, json=reply)])
+    runs: list[ModelRun] = []
+
+    async def call() -> list[float]:
+        async with provider.client() as http:
+            return await provider.gateway(http).rerank("query", ["a", "b"], runs)
+
+    with pytest.raises(ModelUnavailable):
+        asyncio.run(call())
+    assert [run.outcome for run in runs] == [RunOutcome.INVALID_OUTPUT]

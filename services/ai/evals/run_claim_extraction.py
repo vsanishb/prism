@@ -167,7 +167,7 @@ def with_overrides(routes: RouteTable, arguments: argparse.Namespace) -> RouteTa
     if arguments.escalation_model:
         escalation = {"escalation": arguments.escalation_model}
         tasks = {task: route.model_copy(update=escalation) for task, route in tasks.items()}
-    return RouteTable(tasks=tasks)
+    return routes.model_copy(update={"tasks": tasks})
 
 
 def ratio(correct: int, total: int) -> float:

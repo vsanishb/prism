@@ -8,6 +8,7 @@ from fastapi import FastAPI
 from prism_ai.api.documents import processing_failure
 from prism_ai.api.documents import router as documents_router
 from prism_ai.api.internal import router as internal_router
+from prism_ai.api.retrieval import router as retrieval_router
 from prism_ai.api.service_auth import ServiceTokenVerifier
 from prism_ai.database import create_pool
 from prism_ai.documents.pipeline import DocumentPipeline
@@ -16,6 +17,8 @@ from prism_ai.gateway.errors import ProcessingError
 from prism_ai.gateway.retention import RetentionCatalog
 from prism_ai.gateway.routes import load_routes
 from prism_ai.policies.pipeline import PolicyPipeline
+from prism_ai.retrieval.pipeline import RetrievalPipeline
+from prism_ai.retrieval.store import IndexStore
 from prism_ai.settings import Settings, get_settings
 
 structlog.configure(
@@ -49,6 +52,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             gateway = ModelGateway(http, load_routes(), RetentionCatalog(http))
             app.state.document_pipeline = DocumentPipeline(gateway)
             app.state.policy_pipeline = PolicyPipeline(gateway)
+            app.state.retrieval_pipeline = RetrievalPipeline(gateway, IndexStore(pool))
             yield
         await pool.close()
 
@@ -56,6 +60,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app = FastAPI(title="Prism AI", docs_url=None, redoc_url=None, openapi_url=None, lifespan=lifespan)
     app.include_router(internal_router)
     app.include_router(documents_router)
+    app.include_router(retrieval_router)
     app.add_exception_handler(ProcessingError, processing_failure)
 
     @app.get("/health/live")

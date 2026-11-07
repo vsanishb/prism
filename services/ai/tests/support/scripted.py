@@ -28,8 +28,7 @@ def completion(content: Any, finish_reason: str = "stop", provider: str = "Googl
 
 
 def catalog_entries(routes: RouteTable) -> list[dict[str, Any]]:
-    models = {model for route in routes.tasks.values() for model in route.models()}
-    return [{"model_id": model, "safety_retention": False} for model in models]
+    return [{"model_id": model, "safety_retention": False} for model in routes.models()]
 
 
 class ScriptedProvider:

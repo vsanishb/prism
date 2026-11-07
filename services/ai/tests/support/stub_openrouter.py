@@ -16,6 +16,7 @@ from fastapi.responses import JSONResponse
 
 from prism_ai.documents.catalog import DocumentType, fields_for
 from prism_ai.gateway.routes import load_routes
+from tests.support.fake_models import embeddings_reply, rerank_reply
 
 PORT = 8099
 FAIL_ONCE_MARKER = "SCH-IP-2026-007300"
@@ -267,9 +268,17 @@ def policy_pages(text: str) -> dict[str, Any]:
 
 @app.get("/api/v1/endpoints/zdr")
 def catalog() -> dict[str, Any]:
-    routes = load_routes()
-    models = {model for route in routes.tasks.values() for model in route.models()}
-    return {"data": [{"model_id": model, "safety_retention": False} for model in models]}
+    return {"data": [{"model_id": model, "safety_retention": False} for model in load_routes().models()]}
+
+
+@app.post("/api/v1/embeddings")
+async def embeddings(request: Request) -> dict[str, Any]:
+    return embeddings_reply(await request.json())
+
+
+@app.post("/api/v1/rerank")
+async def rerank(request: Request) -> dict[str, Any]:
+    return rerank_reply(await request.json())
 
 
 @app.post("/api/v1/chat/completions", response_model=None)

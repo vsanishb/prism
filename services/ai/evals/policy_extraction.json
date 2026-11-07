@@ -1,0 +1,76 @@
+{
+  "description": "Golden answers for policy extraction. All policies are synthetic. Values are [kind, value, unit]. Every listed value must be extracted as PRESENT on the provision with that key.",
+  "cases": [
+    {
+      "path": "policies/family-floater-gold-v1.pdf",
+      "provisions": {
+        "1.1": {"type": "DEFINITION", "values": [["DURATION", "24", "HOURS"]], "references": ["1.2"]},
+        "1.2": {"type": "DEFINITION", "values": [["DURATION", "24", "HOURS"]]},
+        "1.3": {"type": "DEFINITION", "values": [["DURATION", "48", "MONTHS"]]},
+        "2.1": {"type": "BENEFIT", "references": ["1.1"]},
+        "2.2": {"type": "BENEFIT", "values": [["PERCENTAGE", "1.00", "PERCENT"]]},
+        "2.3": {"type": "BENEFIT", "values": [["PERCENTAGE", "2.00", "PERCENT"]]},
+        "2.4": {"type": "BENEFIT", "values": [["DURATION", "30", "DAYS"]]},
+        "2.5": {"type": "BENEFIT", "values": [["DURATION", "60", "DAYS"]]},
+        "2.6": {"type": "BENEFIT", "values": [["AMOUNT", "40000.00", "INR"]], "references": ["3.2"]},
+        "2.7": {"type": "BENEFIT", "values": [["AMOUNT", "2500.00", "INR"]]},
+        "3.1": {"type": "WAITING_PERIOD", "values": [["DURATION", "30", "DAYS"]], "exceptions": true},
+        "3.2": {"type": "WAITING_PERIOD", "values": [["DURATION", "24", "MONTHS"]], "exceptions": true},
+        "3.3": {"type": "WAITING_PERIOD", "values": [["DURATION", "36", "MONTHS"]], "references": ["1.3"]},
+        "4.1": {"type": "EXCLUSION", "exceptions": true},
+        "4.2": {"type": "EXCLUSION", "references": ["4.3"]},
+        "4.4": {"type": "EXCLUSION"},
+        "5.1": {"type": "PROCEDURE", "values": [["DURATION", "48", "HOURS"]]},
+        "5.2": {"type": "PROCEDURE", "values": [["DURATION", "30", "DAYS"]]}
+      },
+      "schedule": [["AMOUNT", "500000.00", "INR"], ["PERCENTAGE", "10.00", "PERCENT"]]
+    },
+    {
+      "path": "policies/family-floater-gold-v2.pdf",
+      "provisions": {
+        "1.3": {"type": "DEFINITION", "values": [["DURATION", "48", "MONTHS"]]},
+        "2.2": {"type": "BENEFIT"},
+        "2.3": {"type": "BENEFIT", "values": [["PERCENTAGE", "2.00", "PERCENT"]]},
+        "2.6": {"type": "BENEFIT", "values": [["AMOUNT", "40000.00", "INR"]]},
+        "2.7": {"type": "BENEFIT", "values": [["AMOUNT", "2500.00", "INR"]]},
+        "3.2": {"type": "WAITING_PERIOD", "values": [["DURATION", "24", "MONTHS"]]},
+        "4.1": {"type": "EXCLUSION", "exceptions": true}
+      },
+      "schedule": [["AMOUNT", "1000000.00", "INR"], ["PERCENTAGE", "10.00", "PERCENT"]]
+    },
+    {
+      "path": "policies/family-health-platinum.pdf",
+      "provisions": {
+        "1.1": {"type": "DEFINITION", "values": [["DURATION", "24", "HOURS"]]},
+        "1.2": {"type": "DEFINITION", "values": [["DURATION", "24", "HOURS"]]},
+        "1.3": {"type": "DEFINITION", "values": [["DURATION", "36", "MONTHS"]]},
+        "2.1": {"type": "BENEFIT", "references": ["1.1"]},
+        "2.2": {"type": "BENEFIT", "values": [["PERCENTAGE", "1.00", "PERCENT"]]},
+        "2.3": {"type": "BENEFIT", "values": [["PERCENTAGE", "2.00", "PERCENT"]]},
+        "2.4": {"type": "BENEFIT", "values": [["DURATION", "60", "DAYS"]]},
+        "2.5": {"type": "BENEFIT", "values": [["DURATION", "90", "DAYS"]]},
+        "2.6": {"type": "BENEFIT", "references": ["1.2"]},
+        "2.7": {"type": "BENEFIT", "values": [["AMOUNT", "50000.00", "INR"]], "references": ["3.2"], "footnote": "Sub-limit"},
+        "2.8": {"type": "BENEFIT", "values": [["AMOUNT", "60000.00", "INR"]], "references": ["3.4"], "footnote": "Sub-limit"},
+        "2.9": {"type": "BENEFIT", "values": [["AMOUNT", "25000.00", "INR"]], "references": ["2.8"]},
+        "2.10": {"type": "BENEFIT", "values": [["AMOUNT", "3000.00", "INR"]]},
+        "2.11": {"type": "BENEFIT", "values": [["AMOUNT", "25000.00", "INR"]]},
+        "2.12": {"type": "BENEFIT", "values": [["AMOUNT", "100000.00", "INR"]]},
+        "2.13": {"type": "BENEFIT", "values": [["PERCENTAGE", "10.00", "PERCENT"]]},
+        "2.14": {"type": "BENEFIT", "values": [["AMOUNT", "5000.00", "INR"]]},
+        "3.1": {"type": "WAITING_PERIOD", "values": [["DURATION", "30", "DAYS"]], "exceptions": true},
+        "3.2": {"type": "WAITING_PERIOD", "values": [["DURATION", "24", "MONTHS"]]},
+        "3.3": {"type": "WAITING_PERIOD", "values": [["DURATION", "48", "MONTHS"]]},
+        "3.4": {"type": "WAITING_PERIOD", "values": [["DURATION", "9", "MONTHS"]]},
+        "3.5": {"type": "WAITING_PERIOD", "values": [["DURATION", "36", "MONTHS"]]},
+        "4.1": {"type": "EXCLUSION", "exceptions": true},
+        "4.2": {"type": "EXCLUSION", "references": ["4.3"]},
+        "4.4": {"type": "EXCLUSION", "exceptions": true},
+        "4.5": {"type": "EXCLUSION", "values": [["DURATION", "48", "HOURS"]], "exceptions": true},
+        "5.1": {"type": "PROCEDURE", "values": [["DURATION", "24", "HOURS"]]},
+        "5.2": {"type": "PROCEDURE", "values": [["DURATION", "15", "DAYS"]]}
+      },
+      "schedule": [["AMOUNT", "750000.00", "INR"], ["AMOUNT", "25000.00", "INR"], ["PERCENTAGE", "20.00", "PERCENT"]]
+    }
+  ]
+}

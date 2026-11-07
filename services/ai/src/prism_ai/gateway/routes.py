@@ -13,6 +13,7 @@ class Task(StrEnum):
     CLASSIFICATION = "classification"
     EXTRACTION = "extraction"
     REREAD = "reread"
+    POLICY_EXTRACTION = "policy_extraction"
 
 
 class Route(BaseModel):

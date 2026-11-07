@@ -171,6 +171,100 @@ def completion(content: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def policy_value(name: str, raw: str, kind: str, quote: str, page: int) -> dict[str, Any]:
+    return {"name": name, "raw": raw, "kind": kind, "qualifier": "", "page": page, "quote": quote}
+
+
+def policy_provision(
+    key: str, kind: str, title: str, text: str, page: int, values: list[dict[str, Any]], **extra: Any
+) -> dict[str, Any]:
+    return {
+        "key": key, "type": kind, "title": title, "text": text, "page": page, "quote": text[:40],
+        "parent_key": key.split(".")[0] if key else "", "exceptions": [], "references": [],
+        "values": values, "continues_on_next_page": False, "continued_from_previous_page": False,
+    } | extra  # fmt: skip
+
+
+GOLD_PAGE_ONE = [
+    policy_provision(
+        "",
+        "SCHEDULE",
+        "Sum Insured",
+        "Sum Insured INR 5,00,000 per policy year",
+        1,
+        [
+            policy_value(
+                "Sum insured", "INR 5,00,000", "AMOUNT", "Sum Insured INR 5,00,000 per policy year", 1
+            )
+        ],
+    ),
+    policy_provision(
+        "1.1",
+        "DEFINITION",
+        "Hospitalization",
+        "1.1 Hospitalization means admission to a Hospital for at least 24 consecutive in-patient care hours",
+        1,
+        [policy_value("Minimum stay", "24", "DURATION", "at least 24 consecutive in-patient care hours", 1)],
+        references=[{"target_key": "1.2", "relation": "REFERENCES"}],
+    ),
+    policy_provision(
+        "2.6",
+        "BENEFIT",
+        "Cataract surgery",
+        "2.6 Cataract surgery INR 40,000 per eye See waiting period in Clause 3.2",
+        1,
+        [policy_value("Limit", "INR 40,000", "AMOUNT", "Cataract surgery INR 40,000 per eye", 1)],
+        references=[{"target_key": "3.2", "relation": "QUALIFIES"}],
+    ),
+    policy_provision(
+        "2.7",
+        "BENEFIT",
+        "Ambulance",
+        "2.7 Ambulance INR 2,500 per Hospitalization",
+        1,
+        [policy_value("Limit", "INR 2,500", "AMOUNT", "Ambulance INR 2,500 per Hospitalization", 1)],
+    ),
+]
+GOLD_PAGE_TWO = [
+    policy_provision(
+        "3.2",
+        "WAITING_PERIOD",
+        "Specified conditions",
+        "3.2 A 24-month waiting period applies to cataract, hernia, joint replacement, and kidney stones",
+        2,
+        [policy_value("Waiting period", "24-month", "DURATION", "A 24-month waiting period", 2)],
+    ),
+    policy_provision(
+        "4.1",
+        "EXCLUSION",
+        "Cosmetic treatment",
+        "4.1 Cosmetic or aesthetic treatment, except reconstruction following an accident.",
+        2,
+        [],
+        exceptions=["except reconstruction following an accident"],
+    ),
+    policy_provision(
+        "4.2",
+        "EXCLUSION",
+        "Obesity",
+        "4.2 Treatment of obesity, unless the conditions of Clause 4.3 are all met.",
+        2,
+        [],
+        references=[{"target_key": "4.3", "relation": "EXCEPTS"}],
+    ),
+]
+
+
+def policy_pages(text: str) -> dict[str, Any]:
+    """Answers only for the pages present in the request, as a real model would."""
+    provisions = []
+    if "Page 1\\n" in text or "Page 1\n" in text:
+        provisions += GOLD_PAGE_ONE
+    if "Page 2\\n" in text or "Page 2\n" in text:
+        provisions += GOLD_PAGE_TWO
+    return {"provisions": provisions}
+
+
 @app.get("/api/v1/endpoints/zdr")
 def catalog() -> dict[str, Any]:
     routes = load_routes()
@@ -187,6 +281,9 @@ async def chat(request: Request) -> dict[str, Any] | JSONResponse:
         return completion(classification(text))
     if schema_name == "document_reread":
         return completion(reread(body))
+    if schema_name == "policy_pages":
+        await asyncio.sleep(DELAY_SECONDS)
+        return completion(policy_pages(text))
     await asyncio.sleep(DELAY_SECONDS)
     # Alternates for this document, so that every test run sees one failure and then a good retry.
     if FAIL_ONCE_MARKER in text:

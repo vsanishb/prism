@@ -177,6 +177,88 @@ def policy_wording(version: int) -> list[Any]:
     return story
 
 
+def complex_policy() -> list[Any]:
+    """Harder than the Gold wording: a benefits table across a page break, a merged cell, footnotes,
+    exceptions inside exclusions, a waiting period table, and a clause split by a page break."""
+    benefits = [
+        ["Clause", "Benefit", "Limit", "Conditions"],
+        ["2.1", "In-patient Hospitalization", "Up to Sum Insured", "Subject to Clause 1.1"],
+        ["2.2", "Room rent", "1% of Sum Insured per day", "Proportionate deduction applies if exceeded"],
+        ["2.3", "Intensive care unit", "2% of Sum Insured per day", "Medically necessary admission only"],
+        ["2.4", "Pre-hospitalization", "60 days before admission", "Related to the admitted condition"],
+        ["2.5", "Post-hospitalization", "90 days after discharge", "Related to the admitted condition"],
+        ["2.6", "Day care treatment", "Up to Sum Insured", "As defined in Clause 1.2"],
+        ["2.7", "Cataract surgery", "INR 50,000 per eye*", "See waiting period in Clause 3.2"],
+        ["2.8", "Maternity", "INR 60,000 per delivery*", "After the waiting period in Clause 3.4"],
+        ["2.9", "Newborn cover", "INR 25,000", "Covered with Clause 2.8"],
+        ["2.10", "Ambulance", "INR 3,000 per Hospitalization", "Registered ambulance services only"],
+        ["2.11", "AYUSH treatment", "INR 25,000 per policy year", "In a government-recognized hospital"],
+        ["2.12", "Organ donor expenses", "INR 1,00,000", "Recipient must be an Insured Person"],
+        ["2.13", "Domiciliary treatment", "10% of Sum Insured", "Only where the patient cannot be moved"],
+        ["2.14", "Health check-up", "INR 5,000 every two policy years", "No claim needed in the preceding period"],
+    ]
+    style = TableStyle(GRID.getCommands() + [("SPAN", (3, 4), (3, 5))])
+    benefit_table = Table(benefits, colWidths=[w * mm for w in (14, 46, 52, 62)], repeatRows=1)
+    benefit_table.setStyle(style)
+    waiting = Table(
+        [
+            ["Clause", "Condition", "Waiting period"],
+            ["3.2", "Cataract, hernia, and kidney stones", "24 months"],
+            ["3.3", "Joint replacement", "48 months"],
+            ["3.4", "Maternity and newborn", "9 months"],
+            ["3.5", "Bariatric surgery", "36 months"],
+        ],
+        colWidths=[w * mm for w in (14, 100, 60)],
+    )
+    waiting.setStyle(GRID)
+    sentence = (
+        "This exclusion applies to every benefit in Section 2, including Hospitalization, day care "
+        "treatment, ambulance, and AYUSH treatment, whether the treatment was planned or arose during travel. "
+    )
+    long_clause = (
+        "<b>4.5</b> Treatment received outside India is not covered. "
+        + sentence * 3
+        + "It does not apply to emergency evacuation to India within 48 hours of the first symptoms."
+    )
+    return [
+        Paragraph(INSURER, TITLE),
+        Paragraph("Family Health Platinum: Policy Wording and Schedule", HEADING),
+        Paragraph("Version 1. Policy period 1 April 2026 to 31 March 2027.", BODY),
+        Paragraph("Schedule", HEADING),
+        key_values(
+            [
+                ("Policy number", "SYN-FHP-2026-0003"),
+                ("Sum Insured", "INR 7,50,000 per policy year"),
+                ("Deductible", "INR 25,000 per policy year"),
+                ("Co-payment", "20% of each admissible claim treated in a Zone B city"),
+            ]
+        ),
+        Paragraph("Section 1: Definitions", HEADING),
+        Paragraph("<b>1.1 Hospitalization</b> means admission to a Hospital for at least 24 consecutive hours.", BODY),
+        Paragraph("<b>1.2 Day Care Treatment</b> means a procedure completed in under 24 hours.", BODY),
+        Paragraph("<b>1.3 Pre-existing Disease</b> means a condition diagnosed within 36 months before cover began.", BODY),
+        # Pushes the benefits table across the page break, so that rows continue on page 2.
+        Spacer(1, 350),
+        Paragraph("Section 2: Benefits and Limits", HEADING),
+        benefit_table,
+        Paragraph("* Sub-limit applies per policy year, and counts towards the Sum Insured.", BODY),
+        Paragraph("Section 3: Waiting Periods", HEADING),
+        Paragraph("<b>3.1</b> No claim is payable in the first 30 days of cover, except for accidents.", BODY),
+        waiting,
+        Paragraph("Section 4: Exclusions", HEADING),
+        Paragraph("<b>4.1</b> Cosmetic treatment, except reconstruction following an accident or burns.", BODY),
+        Paragraph("<b>4.2</b> Obesity treatment, unless the conditions of Clause 4.3 are met.", BODY),
+        Paragraph("<b>4.3</b> Bariatric surgery is covered only when BMI is 40 or above.", BODY),
+        Paragraph("<b>4.4</b> Dental treatment, except when needed because of an accident.", BODY),
+        # Places clause 4.5 at the foot of a page, so that it continues on the next.
+        Spacer(1, 200),
+        Paragraph(long_clause, BODY),
+        Paragraph("Section 5: Claim Procedure", HEADING),
+        Paragraph("<b>5.1</b> Notify the Insurer within 24 hours of an emergency admission.", BODY),
+        Paragraph("<b>5.2</b> Submit claim documents within 15 days of discharge.", BODY),
+    ]
+
+
 def claim_form(patient: str, claimed: str) -> list[Any]:
     return [
         Paragraph(INSURER, TITLE),
@@ -592,6 +674,7 @@ def main() -> None:
     documents: dict[str, Callable[[], list[Any]]] = {
         "policies/family-floater-gold-v1.pdf": lambda: policy_wording(1),
         "policies/family-floater-gold-v2.pdf": lambda: policy_wording(2),
+        "policies/family-health-platinum.pdf": complex_policy,
         "claims/appendectomy/claim-form.pdf": lambda: claim_form("Synthetic Patient Asha", "1,06,000.00"),
         "claims/appendectomy/hospital-bill.pdf": lambda: hospital_bill("Synthetic Patient Asha"),
         "claims/appendectomy/discharge-summary.pdf": lambda: discharge_summary("Synthetic Patient Asha"),

@@ -7,8 +7,10 @@ from prism_ai.api.service_auth import require_service_caller
 from prism_ai.documents.pipeline import DocumentPipeline
 from prism_ai.documents.schemas import ExtractRequest, ExtractResponse, ProcessingFailure
 from prism_ai.gateway.errors import ProcessingError
+from prism_ai.policies.pipeline import PolicyPipeline
+from prism_ai.policies.schemas import PolicyPagesRequest, PolicyPagesResponse
 
-router = APIRouter(prefix="/internal/v1/documents", dependencies=[Depends(require_service_caller)])
+router = APIRouter(prefix="/internal/v1", dependencies=[Depends(require_service_caller)])
 
 
 def pipeline(request: Request) -> DocumentPipeline:
@@ -16,7 +18,19 @@ def pipeline(request: Request) -> DocumentPipeline:
     return instance
 
 
-@router.post("/extract", response_model=ExtractResponse, response_model_by_alias=True)
+def policy_pipeline(request: Request) -> PolicyPipeline:
+    instance: PolicyPipeline = request.app.state.policy_pipeline
+    return instance
+
+
+@router.post("/policies/extract-pages", response_model=PolicyPagesResponse, response_model_by_alias=True)
+async def extract_policy_pages(
+    body: PolicyPagesRequest, policies: Annotated[PolicyPipeline, Depends(policy_pipeline)]
+) -> PolicyPagesResponse:
+    return await policies.run(body)
+
+
+@router.post("/documents/extract", response_model=ExtractResponse, response_model_by_alias=True)
 async def extract(
     body: ExtractRequest, documents: Annotated[DocumentPipeline, Depends(pipeline)]
 ) -> ExtractResponse:

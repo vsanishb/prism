@@ -15,6 +15,7 @@ from prism_ai.gateway.client import ModelGateway
 from prism_ai.gateway.errors import ProcessingError
 from prism_ai.gateway.retention import RetentionCatalog
 from prism_ai.gateway.routes import load_routes
+from prism_ai.policies.pipeline import PolicyPipeline
 from prism_ai.settings import Settings, get_settings
 
 structlog.configure(
@@ -47,6 +48,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         async with model_http_client(config) as http:
             gateway = ModelGateway(http, load_routes(), RetentionCatalog(http))
             app.state.document_pipeline = DocumentPipeline(gateway)
+            app.state.policy_pipeline = PolicyPipeline(gateway)
             yield
         await pool.close()
 

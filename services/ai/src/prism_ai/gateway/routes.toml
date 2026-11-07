@@ -1,22 +1,28 @@
-# Model routes (D-026, D-057, D-069). Chosen by the evaluation set in services/ai/evals.
-# Every claim-data route must be zero-data-retention, and the gateway checks this before each use.
-# Escalation runs only when output stays invalid after a repair, so a stronger model costs little here.
+# Model routes (D-026, D-057, D-070). The user chose DeepSeek V4.1 Flash for every task, on cost.
+# Every route must be zero-data-retention, and the gateway checks this before each use.
+# Escalation runs only when output stays invalid after a repair.
 
 [tasks.classification]
-primary = "mistralai/mistral-small-3.2-24b-instruct"
+primary = "deepseek/deepseek-v4.1-flash-1017"
 escalation = "anthropic/claude-haiku-5.5"
 claim_data = true
 max_tokens = 300
 
 [tasks.extraction]
-primary = "mistralai/mistral-small-3.2-24b-instruct"
+primary = "deepseek/deepseek-v4.1-flash-1017"
 escalation = "anthropic/claude-haiku-5.5"
 claim_data = true
 max_tokens = 8000
 
-# A different model from extraction, so that the check on a scan is an independent reading.
 [tasks.reread]
-primary = "inclusionai/ling-3.0-flash-vl"
+primary = "deepseek/deepseek-v4.1-flash-1017"
 escalation = "anthropic/claude-haiku-5.5"
 claim_data = true
 max_tokens = 1500
+
+# Every critical policy value is confirmed by a person before publication (D-030).
+[tasks.policy_extraction]
+primary = "deepseek/deepseek-v4.1-flash-1017"
+escalation = "anthropic/claude-haiku-5.5"
+claim_data = true
+max_tokens = 16000

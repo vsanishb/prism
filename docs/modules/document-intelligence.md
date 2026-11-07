@@ -71,6 +71,8 @@ Results on 2026-11-07, pipeline `doc-1`:
 | Complete line item sets | n/a | 8/8 | 8/8 |
 | Cost for the set | n/a | $0.33 | $0.03 |
 
+Routes were then changed to cheaper models, which met every target at $0.013 to $0.014 for the set ([D-069](../decisions.md)).
+
 **Read these with care.** The set is small and clean, the "handwriting" is a script font, and the prompts and normalizer were corrected against it, so a perfect score does not predict real-document accuracy. It needs harder and larger samples before any real use.
 
 ## Not built

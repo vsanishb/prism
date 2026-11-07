@@ -160,6 +160,13 @@ def with_overrides(routes: RouteTable, arguments: argparse.Namespace) -> RouteTa
         tasks[Task.EXTRACTION] = extraction.model_copy(update={"primary": arguments.extraction_model})
     if arguments.reread_model:
         tasks[Task.REREAD] = tasks[Task.REREAD].model_copy(update={"primary": arguments.reread_model})
+    if arguments.classification_model:
+        classification = tasks[Task.CLASSIFICATION]
+        override = {"primary": arguments.classification_model}
+        tasks[Task.CLASSIFICATION] = classification.model_copy(update=override)
+    if arguments.escalation_model:
+        escalation = {"escalation": arguments.escalation_model}
+        tasks = {task: route.model_copy(update=escalation) for task, route in tasks.items()}
     return RouteTable(tasks=tasks)
 
 
@@ -171,6 +178,8 @@ async def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--extraction-model")
     parser.add_argument("--reread-model")
+    parser.add_argument("--classification-model")
+    parser.add_argument("--escalation-model", help="escalation for every task")
     parser.add_argument("--only", help="run only cases whose path contains this text")
     arguments = parser.parse_args()
 
@@ -205,7 +214,10 @@ async def main() -> int:
     }
     results = EVALS / "results"
     results.mkdir(exist_ok=True)
-    name = (arguments.extraction_model or "default").replace("/", "_")
+    name = "_".join(
+        (getattr(arguments, key) or "default").replace("/", "-")
+        for key in ("classification_model", "extraction_model", "reread_model")
+    )
     (results / f"claim-extraction-{name}.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(json.dumps(summary, indent=2))
 

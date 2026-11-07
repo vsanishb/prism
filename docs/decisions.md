@@ -303,7 +303,7 @@ Temporal uses the native CLI server, installed by `scripts/prism.py install-temp
 ## Milestone 3
 
 ### D-057 Claim routes exclude endpoints that retain flagged content
-**Status:** Accepted, routes provisional · **Source:** Dev
+**Status:** Accepted. Its route table is superseded by D-069 · **Source:** Dev
 Supersedes the extraction route in D-026. OpenRouter's ZDR catalog marks every `google/gemini-3.8-flash` endpoint with `safety_retention: true`, meaning content flagged by the provider's safety screening may be kept. That is not acceptable for health data, even under a ZDR label. `anthropic/claude-haiku-5.5`, `anthropic/claude-sonnet-5.5`, and `openai/gpt-6.1-sol` were `false` on all ZDR endpoints on 2026-11-07.
 The gateway reads the catalog (cached for an hour) and refuses a model unless every ZDR endpoint is explicitly `false`, because a request cannot choose among them. An unreadable catalog stops processing rather than allowing the call. Requests carry both `zdr: true` and `data_collection: "deny"`: a test showed `deny` alone routing to an endpoint outside the ZDR list.
 
@@ -358,3 +358,23 @@ Adds `IN_REVIEW` to `PROCESSING`, and `AWAITING_INFORMATION` to `IN_REVIEW`, to 
 ### D-068 Separate end-to-end stack
 **Status:** Accepted · **Source:** Dev
 `prism.py e2e-stack` runs everything on its own ports, database, document folder, and Temporal server, so that tests never disturb development data. A stand-in replaces only the model provider: it sits behind a configurable URL, so no test code exists in the service, and plain HTTP is allowed only to loopback.
+
+## Milestone 4
+
+### D-069 Cheaper models for claim documents
+**Status:** Accepted, routes provisional · **Source:** User (cost) / Dev (choice)
+Supersedes D-057's route table. The retention rule is unchanged. The user asked for cheaper models. Free models were not an option: the only free model with a ZDR endpoint cannot read images. Eight cheap vision models that pass the retention rule were run on the 17-document evaluation set on 2026-11-07, all routes on the candidate, with Haiku as escalation:
+
+| Model | Targets | Cost for the set |
+|---|---|---|
+| `inclusionai/ling-3.0-flash-vl` | All met, 100% | $0.012 |
+| `mistralai/mistral-small-3.2-24b-instruct` | All met, 100% | $0.014 |
+| `bytedance-seed/seed-1.6-flash` | All met, 100% | $0.016 |
+| `xiaomi/mimo-v2.6-flash` | All met, 100% | $0.017 |
+| `google/gemma-3-27b-it` | Met, but 95.3% critical and 6/8 line item sets | $0.010 |
+| `openai/gpt-5-nano` | Met, 96.9% critical | $0.046 |
+| `qwen/qwen3-vl-30b-a3b-instruct` | Not met: 85.7% monetary | $0.023 |
+| `google/gemma-3-12b-it` | Not met: 93.8% critical | $0.005 |
+
+Mistral Small 3.2 is primary for classification and extraction, because four providers serve it, which matters for availability. Ling reads scans a second time, so that the check comes from a different model. Haiku is the escalation. The chosen combination met every target on two runs, at $0.013 and $0.014 for the set, against $0.33 for Sonnet: about 24 times cheaper. Every model that missed a target still invented nothing, because grounding turned its misreadings into `UNCERTAIN`.
+The same caution applies as before: a small, clean synthetic set cannot separate strong models, so these routes need re-evaluation on harder documents before real use.

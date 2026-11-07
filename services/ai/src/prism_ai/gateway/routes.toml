@@ -1,21 +1,22 @@
-# Model routes (D-026, D-057). Provisional until confirmed by the evaluation set in services/ai/evals.
+# Model routes (D-026, D-057, D-069). Chosen by the evaluation set in services/ai/evals.
 # Every claim-data route must be zero-data-retention, and the gateway checks this before each use.
+# Escalation runs only when output stays invalid after a repair, so a stronger model costs little here.
 
 [tasks.classification]
-primary = "anthropic/claude-haiku-5.5"
-escalation = "anthropic/claude-sonnet-5.5"
+primary = "mistralai/mistral-small-3.2-24b-instruct"
+escalation = "anthropic/claude-haiku-5.5"
 claim_data = true
 max_tokens = 300
 
 [tasks.extraction]
-primary = "anthropic/claude-sonnet-5.5"
-# A second vendor: output that defeats one model gets an independent attempt.
-escalation = "openai/gpt-6.1-sol"
+primary = "mistralai/mistral-small-3.2-24b-instruct"
+escalation = "anthropic/claude-haiku-5.5"
 claim_data = true
 max_tokens = 8000
 
+# A different model from extraction, so that the check on a scan is an independent reading.
 [tasks.reread]
-primary = "anthropic/claude-haiku-5.5"
-escalation = "anthropic/claude-sonnet-5.5"
+primary = "inclusionai/ling-3.0-flash-vl"
+escalation = "anthropic/claude-haiku-5.5"
 claim_data = true
 max_tokens = 1500

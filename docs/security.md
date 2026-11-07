@@ -150,6 +150,8 @@ Claims contain personal and health data.
 - **Providers:** ZDR routing is mandatory ([D-027](decisions.md)).
 - **Temporal:** IDs only ([D-011](decisions.md)).
 - **Access:** viewing documents is permission-checked and audited.
+- **Parsing:** core parses uploads in-process, with malformed-file tests for time and memory. The AI service parses in a child process it can kill ([D-059](decisions.md)).
+- **Model calls:** claim data goes only to models whose every ZDR endpoint is free of safety retention ([D-057](decisions.md)). Document text is fenced as data, and prompt injection is part of the evaluation set.
 - **Retention:** configurable, set with the target jurisdiction ([D-035](decisions.md)).
 
 ### Privacy gate

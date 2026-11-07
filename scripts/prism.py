@@ -4,11 +4,17 @@
     uv run --project services/ai python scripts/prism.py <command>
 
 Commands: setup, db-start, db-stop, db-status, db-reset, migrate, seed, run-ai, run-core, run-web,
-install-temporal, run-temporal.
+install-temporal, run-temporal, run-model-stub, e2e-stack.
 
 `setup` creates a project-owned PostgreSQL cluster under .data/ using the installed
 PostgreSQL binaries. It leaves the machine's PostgreSQL service untouched and needs no
 existing database password. All generated secrets go to the gitignored .env and .data/.
+
+`e2e-stack` runs a complete, separate copy of Prism beside the development services: its own ports,
+database, documents, and Temporal server, with a stand-in for the model provider. It stays up until
+stopped. Run the browser tests against it with:
+
+    $env:PRISM_E2E_PORT="3100"; $env:PRISM_E2E_CREDENTIALS="../.data/e2e/synthetic-users.md"; npx playwright test
 """
 
 from __future__ import annotations
@@ -17,14 +23,18 @@ import argparse
 import base64
 import hashlib
 import os
+import re
 import secrets
 import shutil
+import socket
 import subprocess
 import sys
+import time
 import urllib.request
 import zipfile
 from pathlib import Path
 
+import psutil
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ec
 
@@ -44,6 +54,15 @@ TEMPORAL_VERSION = "1.10.0"
 TEMPORAL_ARCHIVE = f"temporal_cli_{TEMPORAL_VERSION}_windows_amd64.zip"
 TEMPORAL_URL = f"https://github.com/temporalio/cli/releases/download/v{TEMPORAL_VERSION}/{TEMPORAL_ARCHIVE}"
 TEMPORAL_SHA256 = "b95695d08a564621b02322592bbb525a924f76cc892084fc3dd7d2e90f42b8bd"
+
+E2E_DATA = DATA / "e2e"
+E2E_DATABASE = "prism_e2e"
+E2E_WEB_PORT = 3100
+E2E_CORE_PORT = 8180
+E2E_AI_PORT = 8190
+E2E_TEMPORAL_PORT = 7333
+MODEL_STUB_PORT = 8099
+STARTUP_TIMEOUT_SECONDS = 180
 
 
 def pg_tool(name: str) -> str:
@@ -192,7 +211,8 @@ def maven(*goals: str) -> None:
         [str(ROOT / "services/core" / executable), "-q", "-B", "-ntp", *goals],
         cwd=ROOT / "services/core",
         check=True,
-        env={**os.environ, **read_env()},
+        # Real variables win over the file, so that e2e-stack can point at its own database.
+        env={**read_env(), **os.environ},
         shell=os.name == "nt",
     )
 
@@ -268,6 +288,116 @@ def run_temporal() -> None:
     )
 
 
+def run_model_stub() -> None:
+    subprocess.run([sys.executable, "-m", "tests.support.stub_openrouter"], cwd=ROOT / "services/ai", check=True)
+
+
+def wait_for_port(port: int, name: str) -> None:
+    deadline = time.monotonic() + STARTUP_TIMEOUT_SECONDS
+    while time.monotonic() < deadline:
+        with socket.socket() as probe:
+            probe.settimeout(1)
+            if probe.connect_ex(("127.0.0.1", port)) == 0:
+                print(f"{name} is up on port {port}.")
+                return
+        time.sleep(1)
+    sys.exit(f"{name} did not start on port {port}.")
+
+
+def e2e_environment(env: dict[str, str]) -> dict[str, str]:
+    """Points every service at the separate stack. The development database is never touched."""
+
+    def other_database(url: str) -> str:
+        return re.sub(rf"/{DATABASE}(?=$|\?)", f"/{E2E_DATABASE}", url)
+
+    return {
+        "PRISM_MIGRATION_DB_URL": other_database(env["PRISM_MIGRATION_DB_URL"]),
+        "PRISM_CORE_DB_URL": other_database(env["PRISM_CORE_DB_URL"]),
+        "PRISM_AI_DB_URL": other_database(env["PRISM_AI_DB_URL"]),
+        "PRISM_AI_BASE_URL": f"http://127.0.0.1:{E2E_AI_PORT}",
+        "PRISM_AI_PORT": str(E2E_AI_PORT),
+        "PRISM_CORE_BASE_URL": f"http://127.0.0.1:{E2E_CORE_PORT}",
+        "PRISM_WEB_BASE_URL": f"http://localhost:{E2E_WEB_PORT}",
+        "SERVER_PORT": str(E2E_CORE_PORT),
+        "PRISM_TEMPORAL_TARGET": f"127.0.0.1:{E2E_TEMPORAL_PORT}",
+        "PRISM_DOCUMENT_STORE_PATH": str(E2E_DATA / "documents"),
+        "PRISM_SEED_CREDENTIALS_FILE": str(E2E_DATA / "synthetic-users.md"),
+        "PRISM_BOOTSTRAP_INVITE_FILE": str(E2E_DATA / "first-admin-invite.txt"),
+        "PRISM_OPENROUTER_BASE_URL": f"http://127.0.0.1:{MODEL_STUB_PORT}/api/v1",
+        "OPENROUTER_API_KEY": "stub-key-not-valid-anywhere",
+    }
+
+
+def stop_all(processes: list[subprocess.Popen[bytes]]) -> None:
+    """Stops whole process trees: Maven and npm run the real server as a child."""
+    for process in processes:
+        try:
+            parent = psutil.Process(process.pid)
+        except psutil.NoSuchProcess:
+            continue
+        for member in [*parent.children(recursive=True), parent]:
+            try:
+                member.kill()
+            except psutil.NoSuchProcess:
+                continue
+
+
+def e2e_stack() -> None:
+    db_start()
+    env = read_env()
+    overrides = e2e_environment(env)
+    os.environ.update(overrides)
+    if E2E_DATA.exists():
+        shutil.rmtree(E2E_DATA)
+    E2E_DATA.mkdir(parents=True)
+
+    owner_password = env["PRISM_MIGRATION_DB_PASSWORD"]
+    psql(owner_password, "postgres", f"DROP DATABASE IF EXISTS {E2E_DATABASE} WITH (FORCE)")
+    psql(owner_password, "postgres", f"CREATE DATABASE {E2E_DATABASE} ENCODING 'UTF8' TEMPLATE template0")
+    migrate()
+    seed()
+
+    binary = shutil.which("temporal") or temporal_binary()
+    executable = "mvnw.cmd" if os.name == "nt" else "./mvnw"
+    build = subprocess.run("npm run build", cwd=ROOT / "web", shell=True, check=False)
+    if build.returncode != 0:
+        sys.exit("The web build failed.")
+
+    log = (E2E_DATA / "services.log").open("ab")
+    start = {"stdout": log, "stderr": subprocess.STDOUT, "stdin": subprocess.DEVNULL}
+    processes = [
+        subprocess.Popen(
+            [
+                str(binary), "server", "start-dev", "--ip", "127.0.0.1", "--port", str(E2E_TEMPORAL_PORT),
+                "--ui-port", str(E2E_TEMPORAL_PORT + 1000), "--headless",
+                "--db-filename", str(E2E_DATA / "temporal.db"),
+            ],
+            **start,
+        ),
+        subprocess.Popen([sys.executable, "-m", "tests.support.stub_openrouter"], cwd=ROOT / "services/ai", **start),
+        subprocess.Popen([sys.executable, "-m", "prism_ai.serve"], cwd=ROOT / "services/ai", **start),
+        subprocess.Popen(
+            [str(ROOT / "services/core" / executable), "-q", "-B", "-ntp", "spring-boot:run"],
+            cwd=ROOT / "services/core",
+            env={**env, **os.environ},
+            shell=os.name == "nt",
+            **start,
+        ),
+        subprocess.Popen(f"npm run start -- -p {E2E_WEB_PORT}", cwd=ROOT / "web", shell=True, **start),
+    ]
+    try:
+        wait_for_port(E2E_TEMPORAL_PORT, "Temporal")
+        wait_for_port(MODEL_STUB_PORT, "Model stub")
+        wait_for_port(E2E_AI_PORT, "AI service")
+        wait_for_port(E2E_CORE_PORT, "Core service")
+        wait_for_port(E2E_WEB_PORT, "Web")
+        print(f"E2E stack is ready at http://localhost:{E2E_WEB_PORT}. Stop this command to shut it down.", flush=True)
+        while True:
+            time.sleep(5)
+    finally:
+        stop_all(processes)
+
+
 COMMANDS = {
     "setup": setup,
     "db-start": db_start,
@@ -281,6 +411,8 @@ COMMANDS = {
     "run-web": run_web,
     "install-temporal": install_temporal,
     "run-temporal": run_temporal,
+    "run-model-stub": run_model_stub,
+    "e2e-stack": e2e_stack,
 }
 
 

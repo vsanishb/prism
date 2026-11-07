@@ -40,7 +40,7 @@ Claim-related endpoints are stateless: inputs arrive in the request, results ret
 | Path | Protocol | Authentication |
 |---|---|---|
 | Browser → web → core | HTTPS, REST/JSON | Session cookie + CSRF token |
-| Core → AI | HTTPS, REST/JSON, multipart for documents | Short-lived ES256 service JWT |
+| Core → AI | HTTPS, REST/JSON, with documents as base64 ([D-062](decisions.md)) | Short-lived ES256 service JWT |
 | Core ↔ Temporal | gRPC | None locally; mTLS or API key when deployed |
 | AI → OpenRouter | HTTPS | API key |
 
@@ -60,10 +60,10 @@ One Neon database on Postgres 18, with two schemas, each with its own runtime ro
 |---|---|
 | Identity | `users`, `user_roles`, `invitations`, `login_attempts`, session tables |
 | Policies | `policies`, `policy_versions` |
-| Claims | `claims`. M3 adds `claim_line_items` and `claim_facts` |
+| Claims | `claims` |
 | Documents | `documents` |
-| Intelligence | `ai_runs`, `document_extractions`, `validation_findings`, `policy_assessments`, `assessment_citations`, `risk_assessments`, `risk_indicators` |
-| Workflow | `workflow_refs`, `stage_events`, `outbox_events` |
+| Intelligence | `ai_runs`, `document_extractions`, `claim_consolidations`, `claim_facts`, `claim_fact_sources`, `claim_line_items`, `validation_findings`, `policy_assessments`, `assessment_citations`, `risk_assessments`, `risk_indicators` |
+| Workflow | `stage_events`, `outbox_events`. Workflow IDs derive from claim IDs, so no reference table is needed |
 | Review | `review_tasks`, `review_notes`, `document_requests`, `authorized_outcomes` |
 | Audit | `audit_events` (append-only) |
 

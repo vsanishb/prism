@@ -6,7 +6,7 @@ The factual record of project state. Update after meaningful work. Newest entrie
 
 ## Current state
 
-**Phase:** M2 complete. M3 is next. M1's CI workflow has still never run.
+**Phase:** M3 complete. M4 is next. M1's CI workflow has still never run.
 **Runs on:** local PostgreSQL 18.3. Neon has not been connected.
 
 | Capability | Status | Milestone |
@@ -19,8 +19,8 @@ The factual record of project state. Update after meaningful work. Newest entrie
 | Design system and app shell | Tested | M1 |
 | Claims, policies, documents | Tested | M2 |
 | Synthetic document set | Implemented | M2 |
-| Temporal workflows | Planned | M3 |
-| Document intelligence | Planned | M3 |
+| Temporal workflows | Tested | M3 |
+| Document intelligence | Tested, on synthetic documents only | M3 |
 | Policy intelligence | Planned | M4 |
 | Hybrid retrieval | Planned | M5 |
 | Policy Agent | Planned | M6 |
@@ -34,10 +34,43 @@ The factual record of project state. Update after meaningful work. Newest entrie
 |---|---|---|
 | Create a Git remote, then confirm the first CI run | User | Before relying on CI |
 | Provide Neon connection details, then run migrations there | User | Before shared use |
-| Provide OpenRouter key, set account to ZDR only | User | M3 |
+| Confirm the OpenRouter account is set to "ZDR only". Prism enforces ZDR per request regardless | User | Before real use |
 | Make pgvector available without Docker: a native install or Neon ([D-056](decisions.md)) | Dev and user | M5 |
 
 ## Log
+
+### 2026-11-07: M3 Document intelligence and workflows
+
+**Implemented:** model gateway with retention enforcement, sandboxed rendering, classification, extraction, grounding, scan re-reading, the Temporal worker and `ClaimProcessingWorkflow`, the outbox relay, stage events, consolidation, validation, the wait for documents, stage retry, the processing panel, the fact review screen with source highlighting, the evaluation set, and a separate end-to-end stack.
+
+**Test results on the final code:**
+
+| Suite | Result |
+|---|---|
+| Core (JUnit, real PostgreSQL, Temporal test server) | 290 passed |
+| AI (pytest, no network) | 151 passed. `ruff` and `mypy --strict` clean |
+| Web unit (Vitest) | 12 passed. ESLint and `tsc` clean |
+| End-to-end, production build, real Temporal and AI service, stand-in model provider | 38 passed, covering M1 to M3 |
+| Real processes killed mid-work (`scripts/chaos_test.py`) | 5 of 5 scenarios passed |
+| Evaluation with real models, 17 synthetic documents | All targets met: 64/64 critical, 8/8 monetary, 0 invented of 17, 0 injected. $0.33 |
+
+Also verified: one claim through the browser on real models, with a conflict and a scan, costing about $0.07 and served through ZDR routes. Screens reviewed at desktop and phone width on that claim's real output. A scan of 802 service log lines found no patient, diagnosis, or amount text, and no API key.
+
+**Defects found by testing and fixed:**
+- Every endpoint of the planned extraction model retains flagged content, so it was replaced ([D-057](decisions.md)).
+- `Rs. 11,000/-` failed to parse, and `12,34` was read as 1,234. The second would have been a silent misread.
+- Killing core stalled a claim for up to five minutes ([D-063](decisions.md)).
+- The conflict label counted sources instead of distinct values, showing 3 for 2. Found by reviewing real output.
+- `require_parameters` removed every ZDR endpoint, and the schema exceeded the provider's limit on nullable fields ([D-061](decisions.md)).
+
+**Not verified:**
+- Accuracy on real documents. The evaluation set is small and clean, its "handwriting" is a script font, and prompts and parsing were corrected against it. Perfect scores here do not predict real accuracy.
+- That the OpenRouter account is set to "ZDR only". Prism enforces ZDR on each request regardless.
+- Everything listed under M1 still applies, including CI and Neon. The CI workflow's new dependencies have not run.
+- The `run-*` commands with the M3 code, as the user's M2 services were left running. All M3 runs used `e2e-stack`.
+- `run-web` was not started separately. Fuzzing and independent review of parsing remain M9.
+- Core still parses uploads in-process, with tested bounds but no way to kill a runaway parse. Added to M9.
+- Formal accessibility audit. Keyboard and label checks are limited to what the E2E tests exercise.
 
 ### 2026-11-06: M2 Claims and documents
 

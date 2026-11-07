@@ -11,7 +11,7 @@ A milestone is complete only when its frontend flow works and its tests pass. Co
 | API and contract | MockMvc; contract tests against AI schemas | FastAPI test client | Generated types |
 | Workflow | Temporal test environment with time skipping, replay tests | n/a | n/a |
 | Architecture | ArchUnit module rules | Import rules | ESLint rules |
-| End-to-end | Playwright through the real stack with a stubbed model gateway | | |
+| End-to-end | Playwright through the real stack, on `prism.py e2e-stack`, with a stand-in for the model provider. The AI service and gateway are the real code | | |
 
 Integration tests use real Postgres, never H2: features such as `tsvector`, pgvector, grants, and triggers are the behavior under test.
 
@@ -61,6 +61,8 @@ Failing an evaluation target blocks milestone completion unless the user accepts
 ## Workflow testing
 
 Cover the happy path, activity failure and retry, exhausted retries, long waits with time skipping, duplicate signals, and restart. Replay tests against saved histories protect running workflows from incompatible code changes.
+
+Restart behavior is proven by killing real processes, with `scripts/chaos_test.py` on a running `e2e-stack`. Temporal's test server cannot show this: it found a five-minute stall that its time-skipping tests could not reproduce ([D-063](decisions.md)).
 
 ## Frontend verification
 

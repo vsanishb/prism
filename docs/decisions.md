@@ -13,7 +13,7 @@ Checked against Maven Central, PyPI, npm, nodejs.org, Docker Hub, and vendor doc
 |---|---|---|
 | Java | 21 LTS (Temurin 21.0.12, installed) | Installed |
 | Spring Boot | 4.1.2 | Verified with Temporal on Java 21 (D-039) |
-| Temporal Java SDK / starter | 1.40.0 | Verified: workflow and activity ran on Boot 4.1.2 (D-039) |
+| Temporal Java SDK | 1.40.0 | Verified on Boot 4.1.2 against the native server, including restarts. The SDK is used directly, not the starter (D-064) |
 | Temporal CLI (native) | 1.10.0, Server 1.32.2 | Verified on Windows: server, web UI, and a workflow surviving a restart (D-056) |
 | Python | 3.14 (installed) | Planned dependencies resolved wheel-only on Windows, 58 packages |
 | FastAPI | 0.162.0 | Same check |
@@ -330,3 +330,31 @@ Models report text as written, with a page and a quote. Code then finds the quot
 ### D-061 Nullable fields travel as blanks to models
 **Status:** Accepted · **Source:** Dev
 Anthropic's structured output allows at most 16 nullable parameters per schema, and the bill schema had 23. Model schemas use `""` and `0` for "none", converted to real nulls at the validation boundary, so nothing past it sees this convention.
+
+### D-062 Documents travel as base64 JSON
+**Status:** Accepted · **Source:** Dev
+Refines the architecture's multipart plan. The whole body, including metadata, stays covered by the signed hash with no new dependency, and Pydantic validates it at the boundary. Cost: a third more bytes on a local hop, under a 25 MB document limit.
+
+### D-063 Extraction sends heartbeats
+**Status:** Accepted · **Source:** Dev
+Killing core during a model call left the claim stuck for the full five-minute activity timeout, because a crashed worker sends nothing. Extraction now beats every 10 seconds, with a 30-second timeout, and claims finished 17 to 30 seconds after a restart. Found only by killing a real process.
+
+### D-064 Temporal SDK without the Spring starter
+**Status:** Accepted · **Source:** Dev
+Refines D-039. Core must start and serve users while Temporal is down, and workers refuse to start without a server. A small lifecycle class retries in the background, which needs direct control of the worker. Only the `workflow` module may use Temporal.
+
+### D-065 Claim-level and document-level facts
+**Status:** Accepted · **Source:** Dev
+Patient, hospital, dates, diagnosis, and similar facts are about the claim, and are compared across documents. Bill totals, numbers, and dates belong to one document, as two bills legitimately differ. Comparing those would raise false conflicts.
+
+### D-066 Names match on whole runs of words
+**Status:** Accepted · **Source:** Dev
+"Synthetic Hospital" and "Synthetic Hospital, Pune" agree, and honorifics are ignored, so that ordinary variation is not a false conflict. Different words never match. The fuller value is kept, and this can only merge a shorter form with a longer one: "Asha" agrees with "Asha Rao".
+
+### D-067 Reopening review for new documents
+**Status:** Accepted · **Source:** Dev
+Adds `IN_REVIEW` to `PROCESSING`, and `AWAITING_INFORMATION` to `IN_REVIEW`, to the lifecycle. Documents can still arrive during review, and they must not sit unread. An expired wait goes to review without passing through processing again.
+
+### D-068 Separate end-to-end stack
+**Status:** Accepted · **Source:** Dev
+`prism.py e2e-stack` runs everything on its own ports, database, document folder, and Temporal server, so that tests never disturb development data. A stand-in replaces only the model provider: it sits behind a configurable URL, so no test code exists in the service, and plain HTTP is allowed only to loopback.

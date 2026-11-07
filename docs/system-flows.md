@@ -68,7 +68,7 @@ sequenceDiagram
     participant O as OpenRouter
     W->>C: extractDocument(documentId)
     C->>A: POST /internal/v1/documents/extract (bytes, type hint)
-    A->>A: Render pages, read text layer
+    A->>A: Render pages and read text layer, in a killable process
     A->>O: Classify and extract to schema
     A->>A: Validate schema, ground values in text layer
     A-->>C: Fields with state, confidence, source refs, run metadata

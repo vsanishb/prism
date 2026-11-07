@@ -9,8 +9,8 @@ Each milestone delivers a substantial, testable slice through the frontend. Comp
 | M0 | Project foundation | Complete | None |
 | M1 | Secure platform | Complete, except first CI run | M0 |
 | M2 | Claims and documents | Complete | M1 |
-| M3 | Document intelligence and workflows | **Next** | M2 |
-| M4 | Policy intelligence | Planned | M3 |
+| M3 | Document intelligence and workflows | Complete | M2 |
+| M4 | Policy intelligence | **Next** | M3 |
 | M5 | Hybrid retrieval | Planned | M4 |
 | M6 | Policy Agent | Planned | M3, M5 |
 | M7 | Fraud and risk intelligence | Planned | M3 |
@@ -90,17 +90,17 @@ Every milestone also requires: tests at the levels in [testing.md](testing.md), 
 **Plans:** [workflows](plans/temporal-workflows.md), [document intelligence](plans/document-intelligence.md)
 **Needs from user:** OpenRouter API key, with the account set to ZDR only.
 
-- [ ] Add the native Temporal server to local tooling and the worker to core
-- [ ] Implement the outbox relay and stage events
-- [ ] Implement `ClaimProcessingWorkflow` through consolidation
-- [ ] Build the model gateway with routing, ZDR enforcement, and usage records
-- [ ] Implement classification, vision extraction, and grounding
-- [ ] Implement consolidation, validation, and contradiction detection
-- [ ] Implement the wait-for-documents path
-- [ ] Build the live processing view and stage retry
-- [ ] Build the extraction review screen with source highlighting
-- [ ] Create the extraction evaluation set
-- [ ] Add malformed-PDF robustness tests, with time and memory bounds
+- [x] Add the native Temporal server to local tooling and the worker to core
+- [x] Implement the outbox relay and stage events
+- [x] Implement `ClaimProcessingWorkflow` through consolidation
+- [x] Build the model gateway with routing, ZDR enforcement, and usage records
+- [x] Implement classification, vision extraction, and grounding
+- [x] Implement consolidation, validation, and contradiction detection between stated values. Semantic contradictions are M7 ([D-028](decisions.md))
+- [x] Implement the wait-for-documents path
+- [x] Build the live processing view and stage retry
+- [x] Build the extraction review screen with source highlighting
+- [x] Create the extraction evaluation set
+- [x] Add malformed-PDF robustness tests, with time and memory bounds
 
 **Frontend test flow:** submit a claim → watch stages progress → inspect each fact beside its source → see missing, uncertain, and conflicting values → add a missing document and watch processing resume.
 
@@ -224,13 +224,13 @@ Every milestone also requires: tests at the levels in [testing.md](testing.md), 
 
 - [ ] Add MFA for privileged roles
 - [ ] Add malware scanning
-- [ ] Fuzz PDF and image parsing
+- [ ] Fuzz PDF and image parsing, in core (PDFBox, ImageIO) and AI (PDFium, Pillow)
+- [ ] Move core's parsing of uploads out of process, as the AI service already does
 - [ ] Implement S3-compatible storage with encryption at rest
 - [ ] Write deployment configuration. The packaging approach needs the user's decision, as Docker is not allowed without approval ([D-056](decisions.md))
 - [ ] Add OpenTelemetry, dashboards, and alerts
 - [ ] Run performance tests and tune
 - [ ] Complete threat model review and security testing, including an independent review of document parsing
-- [ ] Resolve the PyMuPDF licensing decision ([D-036](decisions.md))
 - [ ] Test backup and restore
 - [ ] Add an operations screen for AI usage, cost, and workflow health
 

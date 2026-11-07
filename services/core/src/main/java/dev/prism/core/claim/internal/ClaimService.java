@@ -7,6 +7,7 @@ import dev.prism.core.audit.AuditOutcome;
 import dev.prism.core.audit.AuditRecorder;
 import dev.prism.core.audit.AuditTimeline;
 import dev.prism.core.audit.AuditTimeline.TimelineEntry;
+import dev.prism.core.claim.ClaimDirectory;
 import dev.prism.core.claim.internal.ClaimEntity.Details;
 import dev.prism.core.claim.internal.ClaimEntity.WithdrawalReason;
 import dev.prism.core.document.DocumentAccessGuard;
@@ -15,6 +16,7 @@ import dev.prism.core.document.DocumentService;
 import dev.prism.core.document.DocumentType;
 import dev.prism.core.document.DocumentView;
 import dev.prism.core.platform.config.PrismProperties;
+import dev.prism.core.platform.outbox.Outbox;
 import dev.prism.core.platform.security.CurrentActor;
 import dev.prism.core.platform.web.ApiException;
 import dev.prism.core.platform.web.Page;
@@ -42,7 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-class ClaimService implements DocumentAccessGuard {
+class ClaimService implements DocumentAccessGuard, ClaimDirectory {
 
     private static final UUID LAST_PAGE_BOUND = new UUID(-1L, -1L);
     private static final String CLAIM_MANAGE = "CLAIM_MANAGE";
@@ -52,6 +54,7 @@ class ClaimService implements DocumentAccessGuard {
     private final DocumentService documents;
     private final AuditRecorder audit;
     private final AuditTimeline timeline;
+    private final Outbox outbox;
     private final String defaultCurrency;
 
     ClaimService(
@@ -60,12 +63,14 @@ class ClaimService implements DocumentAccessGuard {
             DocumentService documents,
             AuditRecorder audit,
             AuditTimeline timeline,
+            Outbox outbox,
             PrismProperties properties) {
         this.claims = claims;
         this.policies = policies;
         this.documents = documents;
         this.audit = audit;
         this.timeline = timeline;
+        this.outbox = outbox;
         this.defaultCurrency = properties.defaultCurrency();
     }
 
@@ -129,8 +134,9 @@ class ClaimService implements DocumentAccessGuard {
     @PreAuthorize("hasAuthority('CLAIM_READ')")
     @Transactional(readOnly = true)
     public List<TimelineEntry> history(UUID claimId) {
-        // Page views are recorded for auditors, and would drown out the claim's history here.
-        return timeline.forStream(stream(requireVisible(claimId).id()), Set.of(AuditAction.DOCUMENT_VIEWED));
+        // These are recorded for auditors, and would drown out the claim's history here.
+        Set<AuditAction> hidden = Set.of(AuditAction.DOCUMENT_VIEWED, AuditAction.DOCUMENT_SENT_FOR_EXTRACTION);
+        return timeline.forStream(stream(requireVisible(claimId).id()), hidden);
     }
 
     /** A repeated key returns the first result, so that a retried request cannot create a duplicate. */
@@ -186,6 +192,7 @@ class ClaimService implements DocumentAccessGuard {
         audit.record(AuditEntry.of(stream(claim.id()), AuditAction.CLAIM_SUBMITTED, AuditOutcome.SUCCESS)
                 .target("CLAIM", claim.id())
                 .detail(AuditDetail.POLICY_VERSION_ID, version.id()));
+        outbox.append(Outbox.Event.CLAIM_SUBMITTED, claim.id());
         return toDetail(claim);
     }
 
@@ -199,13 +206,19 @@ class ClaimService implements DocumentAccessGuard {
                 .target("CLAIM", claim.id())
                 .detail(AuditDetail.STATUS_BEFORE, before)
                 .detail(AuditDetail.REASON, reason));
+        if (before != ClaimStatus.DRAFT) {
+            outbox.append(Outbox.Event.CLAIM_WITHDRAWN, claim.id());
+        }
         return toDetail(claim);
     }
 
     @PreAuthorize("hasAuthority('CLAIM_MANAGE')")
     @Transactional
     public DocumentView addDocument(UUID claimId, DocumentType type, MultipartFile file) {
-        return documents.store(ownerOf(requireOpen(claimId)), requireClaimType(type), file);
+        ClaimEntity claim = requireOpen(claimId);
+        DocumentView stored = documents.store(ownerOf(claim), requireClaimType(type), file);
+        announceDocumentChange(claim);
+        return stored;
     }
 
     /** For the synthetic seeder, which reads documents from disk. */
@@ -218,7 +231,10 @@ class ClaimService implements DocumentAccessGuard {
     @PreAuthorize("hasAuthority('CLAIM_MANAGE')")
     @Transactional
     public DocumentView replaceDocument(UUID claimId, UUID documentId, MultipartFile file) {
-        return documents.replace(ownerOf(requireOpen(claimId)), documentId, file);
+        ClaimEntity claim = requireOpen(claimId);
+        DocumentView stored = documents.replace(ownerOf(claim), documentId, file);
+        announceDocumentChange(claim);
+        return stored;
     }
 
     @PreAuthorize("hasAuthority('CLAIM_MANAGE')")
@@ -241,6 +257,41 @@ class ClaimService implements DocumentAccessGuard {
     @Transactional(readOnly = true)
     public DocumentOwner requireReadable(UUID ownerId) {
         return ownerOf(requireVisible(ownerId));
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('CLAIM_READ')")
+    @Transactional(readOnly = true)
+    public ClaimRecord visible(UUID claimId) {
+        return toRecord(requireVisible(claimId));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ClaimRecord get(UUID claimId) {
+        return toRecord(claims.findById(claimId).orElseThrow(ClaimService::claimNotFound));
+    }
+
+    private static ClaimRecord toRecord(ClaimEntity claim) {
+        return new ClaimRecord(
+                claim.id(),
+                claim.type().name(),
+                claim.status().name(),
+                claim.status().isTerminal(),
+                claim.claimantName(),
+                claim.patientName(),
+                claim.hospitalName(),
+                claim.admissionDate(),
+                claim.dischargeDate(),
+                claim.claimedAmount(),
+                claim.currency());
+    }
+
+    /** A draft has no workflow yet: submission will pick up whatever documents it has then. */
+    private void announceDocumentChange(ClaimEntity claim) {
+        if (claim.status() != ClaimStatus.DRAFT) {
+            outbox.append(Outbox.Event.CLAIM_DOCUMENTS_CHANGED, claim.id());
+        }
     }
 
     public boolean anyExist() {

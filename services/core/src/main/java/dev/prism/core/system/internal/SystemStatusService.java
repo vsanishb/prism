@@ -3,8 +3,10 @@ package dev.prism.core.system.internal;
 import dev.prism.core.aiclient.AiServiceClient;
 import dev.prism.core.aiclient.AiServiceClient.PingResult;
 import dev.prism.core.aiclient.AiServiceClient.ProbeResult;
+import dev.prism.core.workflow.WorkflowHealth;
 import java.time.Instant;
 import java.util.List;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,10 +17,12 @@ class SystemStatusService {
 
     private final JdbcClient jdbc;
     private final AiServiceClient aiService;
+    private final ObjectProvider<WorkflowHealth> workflows;
 
-    SystemStatusService(JdbcClient jdbc, AiServiceClient aiService) {
+    SystemStatusService(JdbcClient jdbc, AiServiceClient aiService, ObjectProvider<WorkflowHealth> workflows) {
         this.jdbc = jdbc;
         this.aiService = aiService;
+        this.workflows = workflows;
     }
 
     @PreAuthorize("hasAuthority('SYSTEM_VIEW')")
@@ -41,8 +45,16 @@ class SystemStatusService {
                         "knowledge_database",
                         "AI service database connection",
                         ping.knowledgeDatabaseConnected(),
-                        ping.detail()));
+                        ping.detail()),
+                workflowCheck());
         return new SystemStatus(Instant.now(), checks);
+    }
+
+    private Check workflowCheck() {
+        WorkflowHealth health = workflows.getIfAvailable();
+        boolean reachable = health != null && health.reachable();
+        String detail = reachable ? "Connected" : "Workflow engine is unavailable. Claims wait until it returns";
+        return new Check("workflow_engine", "Workflow engine connection", reachable, detail);
     }
 
     private Check databaseCheck() {

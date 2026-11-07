@@ -20,6 +20,7 @@ public record PrismProperties(
         @Valid @NotNull ServiceAuth serviceAuth,
         @Valid @NotNull Documents documents,
         @Valid @NotNull Ai ai,
+        @Valid @NotNull Temporal temporal,
         @Valid @NotNull Bootstrap bootstrap,
         @Valid @NotNull Seed seed) {
 
@@ -38,7 +39,15 @@ public record PrismProperties(
     public record ServiceAuth(
             @NotBlank String privateKeyPath, @NotBlank String keyId, @NotNull Duration tokenTtl) {}
 
-    public record Ai(@NotNull URI baseUrl, @NotNull Duration timeout) {}
+    public record Ai(@NotNull URI baseUrl, @NotNull Duration timeout, @NotNull Duration extractionTimeout) {}
+
+    public record Temporal(
+            boolean enabled,
+            @NotBlank String target,
+            @NotBlank String namespace,
+            @NotNull Duration informationWait,
+            @Positive int maxConcurrentExtractions,
+            @NotNull Duration relayInterval) {}
 
     public record Bootstrap(String adminEmail, String inviteFile) {}
 

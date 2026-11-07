@@ -100,12 +100,26 @@ class AccessControlTest extends IntegrationTest {
     void systemStatusReportsLiveChecksToAdministrators() throws Exception {
         when(aiService.ping()).thenReturn(new PingResult(true, true, true, "Connected"));
         when(aiService.probeUnsignedRequest()).thenReturn(new ProbeResult(true, true, 401));
+        when(workflowHealth.reachable()).thenReturn(true);
         Client admin = signedInAs(Role.ADMIN);
 
         var checks = admin.bodyOf(admin.getPath("/api/v1/system/status")).get("checks");
 
-        assertThat(checks).hasSize(4);
+        assertThat(checks).hasSize(5);
         assertThat(checks.valueStream()).allSatisfy(check -> assertThat(check.get("healthy").asBoolean()).isTrue());
+    }
+
+    @Test
+    void systemStatusShowsAFailureWhenTheWorkflowEngineIsDown() throws Exception {
+        when(aiService.ping()).thenReturn(new PingResult(true, true, true, "Connected"));
+        when(aiService.probeUnsignedRequest()).thenReturn(new ProbeResult(true, true, 401));
+        when(workflowHealth.reachable()).thenReturn(false);
+        Client admin = signedInAs(Role.ADMIN);
+
+        var checks = admin.bodyOf(admin.getPath("/api/v1/system/status")).get("checks");
+
+        assertThat(checks.get(4).get("id").asString()).isEqualTo("workflow_engine");
+        assertThat(checks.get(4).get("healthy").asBoolean()).isFalse();
     }
 
     @Test

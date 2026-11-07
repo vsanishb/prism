@@ -21,8 +21,8 @@ class ClaimStatusTest {
             DRAFT, EnumSet.of(SUBMITTED, WITHDRAWN),
             SUBMITTED, EnumSet.of(PROCESSING, WITHDRAWN),
             PROCESSING, EnumSet.of(AWAITING_INFORMATION, IN_REVIEW, WITHDRAWN),
-            AWAITING_INFORMATION, EnumSet.of(PROCESSING, WITHDRAWN),
-            IN_REVIEW, EnumSet.of(AWAITING_INFORMATION, ESCALATED, DECIDED, WITHDRAWN),
+            AWAITING_INFORMATION, EnumSet.of(PROCESSING, IN_REVIEW, WITHDRAWN),
+            IN_REVIEW, EnumSet.of(PROCESSING, AWAITING_INFORMATION, ESCALATED, DECIDED, WITHDRAWN),
             ESCALATED, EnumSet.of(IN_REVIEW, DECIDED, WITHDRAWN),
             DECIDED, EnumSet.noneOf(ClaimStatus.class),
             WITHDRAWN, EnumSet.noneOf(ClaimStatus.class));

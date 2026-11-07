@@ -145,6 +145,10 @@ class ClaimEntity {
         this.withdrawalReason = reason;
     }
 
+    void advanceTo(ClaimStatus next) {
+        transitionTo(next);
+    }
+
     private void transitionTo(ClaimStatus next) {
         if (!status.canBecome(next)) {
             throw ApiException.conflict("invalid_transition", "This action is not available for a claim in its current state.");

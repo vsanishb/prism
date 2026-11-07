@@ -101,6 +101,18 @@ class DefaultDocumentService implements DocumentService {
     }
 
     @Override
+    public StoredContent readForProcessing(DocumentOwner.Type ownerType, UUID ownerId, UUID documentId) {
+        DocumentEntity document = documents.findById(documentId)
+                .filter(found -> found.ownerType() == ownerType && found.ownerId().equals(ownerId))
+                .orElseThrow(() -> new IllegalArgumentException("Unknown document " + documentId));
+        try {
+            return new StoredContent(document.toView(), Files.readAllBytes(store.locate(document.storageKey())));
+        } catch (IOException exception) {
+            throw new UncheckedIOException("Could not read stored document", exception);
+        }
+    }
+
+    @Override
     public long countActive(DocumentOwner.Type ownerType, UUID ownerId) {
         return listFor(ownerType, ownerId).stream()
                 .filter(document -> document.status() == DocumentView.Status.ACTIVE)

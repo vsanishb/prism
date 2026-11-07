@@ -2,3 +2,7 @@
 # normal web application, because session beans exist only in web mode, on a random free port.
 server:
   port: 0
+prism:
+  temporal:
+    # The seeder only writes data. Claims it submits are picked up when the service next starts.
+    enabled: false

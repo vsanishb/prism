@@ -35,7 +35,8 @@ class ServiceTokenSignerTest {
                 new PrismProperties.Security("key", false, false, Duration.ofHours(1), Duration.ofHours(1), Duration.ofHours(1)),
                 new PrismProperties.ServiceAuth(key.toString(), "core-test", Duration.ofSeconds(60)),
                 new PrismProperties.Documents("store", 1000, 1000, 10, 10, 1000, 100),
-                new PrismProperties.Ai(URI.create("http://localhost"), Duration.ofSeconds(1)),
+                new PrismProperties.Ai(URI.create("http://localhost"), Duration.ofSeconds(1), Duration.ofSeconds(1)),
+                new PrismProperties.Temporal(false, "localhost:1", "default", Duration.ofDays(1), 1, Duration.ofSeconds(1)),
                 new PrismProperties.Bootstrap("", ""),
                 new PrismProperties.Seed("", "")));
         byte[] body = "{}".getBytes(StandardCharsets.UTF_8);

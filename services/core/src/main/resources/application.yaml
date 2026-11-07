@@ -86,6 +86,16 @@ prism:
   ai:
     base-url: ${PRISM_AI_BASE_URL}
     timeout: 5s
+    # Below the activity's five-minute limit, so that a slow call fails here, with a clear reason.
+    extraction-timeout: 4m
+  temporal:
+    enabled: ${PRISM_TEMPORAL_ENABLED:true}
+    target: ${PRISM_TEMPORAL_TARGET:127.0.0.1:7233}
+    namespace: default
+    # How long a claim waits for missing documents before going to review without them.
+    information-wait: ${PRISM_INFORMATION_WAIT:14d}
+    max-concurrent-extractions: 4
+    relay-interval: 1s
   bootstrap:
     admin-email: ${PRISM_BOOTSTRAP_ADMIN_EMAIL:}
     invite-file: ${PRISM_BOOTSTRAP_INVITE_FILE:}

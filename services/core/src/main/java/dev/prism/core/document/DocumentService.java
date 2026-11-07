@@ -22,4 +22,9 @@ public interface DocumentService {
     List<DocumentView> listFor(DocumentOwner.Type ownerType, UUID ownerId);
 
     long countActive(DocumentOwner.Type ownerType, UUID ownerId);
+
+    /** For system processing. The document must belong to this owner. */
+    StoredContent readForProcessing(DocumentOwner.Type ownerType, UUID ownerId, UUID documentId);
+
+    record StoredContent(DocumentView document, byte[] content) {}
 }

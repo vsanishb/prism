@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import dev.prism.core.aiclient.AiServiceClient;
 import dev.prism.core.identity.Role;
 import dev.prism.core.identity.internal.IdentityFixtures;
+import dev.prism.core.workflow.WorkflowHealth;
 import jakarta.servlet.http.Cookie;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -52,6 +53,9 @@ public abstract class IntegrationTest {
     @MockitoBean
     protected AiServiceClient aiService;
 
+    @MockitoBean
+    protected WorkflowHealth workflowHealth;
+
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) throws IOException, GeneralSecurityException {
         TestDatabase database = TestDatabase.instance();
@@ -65,6 +69,7 @@ public abstract class IntegrationTest {
         registry.add("PRISM_FORWARDED_HEADER_TRUSTED", () -> "false");
         registry.add("PRISM_BOOTSTRAP_ADMIN_EMAIL", () -> "");
         registry.add("PRISM_ENVIRONMENT", () -> "test");
+        registry.add("PRISM_TEMPORAL_ENABLED", () -> "false");
         registry.add("PRISM_LOG_FORMAT", () -> "");
         registry.add("PRISM_DOCUMENT_STORE_PATH", () -> DOCUMENT_ROOT.toString());
         Path key = TestKeys.writeSigningKey();

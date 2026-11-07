@@ -29,11 +29,42 @@ class TemporalWorkflowDispatcher implements WorkflowDispatcher {
 
     @Override
     public void dispatch(Outbox.Event event, UUID claimId) {
+        // The aggregate is a claim for claim events, and a wording document for policy events.
         switch (event) {
             case CLAIM_SUBMITTED -> start(claimId);
             case CLAIM_DOCUMENTS_CHANGED -> signal(claimId, ClaimProcessingWorkflow::documentsChanged);
             case CLAIM_RETRY_REQUESTED -> signal(claimId, ClaimProcessingWorkflow::retryRequested);
             case CLAIM_WITHDRAWN -> signal(claimId, ClaimProcessingWorkflow::claimWithdrawn);
+            case POLICY_WORDING_ATTACHED -> startIngestion(claimId);
+            case POLICY_INGESTION_RETRY_REQUESTED -> retryIngestion(claimId);
+        }
+    }
+
+    static String ingestionId(UUID documentId) {
+        return "policy-ingestion-" + documentId;
+    }
+
+    private void startIngestion(UUID documentId) {
+        PolicyIngestionWorkflow workflow = client.newWorkflowStub(
+                PolicyIngestionWorkflow.class,
+                WorkflowOptions.newBuilder()
+                        .setWorkflowId(ingestionId(documentId))
+                        .setTaskQueue(ClaimProcessingWorkflowImpl.WORKFLOW_QUEUE)
+                        .setWorkflowIdReusePolicy(WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_REJECT_DUPLICATE)
+                        .build());
+        try {
+            WorkflowClient.start(workflow::ingest, documentId.toString());
+        } catch (WorkflowExecutionAlreadyStarted duplicate) {
+            log.debug("Ingestion already started for document {}", documentId);
+        }
+    }
+
+    private void retryIngestion(UUID documentId) {
+        PolicyIngestionWorkflow workflow = client.newWorkflowStub(PolicyIngestionWorkflow.class, ingestionId(documentId));
+        try {
+            workflow.retryRequested();
+        } catch (WorkflowNotFoundException finished) {
+            log.info("No running ingestion for document {}", documentId);
         }
     }
 

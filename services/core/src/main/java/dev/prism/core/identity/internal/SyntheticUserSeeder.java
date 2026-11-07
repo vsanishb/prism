@@ -34,6 +34,8 @@ class SyntheticUserSeeder implements ApplicationRunner {
     private static final List<Seed> SEEDS = List.of(
             new Seed("admin", "Synthetic Administrator", Role.ADMIN),
             new Seed("policy.manager", "Synthetic Policy Manager", Role.POLICY_MANAGER),
+            // A second manager, because the person who uploads a wording may not publish it.
+            new Seed("policy.approver", "Synthetic Policy Approver", Role.POLICY_MANAGER),
             new Seed("claims.processor", "Synthetic Claims Processor", Role.CLAIMS_PROCESSOR),
             new Seed("reviewer", "Synthetic Reviewer", Role.REVIEWER),
             new Seed("senior.reviewer", "Synthetic Senior Reviewer", Role.SENIOR_REVIEWER),

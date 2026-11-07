@@ -16,6 +16,13 @@ public interface AiServiceClient {
      */
     DocumentExtraction.Result extractDocument(DocumentExtraction.Request request);
 
+    /**
+     * Reads a batch of policy pages into provisions.
+     *
+     * @throws DocumentExtraction.Failure with a stable code, and whether a retry could help
+     */
+    PolicyExtraction.Result extractPolicyPages(PolicyExtraction.Request request);
+
     record PingResult(boolean reachable, boolean authenticated, boolean knowledgeDatabaseConnected, String detail) {}
 
     record ProbeResult(boolean reachable, boolean rejected, int statusCode) {}

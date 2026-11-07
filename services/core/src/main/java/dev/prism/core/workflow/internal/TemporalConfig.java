@@ -39,20 +39,23 @@ class TemporalConfig {
             WorkflowClient client,
             ClaimActivities claimActivities,
             ExtractionActivities extractionActivities,
+            PolicyActivitiesImpl policyActivities,
             PrismProperties properties) {
         WorkerFactory factory = WorkerFactory.newInstance(client);
         Worker workflows = factory.newWorker(ClaimProcessingWorkflowImpl.WORKFLOW_QUEUE);
-        workflows.registerWorkflowImplementationTypes(ClaimProcessingWorkflowImpl.class);
+        workflows.registerWorkflowImplementationTypes(ClaimProcessingWorkflowImpl.class, PolicyIngestionWorkflowImpl.class);
 
         Worker database = factory.newWorker(ClaimProcessingWorkflowImpl.DATABASE_QUEUE);
         database.registerActivitiesImplementations(claimActivities);
+        // Registered under its database interface only. Its model calls run on the AI queue below.
+        database.registerActivitiesImplementations(new PolicyDatabaseActivities(policyActivities));
 
         Worker ai = factory.newWorker(
                 ClaimProcessingWorkflowImpl.AI_QUEUE,
                 WorkerOptions.newBuilder()
                         .setMaxConcurrentActivityExecutionSize(properties.temporal().maxConcurrentExtractions())
                         .build());
-        ai.registerActivitiesImplementations(extractionActivities);
+        ai.registerActivitiesImplementations(extractionActivities, new PolicyModelActivities(policyActivities));
         return factory;
     }
 
@@ -79,6 +82,41 @@ class TemporalConfig {
     @Bean
     WorkflowHealth workflowHealth(WorkflowServiceStubs stubs) {
         return new TemporalWorkflowHealth(stubs);
+    }
+
+    /** Exposes only the database methods, so that each queue serves exactly its own activities. */
+    record PolicyDatabaseActivities(PolicyActivitiesImpl delegate) implements PolicyActivities {
+        @Override
+        public boolean beginIngestion(String documentId) {
+            return delegate.beginIngestion(documentId);
+        }
+
+        @Override
+        public java.util.List<String> pendingBatches(String documentId) {
+            return delegate.pendingBatches(documentId);
+        }
+
+        @Override
+        public void recordBatchFailed(String documentId, String range, String code) {
+            delegate.recordBatchFailed(documentId, range, code);
+        }
+
+        @Override
+        public void assemble(String documentId) {
+            delegate.assemble(documentId);
+        }
+
+        @Override
+        public void recordAssemblyFailed(String documentId, String code) {
+            delegate.recordAssemblyFailed(documentId, code);
+        }
+    }
+
+    record PolicyModelActivities(PolicyActivitiesImpl delegate) implements PolicyExtractionActivities {
+        @Override
+        public void extractPolicyBatch(String documentId, String range) {
+            delegate.extractPolicyBatch(documentId, range);
+        }
     }
 
     static class OutboxRelaySchedule {

@@ -53,7 +53,7 @@ public class ClaimProcessingWorkflowImpl implements ClaimProcessingWorkflow {
             ActivityOptions.newBuilder()
                     .setTaskQueue(AI_QUEUE)
                     .setStartToCloseTimeout(Duration.ofMinutes(5))
-                    .setHeartbeatTimeout(ExtractionActivitiesImpl.HEARTBEAT_TIMEOUT)
+                    .setHeartbeatTimeout(Heartbeats.TIMEOUT)
                     .setRetryOptions(RetryOptions.newBuilder()
                             .setInitialInterval(Duration.ofSeconds(5))
                             .setBackoffCoefficient(3)

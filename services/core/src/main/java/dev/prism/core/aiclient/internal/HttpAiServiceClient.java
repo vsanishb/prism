@@ -4,6 +4,7 @@ import dev.prism.core.aiclient.AiServiceClient;
 import dev.prism.core.aiclient.DocumentExtraction;
 import dev.prism.core.aiclient.DocumentExtraction.Failure;
 import dev.prism.core.aiclient.DocumentExtraction.ModelRun;
+import dev.prism.core.aiclient.PolicyExtraction;
 import dev.prism.core.platform.config.PrismProperties;
 import java.net.http.HttpClient;
 import java.time.Duration;
@@ -22,6 +23,7 @@ class HttpAiServiceClient implements AiServiceClient {
 
     private static final String PING_PATH = "/internal/v1/ping";
     private static final String EXTRACT_PATH = "/internal/v1/documents/extract";
+    private static final String POLICY_PAGES_PATH = "/internal/v1/policies/extract-pages";
 
     private final RestClient signed;
     private final RestClient unsigned;
@@ -55,14 +57,23 @@ class HttpAiServiceClient implements AiServiceClient {
 
     @Override
     public DocumentExtraction.Result extractDocument(DocumentExtraction.Request request) {
+        return post(EXTRACT_PATH, request, DocumentExtraction.Result.class);
+    }
+
+    @Override
+    public PolicyExtraction.Result extractPolicyPages(PolicyExtraction.Request request) {
+        return post(POLICY_PAGES_PATH, request, PolicyExtraction.Result.class);
+    }
+
+    private <T> T post(String path, Object request, Class<T> resultType) {
         try {
             return extraction.post()
-                    .uri(EXTRACT_PATH)
+                    .uri(path)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(request)
                     .exchange((httpRequest, response) -> {
                         if (response.getStatusCode().is2xxSuccessful()) {
-                            return response.bodyTo(DocumentExtraction.Result.class);
+                            return response.bodyTo(resultType);
                         }
                         throw failure(response.getStatusCode().value(), readFailure(response));
                     });

@@ -11,6 +11,7 @@ import dev.prism.core.document.DocumentService;
 import dev.prism.core.document.DocumentType;
 import dev.prism.core.document.DocumentView;
 import dev.prism.core.platform.config.PrismProperties;
+import dev.prism.core.platform.outbox.Outbox;
 import dev.prism.core.platform.security.CurrentActor;
 import dev.prism.core.platform.web.ApiException;
 import dev.prism.core.platform.web.Page;
@@ -39,6 +40,7 @@ class PolicyService implements PolicyDirectory, DocumentAccessGuard {
     private final PolicyVersionRepository versions;
     private final DocumentService documents;
     private final AuditRecorder audit;
+    private final Outbox outbox;
     private final String defaultCurrency;
 
     PolicyService(
@@ -46,11 +48,13 @@ class PolicyService implements PolicyDirectory, DocumentAccessGuard {
             PolicyVersionRepository versions,
             DocumentService documents,
             AuditRecorder audit,
+            Outbox outbox,
             PrismProperties properties) {
         this.policies = policies;
         this.versions = versions;
         this.documents = documents;
         this.audit = audit;
+        this.outbox = outbox;
         this.defaultCurrency = properties.defaultCurrency();
     }
 
@@ -125,18 +129,35 @@ class PolicyService implements PolicyDirectory, DocumentAccessGuard {
     @PreAuthorize("hasAuthority('POLICY_MANAGE')")
     @Transactional
     public DocumentView attachWording(UUID policyId, UUID versionId, MultipartFile file) {
-        DocumentOwner owner = ownerOf(requireVersion(policyId, versionId));
+        PolicyVersionEntity version = requireOpenVersion(policyId, versionId);
+        DocumentOwner owner = ownerOf(version);
         Optional<DocumentView> current = activeWording(versionId);
-        return current.isPresent()
+        DocumentView stored = current.isPresent()
                 ? documents.replace(owner, current.get().id(), file)
                 : documents.store(owner, DocumentType.POLICY_WORDING, file);
+        startIngestion(stored);
+        return stored;
     }
 
     /** For the synthetic seeder, which reads wordings from disk. */
     @PreAuthorize("hasAuthority('POLICY_MANAGE')")
     @Transactional
     public void attachWording(UUID policyId, UUID versionId, Path file) {
-        documents.store(ownerOf(requireVersion(policyId, versionId)), DocumentType.POLICY_WORDING, file);
+        PolicyVersionEntity version = requireOpenVersion(policyId, versionId);
+        startIngestion(documents.store(ownerOf(version), DocumentType.POLICY_WORDING, file));
+    }
+
+    /** In the upload's transaction, so that a wording is never stored without being read. */
+    private void startIngestion(DocumentView wording) {
+        outbox.append(Outbox.Event.POLICY_WORDING_ATTACHED, wording.id());
+    }
+
+    private PolicyVersionEntity requireOpenVersion(UUID policyId, UUID versionId) {
+        PolicyVersionEntity version = versions.lockById(versionId)
+                .filter(found -> found.policyId().equals(policyId))
+                .orElseThrow(() -> ApiException.notFound("Policy version not found."));
+        version.wordingAttached();
+        return version;
     }
 
     public boolean exists(String policyNumber) {

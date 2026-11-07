@@ -17,7 +17,9 @@ public class Outbox {
         CLAIM_SUBMITTED,
         CLAIM_DOCUMENTS_CHANGED,
         CLAIM_RETRY_REQUESTED,
-        CLAIM_WITHDRAWN
+        CLAIM_WITHDRAWN,
+        POLICY_WORDING_ATTACHED,
+        POLICY_INGESTION_RETRY_REQUESTED
     }
 
     private final JdbcClient jdbc;

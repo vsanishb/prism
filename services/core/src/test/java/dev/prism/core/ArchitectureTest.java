@@ -37,7 +37,7 @@ class ArchitectureTest {
             .should().dependOnClassesThat()
             .resideInAnyPackage(
                     "..identity..", "..audit..", "..aiclient..", "..system..", "..policy..", "..claim..", "..document..",
-                    "..intelligence..", "..workflow..");
+                    "..intelligence..", "..workflow..", "..policyknowledge..");
 
     /** Status flows one way, so that claims know nothing of how they are processed. */
     @ArchTest
@@ -47,8 +47,14 @@ class ArchitectureTest {
             .resideInAnyPackage("..intelligence..", "..workflow..", "..aiclient..");
 
     @ArchTest
+    static final ArchRule policiesDoNotKnowAboutTheirKnowledge = noClasses()
+            .that().resideInAPackage("..policy..")
+            .should().dependOnClassesThat()
+            .resideInAnyPackage("..policyknowledge..", "..workflow..", "..aiclient..");
+
+    @ArchTest
     static final ArchRule intelligenceDoesNotKnowAboutWorkflows = noClasses()
-            .that().resideInAPackage("..intelligence..")
+            .that().resideInAnyPackage("..intelligence..", "..policyknowledge..")
             .should().dependOnClassesThat()
             .resideInAnyPackage("..workflow..", "io.temporal..");
 

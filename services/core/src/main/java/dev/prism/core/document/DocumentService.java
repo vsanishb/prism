@@ -27,4 +27,9 @@ public interface DocumentService {
     StoredContent readForProcessing(DocumentOwner.Type ownerType, UUID ownerId, UUID documentId);
 
     record StoredContent(DocumentView document, byte[] content) {}
+
+    /** For system processing: a document with its owner. Performs no authorization. */
+    java.util.Optional<OwnedDocument> find(UUID documentId);
+
+    record OwnedDocument(DocumentOwner.Type ownerType, UUID ownerId, DocumentView document) {}
 }

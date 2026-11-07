@@ -23,5 +23,6 @@ public interface PolicyDirectory {
             LocalDate effectiveFrom,
             LocalDate effectiveTo,
             BigDecimal sumInsured,
-            String currency) {}
+            String currency,
+            String knowledgeStatus) {}
 }

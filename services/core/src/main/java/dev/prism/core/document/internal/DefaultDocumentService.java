@@ -101,6 +101,12 @@ class DefaultDocumentService implements DocumentService {
     }
 
     @Override
+    public java.util.Optional<OwnedDocument> find(UUID documentId) {
+        return documents.findById(documentId)
+                .map(document -> new OwnedDocument(document.ownerType(), document.ownerId(), document.toView()));
+    }
+
+    @Override
     public StoredContent readForProcessing(DocumentOwner.Type ownerType, UUID ownerId, UUID documentId) {
         DocumentEntity document = documents.findById(documentId)
                 .filter(found -> found.ownerType() == ownerType && found.ownerId().equals(ownerId))

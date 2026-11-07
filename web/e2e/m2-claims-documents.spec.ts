@@ -184,7 +184,8 @@ test("the claims list filters and searches", async ({ page }) => {
   await page.goto("/claims");
   await page.getByLabel("Search claims").fill("CLM-2026-000001");
   await page.getByLabel("Search claims").press("Enter");
-  await expect(page.getByRole("cell", { name: "Synthetic Patient Asha" })).toBeVisible();
+  await expect(page).toHaveURL(/search=CLM-2026-000001/);
+  await expect(page.getByRole("cell", { name: "Synthetic Patient Asha" })).toHaveCount(1);
   await expect(page.getByRole("link", { name: "CLM-2026-000002" })).toHaveCount(0);
 });
 
@@ -252,7 +253,8 @@ test("phones show each claim's status and amount without sideways scrolling", as
   await signIn(page, account("CLAIMS_PROCESSOR"));
   await page.goto("/claims?search=CLM-2026-000001");
   const row = page.getByRole("link", { name: /CLM-2026-000001/ });
-  await expect(row.getByText("Submitted")).toBeInViewport({ ratio: 1 });
+  // The seeded claim is processed by the workflow as soon as the stack starts.
+  await expect(row.getByText("In review")).toBeInViewport({ ratio: 1 });
   await expect(row.getByText("₹1,06,000.00")).toBeInViewport({ ratio: 1 });
 
   await page.goto("/policies");

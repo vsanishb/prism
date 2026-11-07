@@ -45,7 +45,7 @@ class ClaimProcessingFlowTest extends IntegrationTest {
     private ClaimActivities activities;
 
     @Autowired
-    private ExtractionActivities extraction;
+    private DocumentExtractionStep extraction;
 
     @Autowired
     private JdbcClient jdbc;

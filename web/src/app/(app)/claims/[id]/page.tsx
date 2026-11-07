@@ -7,11 +7,12 @@ import { ClaimActions } from "@/features/claims/claim-actions";
 import { ClaimStatusBadge } from "@/features/claims/claim-status";
 import { ClaimTimeline } from "@/features/claims/claim-timeline";
 import { DocumentPanel } from "@/features/claims/document-panel";
+import { ProcessingPanel } from "@/features/claims/processing-panel";
 import { SubmissionChecklist } from "@/features/claims/submission-checklist";
 import { formatDate, formatDateTime, formatMoney } from "@/lib/format";
 import { CLAIM_TYPE_LABELS, WITHDRAWAL_REASON_LABELS } from "@/lib/labels";
 import { serverFetch } from "@/lib/server-api";
-import type { ClaimDetail, TimelineEntry } from "@/lib/types";
+import type { ClaimDetail, ClaimFacts, ProcessingView, TimelineEntry } from "@/lib/types";
 
 export const metadata: Metadata = { title: "Claim" };
 
@@ -26,9 +27,11 @@ function Fact({ label, children }: { label: string; children: React.ReactNode })
 
 export default async function ClaimPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [result, timeline] = await Promise.all([
+  const [result, timeline, processing, facts] = await Promise.all([
     serverFetch<ClaimDetail>(`/api/v1/claims/${id}`),
     serverFetch<TimelineEntry[]>(`/api/v1/claims/${id}/timeline`),
+    serverFetch<ProcessingView>(`/api/v1/claims/${id}/processing`),
+    serverFetch<ClaimFacts>(`/api/v1/claims/${id}/facts`),
   ]);
   if (!result.ok) {
     if (result.status === 404 || result.status === 400) {
@@ -61,6 +64,15 @@ export default async function ClaimPage({ params }: { params: Promise<{ id: stri
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
         <div className="min-w-0 space-y-8">
+          {summary.status !== "DRAFT" && processing.ok ? (
+            <ProcessingPanel
+              claimId={id}
+              initial={processing.data}
+              documents={claim.documents}
+              facts={facts.ok ? facts.data : null}
+              canRetry={claim.availableActions.includes("ADD_DOCUMENT")}
+            />
+          ) : null}
           <div>
             <SectionTitle>Claim details</SectionTitle>
             <Panel className="p-5">

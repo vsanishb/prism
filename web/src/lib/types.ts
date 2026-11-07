@@ -195,3 +195,90 @@ export interface TimelineEntry {
   outcome: AuditOutcome;
   actorName: string | null;
 }
+
+export type StageName = "DOCUMENT_EXTRACTION" | "CONSOLIDATION" | "VALIDATION";
+export type StageStatus = "NOT_STARTED" | "PROCESSING" | "COMPLETED" | "REQUIRES_REVIEW" | "FAILED";
+
+export interface StageView {
+  stage: StageName;
+  documentId: string | null;
+  status: StageStatus;
+  detailCode: string | null;
+  occurredAt: string;
+}
+
+export interface ProcessingView {
+  claimStatus: ClaimStatus;
+  retryAvailable: boolean;
+  stages: StageView[];
+}
+
+export type FactState = "PRESENT" | "MISSING" | "UNCERTAIN" | "CONFLICTING";
+export type FactKind = "TEXT" | "DATE" | "AMOUNT";
+export type Grounding = "TEXT_MATCH" | "PAGE_ONLY" | "NONE";
+
+export interface FactSource {
+  documentId: string;
+  state: "PRESENT" | "UNCERTAIN";
+  confidence: "HIGH" | "MEDIUM" | "LOW";
+  rawValue: string | null;
+  value: string | null;
+  page: number | null;
+  quote: string | null;
+  region: string[] | number[] | null;
+  grounding: Grounding;
+  reason: string | null;
+}
+
+export interface ClaimFact {
+  id: string;
+  name: string;
+  kind: FactKind;
+  critical: boolean;
+  documentId: string | null;
+  state: FactState;
+  value: string | null;
+  sources: FactSource[];
+}
+
+export interface LineItem {
+  documentId: string;
+  position: number;
+  description: string;
+  quantity: string | null;
+  unitPrice: string | null;
+  amount: string | null;
+  rawAmount: string;
+  state: "PRESENT" | "UNCERTAIN";
+  page: number;
+  quote: string;
+  region: string[] | number[] | null;
+  grounding: Grounding;
+}
+
+export interface Finding {
+  code: string;
+  severity: "ERROR" | "WARNING" | "INFO";
+  fieldName: string | null;
+  documentId: string | null;
+  expectedValue: string | null;
+  actualValue: string | null;
+}
+
+export interface DocumentReference {
+  id: string;
+  originalFilename: string;
+  documentType: DocumentType;
+  classifiedType: DocumentType | null;
+  pageCount: number;
+}
+
+export interface ClaimFacts {
+  sequence: number | null;
+  consolidatedAt: string | null;
+  complete: boolean;
+  facts: ClaimFact[];
+  lineItems: LineItem[];
+  findings: Finding[];
+  documents: DocumentReference[];
+}

@@ -1,37 +1,59 @@
 package dev.prism.core.workflow.internal;
 
-import dev.prism.core.aiclient.DocumentExtraction.Failure;
-import dev.prism.core.intelligence.ClaimIntelligence;
-import dev.prism.core.workflow.internal.StageRecorder.Stage;
-import dev.prism.core.workflow.internal.StageRecorder.Status;
-import io.temporal.failure.ApplicationFailure;
-import java.util.UUID;
+import io.temporal.activity.Activity;
+import io.temporal.activity.ActivityExecutionContext;
+import java.time.Duration;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.stereotype.Component;
 
+/**
+ * Sends heartbeats during the model call, which is one long blocking request. Without them, Temporal
+ * notices a crashed worker only when the five-minute timeout ends, and the claim appears to hang.
+ */
 @Component
-class ExtractionActivitiesImpl implements ExtractionActivities {
+class ExtractionActivitiesImpl implements ExtractionActivities, DisposableBean {
 
-    private final ClaimIntelligence intelligence;
-    private final StageRecorder stages;
+    static final Duration HEARTBEAT_TIMEOUT = Duration.ofSeconds(30);
+    private static final Duration HEARTBEAT_INTERVAL = HEARTBEAT_TIMEOUT.dividedBy(3);
 
-    ExtractionActivitiesImpl(ClaimIntelligence intelligence, StageRecorder stages) {
-        this.intelligence = intelligence;
-        this.stages = stages;
+    private final DocumentExtractionStep step;
+    private final ScheduledExecutorService heartbeats = Executors.newSingleThreadScheduledExecutor(runnable -> {
+        Thread thread = new Thread(runnable, "extraction-heartbeat");
+        thread.setDaemon(true);
+        return thread;
+    });
+
+    ExtractionActivitiesImpl(DocumentExtractionStep step) {
+        this.step = step;
     }
 
     @Override
     public void extract(String claimId, String documentId) {
-        UUID claim = UUID.fromString(claimId);
-        UUID document = UUID.fromString(documentId);
-        stages.record(claim, Stage.DOCUMENT_EXTRACTION, document, Status.PROCESSING, null);
+        ActivityExecutionContext context = Activity.getExecutionContext();
+        ScheduledFuture<?> beating = heartbeats.scheduleAtFixedRate(
+                () -> beat(context), 0, HEARTBEAT_INTERVAL.toMillis(), TimeUnit.MILLISECONDS);
         try {
-            intelligence.extract(claim, document);
-        } catch (Failure failure) {
-            // The code is the only detail that leaves here: failure text must not enter workflow history.
-            throw failure.retryable()
-                    ? ApplicationFailure.newFailure(failure.code(), failure.code())
-                    : ApplicationFailure.newNonRetryableFailure(failure.code(), failure.code());
+            step.extract(claimId, documentId);
+        } finally {
+            beating.cancel(false);
         }
-        stages.record(claim, Stage.DOCUMENT_EXTRACTION, document, Status.COMPLETED, null);
+    }
+
+    /** A failed heartbeat must not cancel the schedule: Temporal may just be briefly unreachable. */
+    private static void beat(ActivityExecutionContext context) {
+        try {
+            context.heartbeat(null);
+        } catch (RuntimeException ignored) {
+            // The server's own timeout decides what happens if heartbeats stop arriving.
+        }
+    }
+
+    @Override
+    public void destroy() {
+        heartbeats.shutdownNow();
     }
 }

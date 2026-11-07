@@ -9,7 +9,8 @@ export interface SyntheticAccount {
 
 /** Reads the credentials written by the local seed command. */
 export function account(role: string): SyntheticAccount {
-  const sheet = readFileSync(path.resolve(process.cwd(), "../.data/synthetic-users.md"), "utf8");
+  const file = process.env.PRISM_E2E_CREDENTIALS ?? "../.data/synthetic-users.md";
+  const sheet = readFileSync(path.resolve(process.cwd(), file), "utf8");
   const match = sheet.match(new RegExp(`\\| ${role} \\| (\\S+) \\| \`([^\`]+)\``));
   if (!match?.[1] || !match[2]) {
     throw new Error(`No synthetic account for ${role}. Run the seed command first.`);

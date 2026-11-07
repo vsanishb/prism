@@ -4,7 +4,7 @@
     uv run --project services/ai python scripts/prism.py <command>
 
 Commands: setup, db-start, db-stop, db-status, db-reset, migrate, seed, run-ai, run-core, run-web,
-install-temporal, run-temporal, run-model-stub, e2e-stack.
+install-temporal, run-temporal, install-pgvector, run-model-stub, e2e-stack.
 
 `setup` creates a project-owned PostgreSQL cluster under .data/ using the installed
 PostgreSQL binaries. It leaves the machine's PostgreSQL service untouched and needs no
@@ -54,6 +54,14 @@ TEMPORAL_VERSION = "1.10.0"
 TEMPORAL_ARCHIVE = f"temporal_cli_{TEMPORAL_VERSION}_windows_amd64.zip"
 TEMPORAL_URL = f"https://github.com/temporalio/cli/releases/download/v{TEMPORAL_VERSION}/{TEMPORAL_ARCHIVE}"
 TEMPORAL_SHA256 = "b95695d08a564621b02322592bbb525a924f76cc892084fc3dd7d2e90f42b8bd"
+
+# pgvector has no official Windows binaries, so it is built from its release source (D-074). The
+# hash pins this exact archive, downloaded from the official repository on 2026-11-07.
+PGVECTOR_VERSION = "0.8.6"
+PGVECTOR_URL = f"https://github.com/pgvector/pgvector/archive/refs/tags/v{PGVECTOR_VERSION}.zip"
+PGVECTOR_SHA256 = "e93a1567219c9ce523ca16473f6c41cc80e01345b2d91ccdee40b473b7c5dd0a"
+PGVECTOR_HOME = DATA / "pgvector"
+VSWHERE = Path(r"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe")
 
 E2E_DATA = DATA / "e2e"
 E2E_DATABASE = "prism_e2e"
@@ -288,6 +296,78 @@ def run_temporal() -> None:
     )
 
 
+def vcvars() -> Path:
+    """The Visual Studio script that sets up the C++ compiler, which a Windows build needs."""
+    if not VSWHERE.exists():
+        sys.exit("Install Visual Studio 2022 Build Tools with the C++ workload first. See docs/decisions.md D-074.")
+    found = subprocess.run(
+        [str(VSWHERE), "-latest", "-products", "*", "-requires",
+         "Microsoft.VisualStudio.Component.VC.Tools.x86.x64", "-property", "installationPath"],
+        capture_output=True, text=True, check=True,
+    ).stdout.strip()
+    script = Path(found) / "VC/Auxiliary/Build/vcvars64.bat"
+    if not found or not script.exists():
+        sys.exit("The C++ build tools were not found. Add the 'Desktop development with C++' workload.")
+    return script
+
+
+def install_pgvector() -> None:
+    """Builds pgvector for the installed PostgreSQL 18 and installs it under .data/, so that the
+    machine's PostgreSQL installation is untouched and no administrator rights are needed."""
+    library = PGVECTOR_HOME / "lib" / "vector.dll"
+    if not library.exists():
+        downloads = DATA / "downloads"
+        downloads.mkdir(parents=True, exist_ok=True)
+        archive = downloads / f"pgvector-{PGVECTOR_VERSION}.zip"
+        if not archive.exists():
+            urllib.request.urlretrieve(PGVECTOR_URL, archive)  # noqa: S310 - fixed HTTPS URL
+        if hashlib.sha256(archive.read_bytes()).hexdigest() != PGVECTOR_SHA256:
+            archive.unlink()
+            sys.exit("The pgvector download does not match its pinned hash, so it was removed.")
+        build = DATA / "build"
+        shutil.rmtree(build, ignore_errors=True)
+        build.mkdir(parents=True)
+        with zipfile.ZipFile(archive) as contents:
+            contents.extractall(build)
+        source = build / f"pgvector-{PGVECTOR_VERSION}"
+        pg_root = Path(pg_tool("pg_config")).resolve().parent.parent
+        subprocess.run(
+            f'call "{vcvars()}" >nul && nmake /NOLOGO /F Makefile.win PGROOT="{pg_root}"',
+            cwd=source, shell=True, check=True,
+        )
+        extension = PGVECTOR_HOME / "share" / "extension"
+        extension.mkdir(parents=True, exist_ok=True)
+        library.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source / "vector.dll", library)
+        for script in (source / "sql").glob("vector--*.sql"):
+            shutil.copy2(script, extension)
+        # A bare module name is looked up on dynamic_library_path; $libdir would point at Program Files.
+        control = (source / "vector.control").read_text(encoding="ascii")
+        (extension / "vector.control").write_text(
+            control.replace("module_pathname = '$libdir/vector'", "module_pathname = 'vector'"), encoding="ascii"
+        )
+        shutil.rmtree(build, ignore_errors=True)
+    configure_pgvector()
+    print(f"pgvector {PGVECTOR_VERSION} is installed for the local cluster.")
+
+
+def configure_pgvector() -> None:
+    """Points the cluster at .data/pgvector, then proves the extension loads in a scratch database."""
+    password = read_env()["PRISM_MIGRATION_DB_PASSWORD"]
+    share = (PGVECTOR_HOME / "share").as_posix()
+    lib = (PGVECTOR_HOME / "lib").as_posix()
+    psql(password, "postgres", f"ALTER SYSTEM SET extension_control_path = '$system;{share}'")
+    psql(password, "postgres", f"ALTER SYSTEM SET dynamic_library_path = '$libdir;{lib}'")
+    psql(password, "postgres", "SELECT pg_reload_conf()")
+    psql(password, "postgres", "DROP DATABASE IF EXISTS prism_pgvector_check")
+    psql(password, "postgres", "CREATE DATABASE prism_pgvector_check")
+    try:
+        psql(password, "prism_pgvector_check", "CREATE EXTENSION vector")
+        psql(password, "prism_pgvector_check", "SELECT '[1,2,3]'::vector <-> '[1,2,4]'::vector")
+    finally:
+        psql(password, "postgres", "DROP DATABASE IF EXISTS prism_pgvector_check")
+
+
 def run_model_stub() -> None:
     subprocess.run([sys.executable, "-m", "tests.support.stub_openrouter"], cwd=ROOT / "services/ai", check=True)
 
@@ -411,6 +491,7 @@ COMMANDS = {
     "run-web": run_web,
     "install-temporal": install_temporal,
     "run-temporal": run_temporal,
+    "install-pgvector": install_pgvector,
     "run-model-stub": run_model_stub,
     "e2e-stack": e2e_stack,
 }

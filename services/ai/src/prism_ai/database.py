@@ -4,8 +4,7 @@ from psycopg_pool import AsyncConnectionPool
 def create_pool(database_url: str) -> AsyncConnectionPool:
     """Builds the service's connection pool, unopened.
 
-    Connections are validated before use because idle ones die silently: Neon closes them when a
-    compute scales to zero, and any database restart does the same.
+    Connections are validated before use because idle ones die silently when the database restarts.
     """
     return AsyncConnectionPool(
         database_url,

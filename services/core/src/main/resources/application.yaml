@@ -9,7 +9,7 @@ spring:
     username: ${PRISM_CORE_DB_USER}
     password: ${PRISM_CORE_DB_PASSWORD}
     hikari:
-      # Kept small for Neon's pooled endpoint. Timeouts tolerate compute cold starts.
+      # Kept small for a single local server. The timeout tolerates a slow start after a restart.
       maximum-pool-size: 10
       connection-timeout: 15000
   jpa:

@@ -6,7 +6,7 @@ Prism is an AI-assisted Health Insurance Claims Intelligence Platform. It turns 
 
 ## Run it
 
-You need Java 21, Python 3.14, Node 25, and PostgreSQL 18 installed. The [test guides](docs/test-guides/README.md) have the setup steps and flows to try.
+You need Java 21, Python 3.14, Node 25, and PostgreSQL 18 installed. Everything runs locally, with no hosted database. From M5, Visual Studio 2022 Build Tools (C++) are needed to build pgvector: run `scripts/prism.py install-pgvector` once. The [test guides](docs/test-guides/README.md) have the setup steps and flows to try.
 
 ## Repository layout
 

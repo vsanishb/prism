@@ -39,7 +39,7 @@ Every milestone also requires: tests at the levels in [testing.md](testing.md), 
 
 **Objective:** a real, secure application shell that users sign in to, with audit and service trust working from the start.
 **Plans:** [auth](plans/authentication-authorization.md), [audit](plans/audit-logging.md), [frontend](plans/frontend-experience.md), [deployment](plans/deployment-infrastructure.md)
-**Needs from user:** nothing for local use. Neon connection details and a Git remote when ready.
+**Needs from user:** nothing for local use. A Git remote when ready.
 
 - [x] Confirm Boot 4.1.2 + Temporal 1.40 gate ([D-039](decisions.md))
 - [x] Scaffold core, AI, and web projects with lint, format, and test tooling

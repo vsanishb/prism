@@ -7,7 +7,7 @@ The factual record of project state. Update after meaningful work. Newest entrie
 ## Current state
 
 **Phase:** M4 complete. M5 is next. M1's CI workflow has still never run.
-**Runs on:** local PostgreSQL 18.3. Neon has not been connected.
+**Runs on:** local PostgreSQL 18.3, the only database ([D-074](decisions.md)).
 
 | Capability | Status | Milestone |
 |---|---|---|
@@ -33,11 +33,17 @@ The factual record of project state. Update after meaningful work. Newest entrie
 | Item | Owner | Needed by |
 |---|---|---|
 | Create a Git remote, then confirm the first CI run | User | Before relying on CI |
-| Provide Neon connection details, then run migrations there | User | Before shared use |
 | Confirm the OpenRouter account is set to "ZDR only". Prism enforces ZDR per request regardless | User | Before real use |
-| Make pgvector available without Docker: a native install or Neon ([D-056](decisions.md)) | Dev and user | M5 |
 
 ## Log
+
+### 2026-11-07: Local PostgreSQL only, and pgvector
+
+**Done:** Neon is dropped from the plans and docs: local PostgreSQL 18 is the only database ([D-074](decisions.md)). pgvector 0.8.6 is built from its official source with Visual Studio 2022 Build Tools, installed under `.data/pgvector`, and enabled for the project cluster without touching the machine's PostgreSQL installation.
+
+**Verified:** the extension loads at 0.8.6, computes a distance, and serves an HNSW index query, in a scratch database. The cluster settings persist in its configuration file.
+
+**Not verified:** a cluster restart with the new settings, avoided because the user's services were running on it. The CI change to install pgvector has not run. No migration uses pgvector yet: that arrives with M5.
 
 ### 2026-11-07: M4 Policy intelligence, and cheaper models
 
@@ -69,7 +75,7 @@ Also verified: the Platinum policy read through the browser on the real model, w
 - Accuracy on real policies, which are longer and messier. All real-model runs fit one batch, so cross-batch joining is tested only with scripted results.
 - Restart tests were not repeated for policy ingestion. It uses the same workflow, outbox, and heartbeat code as claims.
 - The user's local database is not migrated: `db-reset` or `migrate` is needed before running M4.
-- Everything listed under earlier milestones, including CI and Neon.
+- Everything listed under earlier milestones, including CI.
 
 ### 2026-11-07: M3 Document intelligence and workflows
 
@@ -98,7 +104,7 @@ Also verified: one claim through the browser on real models, with a conflict and
 **Not verified:**
 - Accuracy on real documents. The evaluation set is small and clean, its "handwriting" is a script font, and prompts and parsing were corrected against it. Perfect scores here do not predict real accuracy.
 - That the OpenRouter account is set to "ZDR only". Prism enforces ZDR on each request regardless.
-- Everything listed under M1 still applies, including CI and Neon. The CI workflow's new dependencies have not run.
+- Everything listed under M1 still applies, including CI. The CI workflow's new dependencies have not run.
 - The `run-*` commands with the M3 code, as the user's M2 services were left running. All M3 runs used `e2e-stack`.
 - `run-web` was not started separately. Fuzzing and independent review of parsing remain M9.
 - Core still parses uploads in-process, with tested bounds but no way to kill a runaway parse. Added to M9.
@@ -124,7 +130,7 @@ Also verified: a valid 23 MB scan and a refused 27 MB file through the real prox
 - A non-compiling test was committed by a chained command, and corrected before anything was shared.
 
 **Not verified:**
-- Everything listed under M1 still applies, including CI and Neon.
+- Everything listed under M1 still applies, including CI.
 - PDF parsing runs in the core service on untrusted files. Limits are in place, but it has had no fuzzing or independent review.
 - No malware scanning (M9), and local document storage is not encrypted.
 - `run-web` was not started separately, because a Next.js dev server was already running. It runs `npm run dev`, which was tested in M1.

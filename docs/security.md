@@ -111,7 +111,7 @@ Network isolation is an additional layer, never the only one. The same mechanism
 | `prism_ai_app` | DML on `knowledge`. No access to `core` |
 | `prism_audit_reader` | Read-only for audit reporting |
 
-TLS is required on every connection. Queries are parameterized. Neon provides encryption at rest. Backups use Neon's point-in-time restore, with retention set by plan.
+Queries are parameterized. The database runs locally on PostgreSQL 18 ([D-074](decisions.md)), listening on this machine only. Encryption at rest, TLS for any remote connection, and a tested backup and restore are M9 work for whichever host is chosen.
 
 ## File upload security
 
@@ -167,4 +167,4 @@ Real claim data is prohibited until all of these are complete:
 
 ## Production considerations
 
-TLS everywhere; AI service and Temporal on a private network; managed secrets with rotation; least-privilege service identities; dependency and image scanning; centralized alerting on authentication and audit anomalies; tested backup and restore; separate Neon projects per environment.
+TLS everywhere; AI service and Temporal on a private network; managed secrets with rotation; least-privilege service identities; dependency and image scanning; centralized alerting on authentication and audit anomalies; tested backup and restore; a separate database per environment.

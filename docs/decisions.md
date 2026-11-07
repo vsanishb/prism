@@ -29,8 +29,9 @@ Checked against Maven Central, PyPI, npm, nodejs.org, Docker Hub, and vendor doc
 | React | 19.3.1 | Verified with Next 16.4.5 build and E2E |
 | Tailwind CSS | 4.3.x | Latest published |
 | TypeScript | 5.9.3 | Verified with Next 16 build. 7.0 not adopted: new major, unverified with Next 16 |
-| Neon Postgres | 18 | pgvector 0.8.6 available on PG18. Not yet connected |
-| Local Postgres (native) | 18.3 (installed) | Running. `pg_trgm`, `pgcrypto`, `citext`, `unaccent` present. **pgvector not installed** (D-041) |
+| Local Postgres (native) | 18.3 (installed) | The only database (D-074). `pg_trgm`, `pgcrypto`, `citext`, `unaccent` present |
+| pgvector | 0.8.6 | Built from source for PostgreSQL 18 on Windows, installed under `.data/pgvector`. Verified: extension, distance, and an HNSW index (D-074) |
+| Visual Studio 2022 Build Tools | C++ workload | Installed on this machine through winget, to build pgvector |
 | CI Postgres | PostgreSQL 18 from the PostgreSQL apt repository | CI not yet run (D-056) |
 | uv | 0.13.7 | Installed and verified |
 | Apache PDFBox | 3.0.8 | Verified: parsing and rendering in tests and E2E |
@@ -52,7 +53,7 @@ Spring Boot is one deployable with feature packages, with boundaries enforced by
 
 ### D-003 Layer responsibilities
 **Status:** Accepted · **Source:** User
-Spring Boot is the application and business layer, FastAPI handles AI and specialized processing, Next.js is the frontend, Neon PostgreSQL is the database, OpenRouter provides models, and Temporal handles orchestration.
+Spring Boot is the application and business layer, FastAPI handles AI and specialized processing, Next.js is the frontend, PostgreSQL is the database (local only, D-074), OpenRouter provides models, and Temporal handles orchestration.
 
 ### D-004 Spring Boot 4.1 with Temporal 1.40
 **Status:** Accepted, gate passed (see D-039) · **Source:** Dev
@@ -79,7 +80,7 @@ Maven with the wrapper, uv with a lockfile, npm. Maven and uv are not installed;
 ## Data
 
 ### D-008 One Neon database, two schemas
-**Status:** Accepted · **Source:** User (Neon) / Dev (layout)
+**Status:** Accepted for the two-schema layout. The Neon part is superseded by D-074 · **Source:** User (Neon) / Dev (layout)
 `core` and `knowledge` schemas with separate runtime roles. Enforces the service boundary with grants at far less cost than two databases. Postgres 18 provides native `uuidv7()` and the newest pgvector on Neon.
 
 ### D-009 Flyway owns all migrations
@@ -231,7 +232,7 @@ A `@SpringBootTest` ran a real workflow and activity through `temporal-spring-bo
 Supersedes D-006. Node 25 is the project runtime and `.nvmrc` pins it. It satisfies Next.js's minimum, and no LTS change is needed.
 
 ### D-041 Local PostgreSQL for development, Neon as the central database
-**Status:** Accepted · **Source:** User (Neon, local install) / Dev (arrangement)
+**Status:** Superseded by D-074 · **Source:** User (Neon, local install) / Dev (arrangement)
 Neon PostgreSQL is the central database for all application data and policy knowledge. The installed PostgreSQL 18.3 matches Neon's major version and serves local development through the same connection settings, so switching is configuration only. Integration tests use disposable Testcontainers databases.
 The native install lacks pgvector, which is first needed in M5. Options then are installing the extension locally, or using Neon or the pgvector container. No milestone before M5 depends on it.
 
@@ -249,7 +250,7 @@ Extends D-034. Each milestone ships clearly labeled synthetic artifacts and a fr
 
 ### D-045 PostgreSQL is the knowledge store
 **Status:** Accepted · **Source:** User
-pgvector and PostgreSQL full-text search provide hybrid retrieval, and no separate vector database is added unless a clear technical requirement appears that Neon cannot meet. Retrieval stays modular behind interfaces, so search and embedding parts can change. Reranking stays only if it shows measurable value in evaluation (refines D-023).
+pgvector and PostgreSQL full-text search provide hybrid retrieval, and no separate vector database is added unless a clear technical requirement appears that local PostgreSQL cannot meet. Retrieval stays modular behind interfaces, so search and embedding parts can change. Reranking stays only if it shows measurable value in evaluation (refines D-023).
 
 ### D-046 Project-owned local database, no Testcontainers
 **Status:** Accepted · **Source:** Dev
@@ -395,3 +396,9 @@ Batches of up to six pages, each starting on the previous batch's last page. A c
 ### D-073 Rules apply to corrections too
 **Status:** Accepted · **Source:** Dev
 One function decides whether a value breaks a rule, such as a sublimit above the sum insured. It runs on the extracted value when assembling, and again on the reviewed value at publication, so that a correction cannot introduce what a reading would have been flagged for. Publication also requires every critical value to be reviewed, all pages read, and a publisher other than the uploader. A second synthetic policy manager exists so that this can be tested.
+
+### D-074 Local PostgreSQL is the only database, with pgvector built natively
+**Status:** Accepted · **Source:** User (local only) / Dev (build)
+Supersedes D-041 and the Neon part of D-008. The user dropped Neon: every schema, including the M5 search index, lives in the local PostgreSQL 18 cluster, and there is no plan to connect a hosted database. Production hosting remains an M9 decision.
+pgvector has no official Windows binaries, and conda-forge builds only for PostgreSQL 16. So `scripts/prism.py install-pgvector` builds the official 0.8.6 release source with Visual Studio 2022 Build Tools (C++ workload, installed via winget with the user's approval), checks the archive against a pinned SHA-256, and installs into `.data/pgvector`. PostgreSQL 18's `extension_control_path` and `dynamic_library_path` point the cluster there, set with `ALTER SYSTEM` so they persist. The machine's PostgreSQL installation is untouched, and no administrator rights are needed after the build tools. The control file's `module_pathname` is changed to a bare name, so that it resolves through `dynamic_library_path` and not the installation's `$libdir`.
+Verified on 2026-11-07: `CREATE EXTENSION vector` at 0.8.6, a vector distance, and an HNSW index query, in a scratch database on the project cluster. CI installs `postgresql-18-pgvector` from the PostgreSQL apt repository instead; that has not run.

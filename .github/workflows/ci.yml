@@ -28,7 +28,7 @@ jobs:
           sudo curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc https://www.postgresql.org/media/keys/ACCC4CF8.asc
           echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
           sudo apt-get update
-          sudo apt-get install -y postgresql-18
+          sudo apt-get install -y postgresql-18 postgresql-18-pgvector
           sudo pg_createcluster 18 ci --port=5544 --start
           sudo -u postgres psql -p 5544 -c "CREATE ROLE prism_ci_owner SUPERUSER LOGIN PASSWORD '${{ github.run_id }}'"
       - run: ./mvnw -B -ntp verify

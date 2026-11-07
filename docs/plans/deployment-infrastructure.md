@@ -12,14 +12,9 @@ Make Prism simple to run locally and safe to run when deployed.
 ### Local development (M1, M3)
 - A project-owned PostgreSQL cluster serves local development and tests ([D-046](../decisions.md)).
 - Application services run natively for fast iteration.
-- Neon uses the same settings when connected: only `.env` changes.
+- PostgreSQL 18 is the only database, run locally ([D-074](../decisions.md)). pgvector is built natively by `scripts/prism.py install-pgvector`, which needs Visual Studio 2022 Build Tools with the C++ workload.
 - Temporal runs natively from `scripts/prism.py`, with a persisted database file so that workflows survive restarts.
 - Docker is not used ([D-056](../decisions.md)).
-
-### Neon specifics
-- Use the pooled endpoint for runtime, direct for migrations.
-- Keep Hikari pools small, and tolerate cold starts with connection timeouts and retries.
-- Use a separate Neon branch per environment, and separate projects for production.
 
 ### Deployed environments (M9)
 The hosting provider and packaging are not yet chosen, and need the user's decision. Containers require explicit approval ([D-056](../decisions.md)). The design requires private networking and a secret store.
@@ -40,7 +35,7 @@ Provider selection needs the user's input before M9.
 Native local tooling; GitHub Actions pipeline; migration job; health and readiness endpoints; OpenTelemetry configuration; runbooks.
 
 ## Testing
-CI builds from a clean clone; migrations run against an empty database and a Neon branch; restore from backup is tested; staging runs the full Playwright suite.
+CI builds from a clean clone; migrations run against an empty database; restore from backup is tested; staging runs the full Playwright suite.
 
 ## Completion criteria
 **M1:** a new developer can start everything from the README.

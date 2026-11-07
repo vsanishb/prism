@@ -11,8 +11,8 @@ flowchart LR
     C -->|signed service JWT| A[FastAPI AI service]
     C <-->|gRPC| T[Temporal]
     C --> DS[(Document store)]
-    C --> DB1[(Neon: core schema)]
-    A --> DB2[(Neon: knowledge schema)]
+    C --> DB1[(PostgreSQL: core schema)]
+    A --> DB2[(PostgreSQL: knowledge schema)]
     A -->|zero-data-retention routing| O[OpenRouter]
 ```
 
@@ -52,7 +52,7 @@ Conventions: versioned paths (`/api/v1`, `/internal/v1`), RFC 9457 problem respo
 
 ## Data architecture
 
-One Neon database on Postgres 18, with two schemas, each with its own runtime role. Flyway owns all migrations, and runtime roles have no DDL rights.
+One local PostgreSQL 18 database, with two schemas, each with its own runtime role ([D-074](decisions.md)). Flyway owns all migrations, and runtime roles have no DDL rights.
 
 ### `core` schema (owner: core service)
 
@@ -92,7 +92,7 @@ The original PDF stays in the document store. `policy_version_id` links to `core
 
 ## Document storage
 
-A `DocumentStore` port in core, with a filesystem adapter locally and an S3-compatible adapter when deployed. Objects are keyed by opaque IDs, encrypted at rest, and accessed only through authorized core endpoints. Neon stores metadata and SHA-256 hashes.
+A `DocumentStore` port in core, with a filesystem adapter locally and an S3-compatible adapter when deployed. Objects are keyed by opaque IDs, encrypted at rest, and accessed only through authorized core endpoints. PostgreSQL stores metadata and SHA-256 hashes.
 
 ## AI service architecture
 

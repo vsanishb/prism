@@ -31,16 +31,16 @@ A reviewer must reconcile bills, discharge summaries, prescriptions, reports, an
 ```text
 Next.js web  ──▶  Spring Boot core  ──▶  FastAPI AI service  ──▶  OpenRouter
                      │       │                  │
-                 Temporal  Document store    Neon PostgreSQL (knowledge)
+                 Temporal  Document store    PostgreSQL (knowledge)
                      │
-                 Neon PostgreSQL (core)
+                 PostgreSQL (core)
 ```
 
 Details: [architecture.md](architecture.md).
 
 ## Technology
 
-Java and Spring Boot; Python and FastAPI; Next.js; Neon PostgreSQL with pgvector; Temporal; OpenRouter. Pinned versions: [decisions.md](decisions.md#version-baseline).
+Java and Spring Boot; Python and FastAPI; Next.js; local PostgreSQL 18 with pgvector; Temporal; OpenRouter. Pinned versions: [decisions.md](decisions.md#version-baseline).
 
 ## Product principles
 

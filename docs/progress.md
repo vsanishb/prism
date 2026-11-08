@@ -33,7 +33,6 @@ The factual record of project state. Update after meaningful work. Newest entrie
 | Item | Owner | Needed by |
 |---|---|---|
 | Confirm the first CI run on GitHub | User | Before relying on CI |
-| Add OpenRouter credit: the account is overdrawn, so model calls fail with 402. Then rerun `demo-prepare` | User | Before the presentation |
 | Confirm the OpenRouter account is set to "ZDR only". Prism enforces ZDR per request regardless | User | Before real use |
 
 ## Log
@@ -42,8 +41,8 @@ The factual record of project state. Update after meaningful work. Newest entrie
 
 - **Interface:** larger type and controls from a 17px rem scale, a grouped sidebar with larger items, a two-column sign-in page, and a home dashboard backed by `GET /api/v1/overview` ([D-097](decisions.md)). Labels and flows are unchanged.
 - **Data:** `scripts/generate_demo.py` writes `demo/` (blatant, clean, and disguised cases to upload by hand) and `test-data/claims/demo-corpus/` (25 claims). `prism.py demo-prepare` publishes every policy, now including Platinum and wordings for Silver and Plus, and loads the claims through the API ([D-098](decisions.md)).
-- **First run, real model:** all five policy versions published. Of the first 17 claims screened, every planted rule fired. Three also raised FIN-03, because their claimed amounts had been typed by hand and did not match the bills; amounts are now taken from the bills. The copied-bill expectations were corrected: DUP-02 and DUP-03 deliberately skip a file DUP-01 already reports (D-096).
-- **Not finished:** the OpenRouter account ran out of credit mid-run (402). Five claims wait with failed extraction, and five claims carry the old amounts. `demo-prepare` retries failed stages and replaces the old claims when run again.
+- **Result, real model:** all five policy versions published. All 25 claims processed and worked: 9 decided (one revised), 1 escalated, 1 taken, 2 under investigation or waiting for it, 3 waiting for information, the rest waiting in queues. Every one of the 33 planted signals fired, across 21 rules, with none unexpected. MIS-01 is not among them by design: a claim missing a required document waits 14 days for it before it is screened.
+- **Found on the way:** three claims raised FIN-03 because their amounts had been typed by hand and did not match their bills; amounts now come from the bills. A bill printed with an "all inclusive charges" line was read as one line item, so DOC-03 did not fire; the bill now prints only its total. The copied-bill expectations were wrong: DUP-02 and DUP-03 deliberately skip a file DUP-01 already reports (D-096). The model account ran out of credit mid-run; `demo-prepare` now retries failed stages and replaces claims loaded from an older version of the set.
 - **Tests:** `OverviewTest` (3) and `ArchitectureTest` pass. Web types and lint clean.
 
 ### 2026-11-08: M8 Human review and outcomes

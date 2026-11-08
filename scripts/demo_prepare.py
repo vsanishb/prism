@@ -28,6 +28,7 @@ import time
 import uuid
 from collections.abc import Callable
 from dataclasses import dataclass, field
+from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 from typing import Any
@@ -262,16 +263,26 @@ def load_wave(processor: Session, entries: list[dict[str, Any]], policies: dict[
         say(f"  {item.number}  {item.entry['title']}{'' if item.created else ' (already loaded)'}")
     started = time.monotonic()
 
-    retries: dict[str, int] = {}
+    retried: dict[str, list[float]] = {}
 
     def retry_failed(item: Loaded) -> None:
-        """A stage that failed (a model outage, say) waits for someone to press Retry. This presses it."""
-        if processor.get(f"/api/v1/claims/{item.claim_id}/processing").get("retryAvailable"):
-            if retries.get(item.claim_id, 0) >= 3:
+        """A stage that failed (a model outage, say) waits for someone to press Retry. This presses it, and
+        presses again only if nothing has happened for two minutes since: the flag stays set while the
+        retried cycle runs."""
+        processing = processor.get(f"/api/v1/claims/{item.claim_id}/processing")
+        if not processing.get("retryAvailable"):
+            return
+        attempts = retried.setdefault(item.claim_id, [])
+        if attempts:
+            latest = max(datetime.fromisoformat(stage["occurredAt"].replace("Z", "+00:00")).timestamp()
+                         for stage in processing["stages"])
+            if latest > attempts[-1] or time.time() - attempts[-1] < 120:
+                return
+            if len(attempts) >= 3:
                 sys.exit(f"{item.number} keeps failing. Open it in Prism to see why (is the model account in credit?).")
-            retries[item.claim_id] = retries.get(item.claim_id, 0) + 1
-            if processor.post(f"/api/v1/claims/{item.claim_id}/processing/retry").status_code < 400:
-                say(f"  {item.number}: a stage had failed, retried")
+        attempts.append(time.time())
+        if processor.post(f"/api/v1/claims/{item.claim_id}/processing/retry").status_code < 400:
+            say(f"  {item.number}: a stage had failed, retried")
 
     def finished() -> bool:
         waiting = [item for item in loaded if status(processor, item.claim_id) not in SETTLED]
@@ -400,8 +411,6 @@ def processing_seconds(session: Session, claim_id: str, history: list[dict[str, 
     submitted = session.get(f"/api/v1/claims/{claim_id}").get("submittedAt")
     if not submitted or not history:
         return None
-    from datetime import datetime
-
     def parse(value: str) -> datetime:
         return datetime.fromisoformat(value.replace("Z", "+00:00"))
 

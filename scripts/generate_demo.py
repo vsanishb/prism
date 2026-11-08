@@ -530,8 +530,8 @@ def bill_document(bill: Bill, code: str) -> list[Any]:
         rows.append(["<b>Total</b>", "", "", f"<b>{amount(bill.total)}</b>"])
         story.append(table(rows, [84, 20, 34, 36]))
     else:
-        story.append(key_values([("Hospital charges, all inclusive", f"INR {amount(bill.total)}"),
-                                 ("Total payable", f"INR {amount(bill.total)}")]))
+        # Only a total: a "charges, all inclusive" line beside it is read, reasonably, as a line item.
+        story.append(key_values([("Total payable", f"INR {amount(bill.total)}")]))
     story += [Spacer(1, 8), code_line(code)]
     return story
 

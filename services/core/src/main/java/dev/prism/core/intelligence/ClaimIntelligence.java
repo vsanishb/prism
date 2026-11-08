@@ -20,6 +20,18 @@ public interface ClaimIntelligence {
     Consolidation consolidate(UUID claimId);
 
     /**
+     * Analyzes the latest facts against the claim's policy version, with the Policy Agent. Does
+     * nothing if that consolidation was already analyzed. It assists review and decides nothing.
+     *
+     * @throws dev.prism.core.aiclient.DocumentExtraction.Failure if the version cannot be searched yet,
+     *     or the AI service could not finish
+     */
+    Analysis analyze(UUID claimId);
+
+    /** @param needsAttention whether any finding is anything other than supported by the wording */
+    record Analysis(boolean needsAttention) {}
+
+    /**
      * @param complete whether every required document is present
      * @param needsAttention whether any finding should be looked at by a person
      */

@@ -63,6 +63,19 @@ class DefaultPublishedKnowledge implements PublishedKnowledge {
                 .distinct()
                 .filter(relation -> !Objects.equals(relation.fromProvisionId(), relation.toProvisionId()))
                 .toList();
-        return Optional.of(new Snapshot(versionId, version.policyId(), wording.get().id(), provisions, relations));
+        List<Value> values = view.provisions().stream()
+                .flatMap(provision -> provision.values().stream()
+                        .filter(value -> !"TEXT".equals(value.kind()) && value.review() != null)
+                        .map(value -> new Value(
+                                value.id(),
+                                provision.id(),
+                                value.name(),
+                                value.kind(),
+                                value.review().correctedValue() != null ? value.review().correctedValue() : value.value(),
+                                value.unit(),
+                                value.qualifier())))
+                .filter(value -> value.value() != null)
+                .toList();
+        return Optional.of(new Snapshot(versionId, version.policyId(), wording.get().id(), provisions, relations, values));
     }
 }

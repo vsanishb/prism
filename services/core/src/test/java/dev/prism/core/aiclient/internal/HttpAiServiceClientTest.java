@@ -48,7 +48,7 @@ class HttpAiServiceClientTest {
                 new PrismProperties.Documents("store", 1000, 1000, 10, 10, 1000, 100),
                 new PrismProperties.Ai(
                         URI.create("http://127.0.0.1:" + server.getAddress().getPort()), Duration.ofSeconds(2), Duration.ofSeconds(4),
-                        Duration.ofSeconds(3)),
+                        Duration.ofSeconds(3), Duration.ofSeconds(5)),
                 new PrismProperties.Temporal(false, "localhost:1", "default", Duration.ofDays(1), 1, Duration.ofSeconds(1)),
                 new PrismProperties.Bootstrap("", ""),
                 new PrismProperties.Seed("", ""));

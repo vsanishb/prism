@@ -15,6 +15,13 @@ public interface PolicyDirectory {
 
     Optional<VersionRef> findVersion(UUID versionId);
 
+    /**
+     * When continuous cover began, for this version: the start of the earliest version reached by
+     * stepping back through versions that each begin the day after the previous one ends. A gap in
+     * the register restarts cover. Waiting periods count from this date.
+     */
+    Optional<LocalDate> coverStart(UUID versionId);
+
     record PolicyRef(UUID id, String policyNumber, String productName, String policyholderName) {}
 
     record VersionRef(

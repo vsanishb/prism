@@ -11,6 +11,7 @@ import dev.prism.core.audit.AuditRecorder;
 import dev.prism.core.policyknowledge.PublishedKnowledge;
 import dev.prism.core.policyknowledge.PublishedKnowledge.Snapshot;
 import dev.prism.core.retrieval.PolicyIndexing;
+import dev.prism.core.retrieval.SearchIndexes;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 /** Sends a published version to the AI service for indexing (D-075). No model call runs inside a transaction. */
 @Service
-class PolicyIndexingService implements PolicyIndexing {
+class PolicyIndexingService implements PolicyIndexing, SearchIndexes {
 
     private final PublishedKnowledge knowledge;
     private final SearchIndexStore store;
@@ -70,6 +71,11 @@ class PolicyIndexingService implements PolicyIndexing {
                     .detail(AuditDetail.CHUNK_COUNT, result.chunkCount())
                     .detail(AuditDetail.PIPELINE_VERSION, result.pipelineVersion()));
         });
+    }
+
+    @Override
+    public boolean ready(UUID versionId) {
+        return store.find(versionId).filter(index -> "READY".equals(index.status())).isPresent();
     }
 
     @Override

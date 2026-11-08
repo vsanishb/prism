@@ -22,8 +22,11 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Limit;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -181,6 +184,23 @@ class PolicyService implements PolicyDirectory, DocumentAccessGuard {
     @Transactional(readOnly = true)
     public Optional<VersionRef> findVersion(UUID versionId) {
         return versions.findById(versionId).map(PolicyVersionEntity::toRef);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<LocalDate> coverStart(UUID versionId) {
+        return versions.findById(versionId).map(version -> {
+            // Versions never overlap, so each end date belongs to one version and the walk ends.
+            Map<LocalDate, PolicyVersionEntity> byEnd = versions.findByPolicyIdOrderByVersionNumberDesc(version.policyId())
+                    .stream()
+                    .collect(Collectors.toMap(PolicyVersionEntity::effectiveTo, Function.identity()));
+            LocalDate start = version.effectiveFrom();
+            PolicyVersionEntity previous;
+            while ((previous = byEnd.get(start.minusDays(1))) != null) {
+                start = previous.effectiveFrom();
+            }
+            return start;
+        });
     }
 
     @Override

@@ -41,6 +41,7 @@ class TemporalConfig {
             ExtractionActivities extractionActivities,
             PolicyActivitiesImpl policyActivities,
             IndexingActivitiesImpl indexingActivities,
+            AnalysisActivitiesImpl analysisActivities,
             PrismProperties properties) {
         WorkerFactory factory = WorkerFactory.newInstance(client);
         Worker workflows = factory.newWorker(ClaimProcessingWorkflowImpl.WORKFLOW_QUEUE);
@@ -60,6 +61,7 @@ class TemporalConfig {
                         .build());
         ai.registerActivitiesImplementations(
                 extractionActivities,
+                analysisActivities,
                 new PolicyModelActivities(policyActivities),
                 new IndexBuildModelActivities(indexingActivities));
         return factory;

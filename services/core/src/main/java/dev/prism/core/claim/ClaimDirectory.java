@@ -24,5 +24,7 @@ public interface ClaimDirectory {
             LocalDate admissionDate,
             LocalDate dischargeDate,
             BigDecimal claimedAmount,
-            String currency) {}
+            String currency,
+            UUID policyId,
+            UUID policyVersionId) {}
 }

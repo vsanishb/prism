@@ -284,7 +284,9 @@ class ClaimService implements DocumentAccessGuard, ClaimDirectory {
                 claim.admissionDate(),
                 claim.dischargeDate(),
                 claim.claimedAmount(),
-                claim.currency());
+                claim.currency(),
+                claim.policyId(),
+                claim.policyVersionId());
     }
 
     /** A draft has no workflow yet: submission will pick up whatever documents it has then. */

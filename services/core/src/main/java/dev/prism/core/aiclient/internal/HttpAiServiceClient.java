@@ -4,6 +4,7 @@ import dev.prism.core.aiclient.AiServiceClient;
 import dev.prism.core.aiclient.DocumentExtraction;
 import dev.prism.core.aiclient.DocumentExtraction.Failure;
 import dev.prism.core.aiclient.DocumentExtraction.ModelRun;
+import dev.prism.core.aiclient.PolicyAnalysis;
 import dev.prism.core.aiclient.PolicyExtraction;
 import dev.prism.core.aiclient.PolicySearch;
 import dev.prism.core.platform.config.PrismProperties;
@@ -27,11 +28,13 @@ class HttpAiServiceClient implements AiServiceClient {
     private static final String POLICY_PAGES_PATH = "/internal/v1/policies/extract-pages";
     private static final String INDEX_PATH = "/internal/v1/policies/index";
     private static final String SEARCH_PATH = "/internal/v1/policies/search";
+    private static final String ANALYZE_PATH = "/internal/v1/claims/analyze";
 
     private final RestClient signed;
     private final RestClient unsigned;
     private final RestClient extraction;
     private final RestClient search;
+    private final RestClient analysis;
 
     HttpAiServiceClient(RestClient.Builder builder, ServiceTokenSigner signer, PrismProperties properties) {
         Duration timeout = properties.ai().timeout();
@@ -45,6 +48,9 @@ class HttpAiServiceClient implements AiServiceClient {
         this.signed = authenticated.clone().requestFactory(requestFactory(timeout, timeout)).build();
         this.extraction = authenticated.clone()
                 .requestFactory(requestFactory(timeout, properties.ai().extractionTimeout()))
+                .build();
+        this.analysis = authenticated.clone()
+                .requestFactory(requestFactory(timeout, properties.ai().analysisTimeout()))
                 .build();
         this.search = authenticated.clone()
                 .requestFactory(requestFactory(timeout, properties.ai().searchTimeout()))
@@ -81,6 +87,11 @@ class HttpAiServiceClient implements AiServiceClient {
     @Override
     public PolicySearch.SearchResult searchPolicyVersion(PolicySearch.SearchRequest request) {
         return post(search, SEARCH_PATH, request, PolicySearch.SearchResult.class);
+    }
+
+    @Override
+    public PolicyAnalysis.Result analyzeClaim(PolicyAnalysis.Request request) {
+        return post(analysis, ANALYZE_PATH, request, PolicyAnalysis.Result.class);
     }
 
     private <T> T post(String path, Object request, Class<T> resultType) {

@@ -41,6 +41,7 @@ class DefaultClaimIntelligence implements ClaimIntelligence {
     private final IntelligenceStore store;
     private final AuditRecorder audit;
     private final TransactionTemplate transactions;
+    private final PolicyAnalysisStep analysis;
 
     DefaultClaimIntelligence(
             ClaimDirectory claims,
@@ -48,13 +49,15 @@ class DefaultClaimIntelligence implements ClaimIntelligence {
             AiServiceClient ai,
             IntelligenceStore store,
             AuditRecorder audit,
-            TransactionTemplate transactions) {
+            TransactionTemplate transactions,
+            PolicyAnalysisStep analysis) {
         this.claims = claims;
         this.documents = documents;
         this.ai = ai;
         this.store = store;
         this.audit = audit;
         this.transactions = transactions;
+        this.analysis = analysis;
     }
 
     @Override
@@ -132,6 +135,11 @@ class DefaultClaimIntelligence implements ClaimIntelligence {
             return stored;
         }));
         return new Consolidation(sequence.orElseThrow(), complete, needsAttention);
+    }
+
+    @Override
+    public Analysis analyze(UUID claimId) {
+        return analysis.analyze(claimId);
     }
 
     private List<DocumentView> activeDocuments(UUID claimId) {

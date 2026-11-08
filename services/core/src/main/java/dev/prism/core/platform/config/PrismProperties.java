@@ -43,7 +43,8 @@ public record PrismProperties(
             @NotNull URI baseUrl,
             @NotNull Duration timeout,
             @NotNull Duration extractionTimeout,
-            @NotNull Duration searchTimeout) {}
+            @NotNull Duration searchTimeout,
+            @NotNull Duration analysisTimeout) {}
 
     public record Temporal(
             boolean enabled,

@@ -47,6 +47,7 @@ class ClaimProcessingWorkflowTest {
     private TestWorkflowEnvironment environment;
     private ClaimActivities claims;
     private ExtractionActivities extraction;
+    private AnalysisActivities analysis;
     private ClaimProcessingWorkflow workflow;
     private WorkflowExecution execution;
 
@@ -55,10 +56,11 @@ class ClaimProcessingWorkflowTest {
         environment = TestWorkflowEnvironment.newInstance();
         claims = mock(ClaimActivities.class, withSettings().withoutAnnotations());
         extraction = mock(ExtractionActivities.class, withSettings().withoutAnnotations());
+        analysis = mock(AnalysisActivities.class, withSettings().withoutAnnotations());
         environment.newWorker(ClaimProcessingWorkflowImpl.WORKFLOW_QUEUE)
                 .registerWorkflowImplementationTypes(ClaimProcessingWorkflowImpl.class);
         environment.newWorker(ClaimProcessingWorkflowImpl.DATABASE_QUEUE).registerActivitiesImplementations(claims);
-        environment.newWorker(ClaimProcessingWorkflowImpl.AI_QUEUE).registerActivitiesImplementations(extraction);
+        environment.newWorker(ClaimProcessingWorkflowImpl.AI_QUEUE).registerActivitiesImplementations(extraction, analysis);
         environment.start();
         workflow = environment.getWorkflowClient().newWorkflowStub(
                 ClaimProcessingWorkflow.class,
@@ -95,10 +97,11 @@ class ClaimProcessingWorkflowTest {
         verify(claims, timeout(ASYNC_MILLIS)).readyForReview(CLAIM);
         finish();
 
-        InOrder order = inOrder(claims, extraction);
+        InOrder order = inOrder(claims, extraction, analysis);
         order.verify(claims).begin(CLAIM);
         order.verify(claims).documentsToExtract(CLAIM);
         order.verify(claims).consolidate(CLAIM);
+        order.verify(analysis).analyzePolicy(CLAIM);
         order.verify(claims).readyForReview(CLAIM);
         verify(extraction).extract(CLAIM, DOCUMENT_A);
         verify(extraction).extract(CLAIM, DOCUMENT_B);
@@ -196,6 +199,50 @@ class ClaimProcessingWorkflowTest {
         workflow.retryRequested();
         verify(claims, timeout(ASYNC_MILLIS)).readyForReview(CLAIM);
         finish();
+    }
+
+    @Test
+    void aFailedAnalysisDoesNotHoldReviewAndARetryRunsItAgain() throws Exception {
+        pending();
+        when(claims.consolidate(CLAIM)).thenReturn(true);
+        doThrow(ApplicationFailure.newNonRetryableFailure("not searchable", "policy_not_searchable"))
+                .doNothing()
+                .when(analysis).analyzePolicy(CLAIM);
+
+        run();
+        verify(claims, timeout(ASYNC_MILLIS)).recordAnalysisFailed(CLAIM, "policy_not_searchable");
+        verify(claims, timeout(ASYNC_MILLIS)).readyForReview(CLAIM);
+
+        workflow.retryRequested();
+        verify(claims, timeout(ASYNC_MILLIS).times(2)).readyForReview(CLAIM);
+        finish();
+        verify(analysis, times(2)).analyzePolicy(CLAIM);
+        verify(claims, times(2)).consolidate(CLAIM);
+    }
+
+    @Test
+    void aRetryAfterASuccessfulAnalysisIsIgnored() throws Exception {
+        pending();
+        when(claims.consolidate(CLAIM)).thenReturn(true);
+
+        run();
+        verify(claims, timeout(ASYNC_MILLIS)).readyForReview(CLAIM);
+        workflow.retryRequested();
+        finish();
+        verify(analysis, times(1)).analyzePolicy(CLAIM);
+    }
+
+    @Test
+    void anAnalysisModelOutageIsRetriedQuietly() throws Exception {
+        pending();
+        when(claims.consolidate(CLAIM)).thenReturn(true);
+        doThrow(ApplicationFailure.newFailure("busy", "model_unavailable")).doNothing().when(analysis).analyzePolicy(CLAIM);
+
+        run();
+        environment.sleep(Duration.ofMinutes(1));
+        verify(claims, timeout(ASYNC_MILLIS)).readyForReview(CLAIM);
+        finish();
+        verify(claims, never()).recordAnalysisFailed(any(), any());
     }
 
     @Test

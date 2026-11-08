@@ -90,6 +90,8 @@ prism:
     extraction-timeout: 4m
     # Covers an embedding and a rerank, each with one retry, so that a search fails rather than hangs.
     search-timeout: 30s
+    # Below the analysis activity's ten-minute limit. An analysis is many model calls in sequence.
+    analysis-timeout: 9m
   temporal:
     enabled: ${PRISM_TEMPORAL_ENABLED:true}
     target: ${PRISM_TEMPORAL_TARGET:127.0.0.1:7233}

@@ -27,6 +27,8 @@ public class ClaimProcessingWorkflowImpl implements ClaimProcessingWorkflow {
     /** Protects model rate limits. Worker concurrency is the outer bound, across all claims. */
     private static final int MAX_PARALLEL_DOCUMENTS = 3;
 
+    static final String POLICY_ANALYSIS_CHANGE = "policy-analysis";
+
     /** State changes must eventually land, however long a database outage lasts. */
     private final ClaimActivities durable = Workflow.newActivityStub(
             ClaimActivities.class,
@@ -61,6 +63,21 @@ public class ClaimProcessingWorkflowImpl implements ClaimProcessingWorkflow {
                             .build())
                     .build());
 
+    /** Many model calls in sequence: longer than one document, and it heartbeats throughout. */
+    private final AnalysisActivities analysis = Workflow.newActivityStub(
+            AnalysisActivities.class,
+            ActivityOptions.newBuilder()
+                    .setTaskQueue(AI_QUEUE)
+                    .setStartToCloseTimeout(Duration.ofMinutes(10))
+                    .setHeartbeatTimeout(Heartbeats.TIMEOUT)
+                    .setRetryOptions(RetryOptions.newBuilder()
+                            .setInitialInterval(Duration.ofSeconds(5))
+                            .setBackoffCoefficient(3)
+                            .setMaximumAttempts(3)
+                            .build())
+                    .build());
+
+    private boolean analysisRetryable;
     private boolean documentsChanged;
     private boolean retryRequested;
     private boolean withdrawn;
@@ -95,9 +112,15 @@ public class ClaimProcessingWorkflowImpl implements ClaimProcessingWorkflow {
                 waitExpired = true;
                 durable.recordInformationWaitExpired(claimId);
             }
+            // Claims started before M6 replay without this stage. Analysis assists review and never
+            // holds it: a failed analysis is shown, and a retry runs the cycle again (D-080).
+            if (Workflow.getVersion(POLICY_ANALYSIS_CHANGE, Workflow.DEFAULT_VERSION, 1) >= 1) {
+                retryRequested = false;
+                analysisRetryable = !analyzePolicy(claimId);
+            }
             durable.readyForReview(claimId);
             // Review arrives in a later milestone. Until then, new documents reopen processing.
-            Workflow.await(() -> documentsChanged || withdrawn);
+            Workflow.await(() -> documentsChanged || withdrawn || (analysisRetryable && retryRequested));
             if (!withdrawn) {
                 waitExpired = false;
                 durable.begin(claimId);
@@ -124,6 +147,17 @@ public class ClaimProcessingWorkflowImpl implements ClaimProcessingWorkflow {
             }
         }
         return succeeded;
+    }
+
+    /** Records a failure, such as a policy not yet published, instead of waiting on it. */
+    private boolean analyzePolicy(String claimId) {
+        try {
+            analysis.analyzePolicy(claimId);
+            return true;
+        } catch (ActivityFailure failure) {
+            durable.recordAnalysisFailed(claimId, failureCode(failure));
+            return false;
+        }
     }
 
     private boolean consolidate(String claimId) {

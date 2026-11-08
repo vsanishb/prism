@@ -37,6 +37,13 @@ public interface AiServiceClient {
      */
     PolicySearch.SearchResult searchPolicyVersion(PolicySearch.SearchRequest request);
 
+    /**
+     * Analyzes a claim against its policy version. Assists review, and decides nothing.
+     *
+     * @throws DocumentExtraction.Failure with a stable code, and whether a retry could help
+     */
+    PolicyAnalysis.Result analyzeClaim(PolicyAnalysis.Request request);
+
     record PingResult(boolean reachable, boolean authenticated, boolean knowledgeDatabaseConnected, String detail) {}
 
     record ProbeResult(boolean reachable, boolean rejected, int statusCode) {}

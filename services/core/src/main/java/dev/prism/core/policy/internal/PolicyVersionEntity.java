@@ -83,6 +83,14 @@ class PolicyVersionEntity {
         return id;
     }
 
+    LocalDate effectiveFrom() {
+        return effectiveFrom;
+    }
+
+    LocalDate effectiveTo() {
+        return effectiveTo;
+    }
+
     UUID policyId() {
         return policyId;
     }

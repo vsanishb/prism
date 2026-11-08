@@ -35,7 +35,7 @@ class ConsolidationRulesTest {
         return new ClaimRecord(
                 UUID.randomUUID(), type, "PROCESSING", false, "Synthetic Claimant", "Synthetic Patient",
                 "Synthetic Hospital", LocalDate.parse("2026-03-14"), LocalDate.parse("2026-03-17"),
-                new BigDecimal(amount), "INR");
+                new BigDecimal(amount), "INR", UUID.randomUUID(), UUID.randomUUID());
     }
 
     private static ExtractedDocument document(String declared, Result result) {

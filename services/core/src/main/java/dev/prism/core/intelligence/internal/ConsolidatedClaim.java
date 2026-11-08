@@ -26,7 +26,10 @@ record ConsolidatedClaim(List<Fact> facts, List<DocumentLineItem> lineItems, Lis
         }
     }
 
-    /** @param documentId null for a claim-level fact */
+    /**
+     * @param documentId null for a claim-level fact
+     * @param correctionId set when a reviewer's correction gave the value; the sources still show what documents said
+     */
     record Fact(
             String name,
             String kind,
@@ -35,7 +38,14 @@ record ConsolidatedClaim(List<Fact> facts, List<DocumentLineItem> lineItems, Lis
             String state,
             String value,
             BigDecimal amount,
-            List<Source> sources) {}
+            List<Source> sources,
+            UUID correctionId) {
+
+        Fact(String name, String kind, boolean critical, UUID documentId, String state, String value, BigDecimal amount,
+                List<Source> sources) {
+            this(name, kind, critical, documentId, state, value, amount, sources, null);
+        }
+    }
 
     record Source(UUID documentId, Field field) {}
 

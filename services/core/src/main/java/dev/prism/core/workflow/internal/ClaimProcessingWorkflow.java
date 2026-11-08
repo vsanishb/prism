@@ -19,4 +19,8 @@ public interface ClaimProcessingWorkflow {
 
     @SignalMethod
     void claimWithdrawn();
+
+    /** An authorized outcome was recorded. The workflow completes. */
+    @SignalMethod
+    void claimDecided();
 }

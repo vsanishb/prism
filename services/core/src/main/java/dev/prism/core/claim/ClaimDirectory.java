@@ -26,5 +26,7 @@ public interface ClaimDirectory {
             BigDecimal claimedAmount,
             String currency,
             UUID policyId,
-            UUID policyVersionId) {}
+            UUID policyVersionId,
+            String claimNumber,
+            UUID createdBy) {}
 }

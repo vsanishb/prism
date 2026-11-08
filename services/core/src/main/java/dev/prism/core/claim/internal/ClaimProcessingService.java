@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 class ClaimProcessingService implements ClaimProcessing {
 
     private static final Set<ClaimStatus> CAN_BEGIN =
-            Set.of(ClaimStatus.SUBMITTED, ClaimStatus.AWAITING_INFORMATION, ClaimStatus.IN_REVIEW);
+            Set.of(ClaimStatus.SUBMITTED, ClaimStatus.AWAITING_INFORMATION, ClaimStatus.IN_REVIEW, ClaimStatus.ESCALATED);
 
     private final ClaimRepository claims;
     private final AuditRecorder audit;

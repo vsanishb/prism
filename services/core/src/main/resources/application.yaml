@@ -103,6 +103,9 @@ prism:
   bootstrap:
     admin-email: ${PRISM_BOOTSTRAP_ADMIN_EMAIL:}
     invite-file: ${PRISM_BOOTSTRAP_INVITE_FILE:}
+  review:
+    # A project setting, not a regulatory figure: claims above it go to senior reviewers.
+    reviewer-authority-limit: ${PRISM_REVIEWER_AUTHORITY_LIMIT:300000}
   seed:
     credentials-file: ${PRISM_SEED_CREDENTIALS_FILE:}
     documents-path: ${PRISM_SEED_DOCUMENTS_PATH:../../test-data}

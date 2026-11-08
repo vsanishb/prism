@@ -35,7 +35,8 @@ class StartupAccountsTest {
                 new PrismProperties.Ai(URI.create("http://localhost"), Duration.ofSeconds(1), Duration.ofSeconds(1), Duration.ofSeconds(1), Duration.ofSeconds(1)),
                 new PrismProperties.Temporal(false, "localhost:1", "default", Duration.ofDays(1), 1, Duration.ofSeconds(1)),
                 new PrismProperties.Bootstrap(adminEmail, inviteFile),
-                new PrismProperties.Seed(seedFile, ""));
+                new PrismProperties.Seed(seedFile, ""),
+                new PrismProperties.Review(new java.math.BigDecimal("300000")));
     }
 
     @Test

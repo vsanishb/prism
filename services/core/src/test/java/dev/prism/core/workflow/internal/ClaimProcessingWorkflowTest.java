@@ -267,6 +267,33 @@ class ClaimProcessingWorkflowTest {
     }
 
     @Test
+    void aDecisionCompletesTheWorkflow() throws Exception {
+        pending();
+        when(claims.consolidate(CLAIM)).thenReturn(true);
+
+        run();
+        verify(claims, timeout(ASYNC_MILLIS)).readyForReview(CLAIM);
+        workflow.claimDecided();
+        WorkflowStub.fromTyped(workflow).getResult(10, TimeUnit.SECONDS, Void.class);
+        verify(claims, times(1)).begin(CLAIM);
+    }
+
+    @Test
+    void aRequestForInformationIsAnsweredByNewDocumentsInANewCycle() throws Exception {
+        pending();
+        when(claims.consolidate(CLAIM)).thenReturn(true);
+
+        run();
+        verify(claims, timeout(ASYNC_MILLIS)).readyForReview(CLAIM);
+        // A reviewer asked for a document; intake adding it signals the workflow as any new document does.
+        workflow.documentsChanged();
+        verify(claims, timeout(ASYNC_MILLIS).times(2)).readyForReview(CLAIM);
+        verify(claims, times(2)).begin(CLAIM);
+        workflow.claimDecided();
+        WorkflowStub.fromTyped(workflow).getResult(10, TimeUnit.SECONDS, Void.class);
+    }
+
+    @Test
     void anAnalysisModelOutageIsRetriedQuietly() throws Exception {
         pending();
         when(claims.consolidate(CLAIM)).thenReturn(true);

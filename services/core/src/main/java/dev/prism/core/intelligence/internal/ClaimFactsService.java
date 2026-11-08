@@ -52,7 +52,11 @@ class ClaimFactsService {
             UUID documentId,
             String state,
             String value,
-            List<SourceView> sources) {}
+            List<SourceView> sources,
+            CorrectionView correction) {}
+
+    /** Set when a reviewer's correction gave the value. The sources still show what the documents said. */
+    record CorrectionView(UUID id, String reason, String correctedBy, Instant correctedAt) {}
 
     record SourceView(
             UUID documentId,
@@ -149,7 +153,13 @@ class ClaimFactsService {
                 .stream()
                 .collect(Collectors.groupingBy(
                         Map.Entry::getKey, Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
-        return jdbc.sql("SELECT * FROM core.claim_facts WHERE consolidation_id = ? ORDER BY id")
+        return jdbc.sql("""
+                        SELECT f.*, c.reason AS correction_reason, u.full_name AS corrected_by, c.created_at AS corrected_at
+                        FROM core.claim_facts f
+                        LEFT JOIN core.fact_corrections c ON c.id = f.correction_id
+                        LEFT JOIN core.users u ON u.id = c.corrected_by
+                        WHERE f.consolidation_id = ? ORDER BY f.id
+                        """)
                 .param(consolidation)
                 .query((row, index) -> {
                     UUID id = row.getObject("id", UUID.class);
@@ -161,7 +171,12 @@ class ClaimFactsService {
                             row.getObject("document_id", UUID.class),
                             row.getString("state"),
                             row.getString("value"),
-                            sources.getOrDefault(id, List.of()));
+                            sources.getOrDefault(id, List.of()),
+                            row.getObject("correction_id") == null ? null : new CorrectionView(
+                                    row.getObject("correction_id", UUID.class),
+                                    row.getString("correction_reason"),
+                                    row.getString("corrected_by"),
+                                    row.getObject("corrected_at", OffsetDateTime.class).toInstant()));
                 })
                 .list();
     }

@@ -160,6 +160,10 @@ class ClaimEntity {
         return id;
     }
 
+    UUID createdBy() {
+        return createdBy;
+    }
+
     String claimNumber() {
         return claimNumber;
     }

@@ -43,6 +43,7 @@ class DefaultClaimIntelligence implements ClaimIntelligence {
     private final TransactionTemplate transactions;
     private final PolicyAnalysisStep analysis;
     private final RiskScreeningStep risk;
+    private final FactCorrectionStore corrections;
 
     DefaultClaimIntelligence(
             ClaimDirectory claims,
@@ -52,7 +53,8 @@ class DefaultClaimIntelligence implements ClaimIntelligence {
             AuditRecorder audit,
             TransactionTemplate transactions,
             PolicyAnalysisStep analysis,
-            RiskScreeningStep risk) {
+            RiskScreeningStep risk,
+            FactCorrectionStore corrections) {
         this.claims = claims;
         this.documents = documents;
         this.ai = ai;
@@ -61,6 +63,7 @@ class DefaultClaimIntelligence implements ClaimIntelligence {
         this.transactions = transactions;
         this.analysis = analysis;
         this.risk = risk;
+        this.corrections = corrections;
     }
 
     @Override
@@ -123,7 +126,8 @@ class DefaultClaimIntelligence implements ClaimIntelligence {
                         .stream())
                 .toList();
 
-        List<Fact> facts = FactConsolidator.facts(extracted);
+        // A reviewer's corrections replace what was read, and validation then checks the corrected values.
+        List<Fact> facts = FactCorrector.apply(FactConsolidator.facts(extracted), corrections.latest(claimId));
         List<DocumentLineItem> lineItems = FactConsolidator.lineItems(extracted);
         List<Finding> findings = ClaimValidator.validate(claim, extracted, facts, lineItems);
         boolean complete = findings.stream()

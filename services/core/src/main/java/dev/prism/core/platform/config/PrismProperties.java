@@ -22,7 +22,8 @@ public record PrismProperties(
         @Valid @NotNull Ai ai,
         @Valid @NotNull Temporal temporal,
         @Valid @NotNull Bootstrap bootstrap,
-        @Valid @NotNull Seed seed) {
+        @Valid @NotNull Seed seed,
+        @Valid @NotNull Review review) {
 
     public boolean isLocal() {
         return "local".equals(environment);
@@ -57,6 +58,9 @@ public record PrismProperties(
     public record Bootstrap(String adminEmail, String inviteFile) {}
 
     public record Seed(String credentialsFile, String documentsPath) {}
+
+    /** @param reviewerAuthorityLimit claims above this amount, in the default currency, go to senior review */
+    public record Review(@NotNull @Positive java.math.BigDecimal reviewerAuthorityLimit) {}
 
     public record Documents(
             @NotBlank String storagePath,

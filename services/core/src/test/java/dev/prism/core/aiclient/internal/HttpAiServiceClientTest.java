@@ -51,7 +51,8 @@ class HttpAiServiceClientTest {
                         Duration.ofSeconds(3), Duration.ofSeconds(5)),
                 new PrismProperties.Temporal(false, "localhost:1", "default", Duration.ofDays(1), 1, Duration.ofSeconds(1)),
                 new PrismProperties.Bootstrap("", ""),
-                new PrismProperties.Seed("", ""));
+                new PrismProperties.Seed("", ""),
+                new PrismProperties.Review(new java.math.BigDecimal("300000")));
         client = new HttpAiServiceClient(RestClient.builder(), new ServiceTokenSigner(properties), properties);
     }
 

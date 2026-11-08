@@ -36,6 +36,9 @@ class TemporalWorkflowDispatcher implements WorkflowDispatcher {
             case CLAIM_DOCUMENTS_CHANGED -> signal(claimId, ClaimProcessingWorkflow::documentsChanged);
             case CLAIM_RETRY_REQUESTED -> signal(claimId, ClaimProcessingWorkflow::retryRequested);
             case CLAIM_WITHDRAWN -> signal(claimId, ClaimProcessingWorkflow::claimWithdrawn);
+            // Corrected facts need a new consolidation, which the workflow runs for changed documents too.
+            case CLAIM_REANALYSIS_REQUESTED -> signal(claimId, ClaimProcessingWorkflow::documentsChanged);
+            case CLAIM_DECIDED -> signal(claimId, ClaimProcessingWorkflow::claimDecided);
             case POLICY_WORDING_ATTACHED -> startIngestion(claimId);
             case POLICY_INGESTION_RETRY_REQUESTED -> retryIngestion(claimId);
             case POLICY_VERSION_PUBLISHED -> startIndexing(claimId);

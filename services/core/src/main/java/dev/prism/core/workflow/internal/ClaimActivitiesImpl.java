@@ -6,6 +6,7 @@ import dev.prism.core.audit.AuditOutcome;
 import dev.prism.core.audit.AuditRecorder;
 import dev.prism.core.claim.ClaimProcessing;
 import dev.prism.core.intelligence.ClaimIntelligence;
+import dev.prism.core.review.ReviewQueue;
 import dev.prism.core.intelligence.ClaimIntelligence.Consolidation;
 import dev.prism.core.workflow.internal.StageRecorder.Stage;
 import dev.prism.core.workflow.internal.StageRecorder.Status;
@@ -20,18 +21,24 @@ class ClaimActivitiesImpl implements ClaimActivities {
     private final ClaimIntelligence intelligence;
     private final StageRecorder stages;
     private final AuditRecorder audit;
+    private final ReviewQueue review;
 
     ClaimActivitiesImpl(
-            ClaimProcessing claims, ClaimIntelligence intelligence, StageRecorder stages, AuditRecorder audit) {
+            ClaimProcessing claims, ClaimIntelligence intelligence, StageRecorder stages, AuditRecorder audit,
+            ReviewQueue review) {
         this.claims = claims;
         this.intelligence = intelligence;
         this.stages = stages;
         this.audit = audit;
+        this.review = review;
     }
 
     @Override
     public void begin(String claimId) {
-        claims.begin(UUID.fromString(claimId));
+        UUID id = UUID.fromString(claimId);
+        claims.begin(id);
+        // A task opened for earlier facts no longer applies. A new one opens when processing finishes.
+        review.cancelLiveTask(id);
     }
 
     @Override
@@ -61,7 +68,9 @@ class ClaimActivitiesImpl implements ClaimActivities {
 
     @Override
     public void readyForReview(String claimId) {
-        claims.readyForReview(UUID.fromString(claimId));
+        UUID id = UUID.fromString(claimId);
+        claims.readyForReview(id);
+        review.openTask(id);
     }
 
     @Override

@@ -38,7 +38,8 @@ class ServiceTokenSignerTest {
                 new PrismProperties.Ai(URI.create("http://localhost"), Duration.ofSeconds(1), Duration.ofSeconds(1), Duration.ofSeconds(1), Duration.ofSeconds(1)),
                 new PrismProperties.Temporal(false, "localhost:1", "default", Duration.ofDays(1), 1, Duration.ofSeconds(1)),
                 new PrismProperties.Bootstrap("", ""),
-                new PrismProperties.Seed("", "")));
+                new PrismProperties.Seed("", ""),
+                new PrismProperties.Review(new java.math.BigDecimal("300000"))));
         byte[] body = "{}".getBytes(StandardCharsets.UTF_8);
 
         SignedJWT token = SignedJWT.parse(signer.sign("POST /internal/v1/ping", body));

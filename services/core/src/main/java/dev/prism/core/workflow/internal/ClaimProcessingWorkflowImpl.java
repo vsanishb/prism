@@ -97,13 +97,15 @@ public class ClaimProcessingWorkflowImpl implements ClaimProcessingWorkflow {
     private boolean documentsChanged;
     private boolean retryRequested;
     private boolean withdrawn;
+    private boolean decided;
     private boolean complete;
 
     @Override
     public void process(String claimId, long informationWaitSeconds) {
         durable.begin(claimId);
         boolean waitExpired = false;
-        while (!withdrawn) {
+        // A decision ends processing. Claims started before M8 never receive it, so they replay unchanged.
+        while (!withdrawn && !decided) {
             documentsChanged = false;
             retryRequested = false;
 
@@ -141,9 +143,11 @@ public class ClaimProcessingWorkflowImpl implements ClaimProcessingWorkflow {
                 riskRetryable = !screenRisk(claimId);
             }
             durable.readyForReview(claimId);
-            // Review arrives in a later milestone. Until then, new documents reopen processing.
-            Workflow.await(() -> documentsChanged || withdrawn || ((analysisRetryable || riskRetryable) && retryRequested));
-            if (!withdrawn) {
+            // Review is human work outside the workflow (M8): it ends here with a decision, or new documents,
+            // a reviewer's request for information, or corrected facts start another cycle.
+            Workflow.await(() -> documentsChanged || withdrawn || decided
+                    || ((analysisRetryable || riskRetryable) && retryRequested));
+            if (!withdrawn && !decided) {
                 waitExpired = false;
                 durable.begin(claimId);
             }
@@ -219,5 +223,10 @@ public class ClaimProcessingWorkflowImpl implements ClaimProcessingWorkflow {
     @Override
     public void claimWithdrawn() {
         withdrawn = true;
+    }
+
+    @Override
+    public void claimDecided() {
+        decided = true;
     }
 }

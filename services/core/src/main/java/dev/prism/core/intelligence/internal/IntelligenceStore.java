@@ -111,12 +111,12 @@ class IntelligenceStore {
     private void saveFact(UUID consolidation, Fact fact) {
         UUID factId = jdbc.sql("""
                         INSERT INTO core.claim_facts (consolidation_id, field_name, kind, critical, document_id, state,
-                            value, amount)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
+                            value, amount, correction_id)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id
                         """)
                 .params(
                         consolidation, fact.name(), fact.kind(), fact.critical(), fact.documentId(), fact.state(),
-                        fact.value(), fact.amount())
+                        fact.value(), fact.amount(), fact.correctionId())
                 .query(UUID.class)
                 .single();
         fact.sources().forEach(source -> saveSource(factId, source));

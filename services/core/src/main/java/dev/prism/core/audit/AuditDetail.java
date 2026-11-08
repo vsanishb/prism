@@ -24,5 +24,9 @@ public enum AuditDetail {
     VALUE_ID,
     PAGES,
     CHUNK_COUNT,
-    RISK_BAND
+    RISK_BAND,
+    QUEUE,
+    DECISION,
+    FINDING,
+    FIELD
 }

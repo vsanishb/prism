@@ -37,7 +37,7 @@ class ArchitectureTest {
             .should().dependOnClassesThat()
             .resideInAnyPackage(
                     "..identity..", "..audit..", "..aiclient..", "..system..", "..policy..", "..claim..", "..document..",
-                    "..intelligence..", "..workflow..", "..policyknowledge..", "..retrieval..", "..risk..");
+                    "..intelligence..", "..workflow..", "..policyknowledge..", "..retrieval..", "..risk..", "..review..");
 
     /** Status flows one way, so that claims know nothing of how they are processed. */
     @ArchTest
@@ -76,6 +76,13 @@ class ArchitectureTest {
             .resideInAnyPackage(
                     "..intelligence..", "..workflow..", "..aiclient..", "..claim..", "..policy..", "..document..",
                     "org.springframework.jdbc..", "io.temporal..");
+
+    /** Review decides; it never runs processing itself. It asks the workflow through the outbox. */
+    @ArchTest
+    static final ArchRule reviewDoesNotKnowAboutWorkflows = noClasses()
+            .that().resideInAPackage("..review..")
+            .should().dependOnClassesThat()
+            .resideInAnyPackage("..workflow..", "..aiclient..", "io.temporal..");
 
     private static String moduleOf(String packageName) {
         if (!packageName.startsWith(ROOT)) {

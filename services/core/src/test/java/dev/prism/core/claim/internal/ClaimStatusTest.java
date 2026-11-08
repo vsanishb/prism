@@ -21,9 +21,11 @@ class ClaimStatusTest {
             DRAFT, EnumSet.of(SUBMITTED, WITHDRAWN),
             SUBMITTED, EnumSet.of(PROCESSING, WITHDRAWN),
             PROCESSING, EnumSet.of(AWAITING_INFORMATION, IN_REVIEW, WITHDRAWN),
-            AWAITING_INFORMATION, EnumSet.of(PROCESSING, IN_REVIEW, WITHDRAWN),
+            // A request for information can be withdrawn straight to an investigation or senior task (M8).
+            AWAITING_INFORMATION, EnumSet.of(PROCESSING, IN_REVIEW, ESCALATED, WITHDRAWN),
             IN_REVIEW, EnumSet.of(PROCESSING, AWAITING_INFORMATION, ESCALATED, DECIDED, WITHDRAWN),
-            ESCALATED, EnumSet.of(IN_REVIEW, DECIDED, WITHDRAWN),
+            // Escalated claims can ask for information and be processed again, like any in review (M8).
+            ESCALATED, EnumSet.of(PROCESSING, AWAITING_INFORMATION, IN_REVIEW, DECIDED, WITHDRAWN),
             DECIDED, EnumSet.noneOf(ClaimStatus.class),
             WITHDRAWN, EnumSet.noneOf(ClaimStatus.class));
 

@@ -146,7 +146,7 @@ Application logs are separate, and contain IDs but no document content, personal
 
 Claims contain personal and health data.
 
-- **Minimization:** only needed content goes to the AI service and models. Retrieval queries are built from de-identified facts (M6). Search queries travel in request bodies, never URLs, and are not logged. Embedding and rerank calls follow the same zero-retention rules as every other model call ([D-077](decisions.md)).
+- **Minimization:** only needed content goes to the AI service and models. The Policy Agent receives only de-identified facts: dates, amounts, diagnosis, procedure, tests, medicines, and bill lines, never names, hospitals, doctors, or policy numbers. The AI service refuses any other fact, and its queries are built from these ([D-079](decisions.md)). Search queries travel in request bodies, never URLs, and are not logged. Embedding and rerank calls follow the same zero-retention rules as every other model call ([D-077](decisions.md)).
 - **Providers:** ZDR routing is mandatory ([D-027](decisions.md)).
 - **Temporal:** IDs only ([D-011](decisions.md)).
 - **Access:** viewing documents is permission-checked and audited.

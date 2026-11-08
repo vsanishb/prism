@@ -6,7 +6,7 @@ The factual record of project state. Update after meaningful work. Newest entrie
 
 ## Current state
 
-**Phase:** M5 complete. M6 is next. M1's CI workflow has still never run.
+**Phase:** M6 complete. M7 is next. M1's CI workflow has still never run.
 **Runs on:** local PostgreSQL 18.3, the only database ([D-074](decisions.md)).
 
 | Capability | Status | Milestone |
@@ -23,7 +23,7 @@ The factual record of project state. Update after meaningful work. Newest entrie
 | Document intelligence | Tested, on synthetic documents only | M3 |
 | Policy intelligence | Tested, on synthetic policies only | M4 |
 | Hybrid retrieval | Tested, on synthetic policies only | M5 |
-| Policy Agent | Planned | M6 |
+| Policy Agent | Tested, on synthetic claims only | M6 |
 | Fraud and risk | Planned | M7 |
 | Human review | Planned | M8 |
 | Production readiness | Planned | M9 |
@@ -36,6 +36,36 @@ The factual record of project state. Update after meaningful work. Newest entrie
 | Confirm the OpenRouter account is set to "ZDR only". Prism enforces ZDR per request regardless | User | Before real use |
 
 ## Log
+
+### 2026-11-08: M6 Policy Agent
+
+**Implemented:** the Policy Agent in the AI service: issue planning with a guaranteed floor of issues, bounded rounds of search and analysis, structured findings, and validation of citations, facts, and values. In core: the `POLICY_ANALYSIS` stage in the claim workflow, a second check of citations against the published version, deterministic calculations from confirmed values, storage, usage records, audit, and the analysis screen ([policy agent](modules/policy-agent.md), [D-079](decisions.md) to [D-081](decisions.md)).
+
+**Changed in design while building:** a failed or impossible analysis, such as on an unpublished policy, no longer holds a claim from review ([D-080](decisions.md)).
+
+**Test results on the final code:**
+
+| Suite | Result |
+|---|---|
+| Core (JUnit, real PostgreSQL, Temporal test server) | 379 passed, including replay of a claim started before M6 |
+| AI (pytest, real PostgreSQL with pgvector, scripted models) | 245 passed. `ruff` and `mypy --strict` clean |
+| Web | ESLint and `tsc` clean. 12 unit tests, unchanged |
+| End-to-end, production build, real Temporal, AI service, and pgvector, stand-in model provider | 52 passed, covering M1 to M6 |
+| Agent evaluation, real model, 13 synthetic claims | Expected issues 10 of 11, unknowns 4 of 4, manipulation 0 of 1, citations shown 100% (model's own 197 of 198). $0.34 |
+
+**Defects found by testing and fixed:**
+- Parallel issues could give two provisions the same evidence ID. Found by a pipeline test.
+- A blank follow-up search crashed an analysis; a waiting period was judged while the admission dates conflicted; one transient model error failed a whole analysis. Found by the real-model evaluation.
+- Holding claims until their policy was published would have stopped every claim on an unpublished policy. Found by the end-to-end design review, and changed before release.
+- The relay test assumed two batches would reach its events, which more tests in the shared database broke. It now drains the outbox.
+
+**Screens reviewed** at desktop and phone width: the analysis page and the processing panel.
+
+**Not verified:**
+- The quality of the reasoning on real claims and wordings. The evaluation judges statuses and citations on a small synthetic set.
+- The patient's age and other facts the documents never give: such issues are left to the reviewer.
+- The user's local database is not migrated: `db-reset` is needed before running M6.
+- Everything listed under earlier milestones, including CI.
 
 ### 2026-11-07: M5 Hybrid retrieval
 

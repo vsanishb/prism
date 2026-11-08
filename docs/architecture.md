@@ -97,7 +97,7 @@ A `DocumentStore` port in core, with a filesystem adapter locally and an S3-comp
 - **Model gateway:** the only path to OpenRouter. Handles task-to-model routing from configuration, enforces privacy routing, validates structured output, and records model, prompt version, tokens, cost, and latency.
 - **Model routing:** chosen per task, not globally. See [D-026](decisions.md).
 - **Prompts:** versioned files, with the version stored on every AI run.
-- **Pipelines:** plain typed Python over the gateway; no agent framework ([D-025](decisions.md)).
+- **Pipelines:** plain typed Python over the gateway; no agent framework ([D-025](decisions.md)). The Policy Agent is one of them: bounded rounds of search and structured findings, validated by code ([D-079](decisions.md)).
 
 Plans: [document intelligence](plans/document-intelligence.md), [policy intelligence](plans/policy-intelligence.md), [retrieval](plans/rag-retrieval.md), [Policy Agent](plans/policy-agent.md), [fraud and risk](plans/fraud-risk.md).
 
@@ -107,8 +107,9 @@ Workflows and activities run in the core service's Temporal worker. Activities a
 
 | Workflow | ID | Purpose |
 |---|---|---|
-| `ClaimProcessingWorkflow` | `claim-{claimId}` | Full claim lifecycle, including human waits |
-| `PolicyIngestionWorkflow` | `policy-version-{versionId}` | Policy processing up to review for publication |
+| `ClaimProcessingWorkflow` | `claim-{claimId}` | Full claim lifecycle, including policy analysis and human waits |
+| `PolicyIngestionWorkflow` | `policy-ingestion-{documentId}` | Reading a wording, up to review for publication |
+| `PolicyIndexingWorkflow` | `policy-index-{versionId}` | Indexing a published version for search |
 
 The UI reads stage status from Postgres (`stage_events`), never from Temporal. Temporal drives execution and the database records it. A transactional outbox makes "commit, then start or signal a workflow" reliable. See the [workflow plan](plans/temporal-workflows.md).
 

@@ -4,6 +4,8 @@ import type {
   DocumentReference,
   DocumentType,
   FactState,
+  FindingStatus,
+  IssueKind,
   Finding,
   KnowledgeStatus,
   PolicyFinding,
@@ -15,6 +17,7 @@ import type {
   Role,
   SearchIndexStatus,
   StageName,
+  ValueRole,
   WithdrawalReason,
 } from "./types";
 
@@ -60,6 +63,10 @@ const ACTION_LABELS: Record<string, string> = {
   POLICY_VERSION_PUBLISHED: "Policy version published",
   POLICY_VERSION_REJECTED: "Policy version rejected",
   POLICY_INGESTION_RETRY_REQUESTED: "Policy reading retried",
+  POLICY_SEARCH_INDEX_BUILT: "Policy search index built",
+  POLICY_SEARCH_INDEX_RETRY_REQUESTED: "Policy indexing retried",
+  CLAIM_SENT_FOR_POLICY_ANALYSIS: "Claim sent for policy analysis",
+  CLAIM_POLICY_ANALYZED: "Claim policy analyzed",
   CLAIM_CREATED: "Claim created",
   CLAIM_UPDATED: "Claim edited",
   CLAIM_SUBMITTED: "Claim submitted",
@@ -125,6 +132,7 @@ export const STAGE_LABELS: Record<StageName, string> = {
   DOCUMENT_EXTRACTION: "Reading documents",
   CONSOLIDATION: "Combining facts across documents",
   VALIDATION: "Checking dates, totals, and required documents",
+  POLICY_ANALYSIS: "Reading the policy against the facts",
 };
 
 export const PROCESSING_FAILURE_MESSAGES: Record<string, string> = {
@@ -133,6 +141,9 @@ export const PROCESSING_FAILURE_MESSAGES: Record<string, string> = {
   model_unavailable: "The AI model is unavailable right now. Retry in a few minutes.",
   ai_service_unavailable: "The AI service could not be reached. Retry once it is running.",
   route_not_permitted: "No model cleared for claim data is available. Ask an administrator to check the model routes.",
+  policy_not_published: "The policy version for this claim is not published yet. Publish it, then retry.",
+  policy_not_searchable: "The policy version for this claim is not indexed for search yet. Retry once it is searchable.",
+  index_not_found: "The policy version for this claim is not indexed for search yet. Retry once it is searchable.",
   default: "This step did not finish. Retry, and ask an administrator if it keeps failing.",
 };
 
@@ -328,3 +339,55 @@ export function policyFindingMessage(finding: PolicyFinding, provisions: PolicyP
       return finding.code;
   }
 }
+
+/** Statuses describe what the wording says about the facts. None is a claim decision. */
+export const FINDING_STATUS_LABELS: Record<FindingStatus, string> = {
+  SUPPORTED: "Supported by the wording",
+  LIMITED: "Limited by the wording",
+  POTENTIALLY_EXCLUDED: "Possibly excluded",
+  INSUFFICIENT_EVIDENCE: "Not enough evidence",
+  NEEDS_HUMAN_INTERPRETATION: "Needs interpretation",
+};
+
+export const ISSUE_KIND_LABELS: Record<IssueKind, string> = {
+  COVERAGE: "Cover",
+  LIMIT: "Limit",
+  WAITING_PERIOD: "Waiting period",
+  EXCLUSION: "Exclusion",
+  COST_SHARING: "Cost sharing",
+  CONDITION: "Condition",
+};
+
+export const VALUE_ROLE_LABELS: Record<ValueRole, string> = {
+  WAITING_PERIOD: "Waiting period",
+  AMOUNT_LIMIT: "Amount limit",
+  DAILY_LIMIT: "Daily limit",
+  PERCENT_OF_SUM_INSURED: "Share of sum insured",
+  COPAYMENT: "Co-payment",
+  DEDUCTIBLE: "Deductible",
+};
+
+/** Why Prism changed or set aside part of a finding. Shown so a reviewer can see what was checked. */
+export const FINDING_PROBLEM_LABELS: Record<string, string> = {
+  CITATION_UNKNOWN: "A cited passage was not among those retrieved.",
+  CITATION_QUOTE_MISMATCH: "A quote did not match the wording it cited.",
+  NO_VALID_CITATION: "No passage of the wording was cited.",
+  FACT_UNKNOWN: "A fact named was not one of the claim's facts.",
+  FACT_NOT_ESTABLISHED: "It relied on a fact that is not established.",
+  VALUE_REJECTED: "A policy value it named did not belong to a cited provision.",
+  SEARCH_LIMIT_REACHED: "The search allowance ran out first.",
+  BUDGET_EXHAUSTED: "The analysis allowance ran out first.",
+  NOT_IN_THIS_CLAIM_OR_VERSION: "Part of it did not match this claim or its policy version.",
+};
+
+export const FACT_NAME_LABELS: Record<string, string> = {
+  admission_date: "Admission date",
+  discharge_date: "Discharge date",
+  claimed_amount: "Claimed amount",
+  diagnosis: "Diagnosis",
+  procedure: "Procedure",
+  test_name: "Test",
+  findings: "Test findings",
+  medicines: "Medicines",
+};
+

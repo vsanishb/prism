@@ -127,7 +127,7 @@ flowchart TD
     G --> H[Assessment with facts, evidence, reasoning, unknowns]
 ```
 
-An unsupported citation invalidates that finding, which then becomes an unresolved question. The agent never issues a decision.
+An unsupported citation invalidates that finding, which then becomes an unresolved question. The agent never issues a decision, and its analysis never holds a claim from review ([D-080](decisions.md)). Core checks citations against the published version, and computes amounts and dates from confirmed values. As built: [Policy Agent](modules/policy-agent.md).
 
 ## Fraud and risk
 

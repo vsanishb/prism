@@ -11,3 +11,4 @@ All test data is synthetic. It must never be presented as real insurance or medi
 | M3 Document intelligence and workflows | [m3-document-intelligence.md](m3-document-intelligence.md) |
 | M4 Policy intelligence | [m4-policy-intelligence.md](m4-policy-intelligence.md) |
 | M5 Hybrid retrieval | [m5-hybrid-retrieval.md](m5-hybrid-retrieval.md) |
+| M6 Policy Agent | [m6-policy-agent.md](m6-policy-agent.md) |

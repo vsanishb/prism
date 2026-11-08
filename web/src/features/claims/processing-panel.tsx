@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleAlert, CircleCheck, CircleDashed, FileSearch, LoaderCircle, RotateCw, TriangleAlert } from "lucide-react";
+import { CircleAlert, CircleCheck, CircleDashed, FileSearch, LoaderCircle, RotateCw, Scale, TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -104,6 +104,8 @@ export function ProcessingPanel({
   const active = documents.filter((document) => document.status === "ACTIVE");
   const consolidation = stageStatus(view.stages, "CONSOLIDATION");
   const validation = stageStatus(view.stages, "VALIDATION");
+  const analysis = stageStatus(view.stages, "POLICY_ANALYSIS");
+  const analyzed = analysis?.status === "COMPLETED" || analysis?.status === "REQUIRES_REVIEW";
   const missing = (facts?.findings ?? []).filter((finding) => finding.code === "MISSING_REQUIRED_DOCUMENT");
   const waiting = view.claimStatus === "AWAITING_INFORMATION";
 
@@ -140,6 +142,7 @@ export function ProcessingPanel({
           })}
           <Step label={STAGE_LABELS.CONSOLIDATION} status={consolidation?.status ?? "NOT_STARTED"} detail={failureDetail(consolidation)} />
           <Step label={STAGE_LABELS.VALIDATION} status={validation?.status ?? "NOT_STARTED"} />
+          <Step label={STAGE_LABELS.POLICY_ANALYSIS} status={analysis?.status ?? "NOT_STARTED"} detail={failureDetail(analysis)} />
         </ol>
         {error ? (
           <div className="border-t border-line p-5">
@@ -149,10 +152,21 @@ export function ProcessingPanel({
         {view.retryAvailable || facts?.sequence ? (
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line px-5 py-3.5">
             {facts?.sequence ? (
-              <Link href={`/claims/${claimId}/facts`} className="inline-flex items-center gap-1.5 text-[13px] font-medium text-accent hover:text-accent-hover">
-                <FileSearch aria-hidden className="size-4" />
-                Review extracted facts
-              </Link>
+              <div className="flex flex-wrap gap-x-5 gap-y-2">
+                <Link href={`/claims/${claimId}/facts`} className="inline-flex items-center gap-1.5 text-[13px] font-medium text-accent hover:text-accent-hover">
+                  <FileSearch aria-hidden className="size-4" />
+                  Review extracted facts
+                </Link>
+                {analyzed ? (
+                  <Link
+                    href={`/claims/${claimId}/assessment`}
+                    className="inline-flex items-center gap-1.5 text-[13px] font-medium text-accent hover:text-accent-hover"
+                  >
+                    <Scale aria-hidden className="size-4" />
+                    Read policy analysis
+                  </Link>
+                ) : null}
+              </div>
             ) : (
               <span />
             )}

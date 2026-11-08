@@ -12,8 +12,8 @@ Each milestone delivers a substantial, testable slice through the frontend. Comp
 | M3 | Document intelligence and workflows | Complete | M2 |
 | M4 | Policy intelligence | Complete | M3 |
 | M5 | Hybrid retrieval | Complete | M4 |
-| M6 | Policy Agent | **Next** | M3, M5 |
-| M7 | Fraud and risk intelligence | Planned | M3 |
+| M6 | Policy Agent | Complete | M3, M5 |
+| M7 | Fraud and risk intelligence | **Next** | M3 |
 | M8 | Human review and outcomes | Planned | M6, M7 |
 | M9 | Production readiness | Planned | M8 |
 
@@ -158,13 +158,13 @@ Every milestone also requires: tests at the levels in [testing.md](testing.md), 
 **Objective:** evidence-backed analysis of a claim against its policy.
 **Plan:** [Policy Agent](plans/policy-agent.md)
 
-- [ ] Implement issue planning and the bounded retrieval loop
-- [ ] Implement structured analysis
-- [ ] Implement citation validation
-- [ ] Implement deterministic benefit and limit calculations
-- [ ] Add the analysis stage to the claim workflow
-- [ ] Build the assessment view with cited provisions and open questions
-- [ ] Create the agent evaluation set
+- [x] Implement issue planning and the bounded retrieval loop
+- [x] Implement structured analysis
+- [x] Implement citation validation
+- [x] Implement deterministic benefit and limit calculations
+- [x] Add the analysis stage to the claim workflow
+- [x] Build the assessment view with cited provisions and open questions
+- [x] Create the agent evaluation set
 
 **Frontend test flow:** process a claim → read issue-by-issue analysis → open any citation at its policy source → see facts, evidence, reasoning, and unknowns separated.
 

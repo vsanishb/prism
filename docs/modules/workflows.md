@@ -10,7 +10,8 @@ One workflow per claim, with ID `claim-<id>`. It carries IDs only.
 begin → extract pending documents → consolidate and validate
   a stage failed       → wait for retry, new documents, or withdrawal
   documents missing    → AWAITING_INFORMATION, until documents arrive or the timer ends
-  otherwise            → IN_REVIEW, reopening if documents are added
+  otherwise            → policy analysis → IN_REVIEW, reopening if documents are added
+                         a failed analysis does not hold review; a retry runs the cycle again (D-080)
 ```
 
 The workflow stays open at `IN_REVIEW` until withdrawal. M8 adds the review outcome.
@@ -26,7 +27,7 @@ The workflow stays open at `IN_REVIEW` until withdrawal. M8 adds the review outc
 | Type | Purpose |
 |---|---|
 | `ClaimProcessingWorkflowImpl` | Orchestration only. Must stay deterministic |
-| `ClaimActivitiesImpl`, `ExtractionActivitiesImpl` | All effects. Every activity is safe to repeat |
+| `ClaimActivitiesImpl`, `ExtractionActivitiesImpl`, `AnalysisActivitiesImpl` | All effects. Every activity is safe to repeat |
 | `OutboxRelay` | Delivers events at least once, in order per claim. `Outbox` itself is in `platform` |
 | `TemporalWorkerLifecycle` | Keeps trying to start, so core runs while Temporal is down |
 | `ProcessingStatusService` | The processing screen. Reads Postgres only ([D-038](../decisions.md)) |
@@ -35,7 +36,8 @@ The workflow stays open at `IN_REVIEW` until withdrawal. M8 adds the review outc
 
 - Only this module may use Temporal, and `claim` knows nothing of processing. ArchUnit enforces both.
 - **Queues:** `prism-workflows`, `prism-activities-db`, `prism-activities-ai`. Extraction is limited to 4 per worker and 3 per claim.
-- **Heartbeats:** extraction beats every 10 seconds, with a 30-second timeout ([D-063](../decisions.md)).
+- **Heartbeats:** extraction, indexing, and analysis beat every 10 seconds, with a 30-second timeout ([D-063](../decisions.md)). Analysis may run 10 minutes.
+- **Versions:** `policy-analysis` (M6) adds the analysis stage. `claim-processing-v1.json` is a pre-M6 history, and must keep replaying.
 - `PRISM_INFORMATION_WAIT` sets the wait for documents, 14 days by default. After it, the claim goes to review without them.
 - **Changing the workflow:** guard flow changes with `Workflow.getVersion`. If `savedHistoryStillReplays` fails, the change would break running claims. Do not simply regenerate the file.
 

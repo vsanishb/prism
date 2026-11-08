@@ -199,7 +199,7 @@ export interface TimelineEntry {
   actorName: string | null;
 }
 
-export type StageName = "DOCUMENT_EXTRACTION" | "CONSOLIDATION" | "VALIDATION";
+export type StageName = "DOCUMENT_EXTRACTION" | "CONSOLIDATION" | "VALIDATION" | "POLICY_ANALYSIS";
 export type StageStatus = "NOT_STARTED" | "PROCESSING" | "COMPLETED" | "REQUIRES_REVIEW" | "FAILED";
 
 export interface StageView {
@@ -447,4 +447,56 @@ export interface PolicySearchResult {
   semantic: StageHit[];
   lexical: StageHit[];
   related: RelatedProvision[];
+}
+
+export type IssueKind = "COVERAGE" | "LIMIT" | "WAITING_PERIOD" | "EXCLUSION" | "COST_SHARING" | "CONDITION";
+export type FindingStatus = "SUPPORTED" | "LIMITED" | "POTENTIALLY_EXCLUDED" | "INSUFFICIENT_EVIDENCE" | "NEEDS_HUMAN_INTERPRETATION";
+export type ValueRole = "WAITING_PERIOD" | "AMOUNT_LIMIT" | "DAILY_LIMIT" | "PERCENT_OF_SUM_INSURED" | "COPAYMENT" | "DEDUCTIBLE";
+
+export interface AssessmentCitation {
+  provisionId: string;
+  key: string | null;
+  title: string;
+  type: ProvisionType | null;
+  pageStart: number;
+  quote: string;
+  region: string[] | number[] | null;
+}
+
+export interface AssessmentCalculation {
+  role: ValueRole;
+  valueName: string | null;
+  inputs: [string, string][];
+  steps: string[];
+  resultAmount: string | null;
+  resultDate: string | null;
+  outcome: string;
+}
+
+export interface AssessmentFinding {
+  position: number;
+  kind: IssueKind;
+  question: string;
+  status: FindingStatus;
+  proposedStatus: FindingStatus | null;
+  reasoning: string;
+  unresolved: string[];
+  problems: string[];
+  rounds: number;
+  queries: string[];
+  facts: { id: string; name: string; state: FactState; value: string | null }[];
+  citations: AssessmentCitation[];
+  calculations: AssessmentCalculation[];
+}
+
+export interface PolicyAssessment {
+  id: string;
+  versionId: string;
+  wordingDocumentId: string | null;
+  coverStart: string;
+  createdAt: string;
+  current: boolean;
+  degradedSearches: number;
+  pipelineVersion: string;
+  findings: AssessmentFinding[];
 }

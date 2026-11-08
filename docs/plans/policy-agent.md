@@ -39,6 +39,8 @@ Statuses are deliberately not approve or deny.
 
 **Traceability.** Each run stores the prompt version, models, queries, evidence, and tool calls.
 
+As built, with what changed from this plan: [Policy Agent module](../modules/policy-agent.md).
+
 ## Dependencies
 M3 facts; M5 retrieval; M3 workflow.
 

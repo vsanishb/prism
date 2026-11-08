@@ -152,7 +152,7 @@ class RiskScreeningFlowTest extends IntegrationTest {
         assertThat(view.get("rules")).hasSize(22);
         assertThat(view.get("detectors")).hasSize(2);
         assertThat(view.get("summary").get("status").asString()).isEqualTo("NOT_NEEDED");
-        assertThat(view.get("versions").get("ruleset").asString()).isEqualTo("risk-rules-1");
+        assertThat(view.get("versions").get("ruleset").asString()).isEqualTo("risk-rules-2");
         verify(aiService, never()).summarizeRisk(any());
     }
 

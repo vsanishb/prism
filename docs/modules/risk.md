@@ -25,7 +25,7 @@ Like analysis, screening never holds review: a failure is shown with its reason,
 | `RiskStore`, `RiskReader`, `RiskController` | Insert-only storage, and `GET /api/v1/claims/{id}/risk` (`CLAIM_READ`, claim visibility) |
 | `claim.internal.Demonstration*` | Seeded scenarios and `GET /api/v1/demonstrations/risk`, local environment only (D-088) |
 
-**Ruleset `risk-rules-1`** (22 rules). Each indicator has a rule ID and version, category, kind, severity, explanation without names, evidence, and points.
+**Ruleset `risk-rules-2`** (22 rules; duplicate rules grouped per document in version 2, [D-096](../decisions.md)). Each indicator has a rule ID and version, category, kind, severity, explanation without names, evidence, and points.
 
 | Category | Rules |
 |---|---|

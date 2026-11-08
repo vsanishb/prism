@@ -189,6 +189,34 @@ class RuleEngineTest {
     }
 
     @Test
+    void aFileReusedInManyClaimsIsOneIndicatorNamingThemAll() {
+        // Regression: version 1 raised one indicator per copy, so a widely reused file alone made a claim high risk.
+        RiskInputs inputs = RiskInputs.clean();
+        for (int index = 1; index <= 3; index++) {
+            inputs.sharedFiles.add(new SharedFile(inputs.bill, UUID.randomUUID(), "CLM-2026-00004" + index, UUID.randomUUID()));
+        }
+        Indicator indicator = only(inputs.build(), "DUP-01");
+        assertThat(indicator.ruleVersion()).isEqualTo(2);
+        assertThat(indicator.explanation()).isEqualTo("Hospital bill is the same file as a document in 3 other claims.");
+        assertThat(indicator.evidence()).extracting(Evidence::matchedClaimId).filteredOn(java.util.Objects::nonNull).hasSize(3);
+    }
+
+    @Test
+    void overlappingStaysAndSimilarClaimsAreOneIndicatorEach() {
+        RiskInputs inputs = RiskInputs.clean();
+        inputs.otherClaim(RiskInputs.PATIENT, RiskInputs.HOSPITAL, "2026-07-08", "2026-07-09", "1.00");
+        inputs.otherClaim(RiskInputs.PATIENT, RiskInputs.HOSPITAL, "2026-07-06", "2026-07-08", "1.00");
+        Indicator overlapping = only(inputs.build(), "DUP-04");
+        assertThat(overlapping.explanation()).isEqualTo("2 other claims for the same patient cover stays overlapping this one.");
+        assertThat(overlapping.evidence()).hasSize(2);
+
+        RiskInputs similar = RiskInputs.clean();
+        similar.otherClaim(RiskInputs.PATIENT, RiskInputs.HOSPITAL, "2026-06-15", "2026-06-19", "95000.00");
+        similar.otherClaim(RiskInputs.PATIENT, RiskInputs.HOSPITAL, "2026-07-20", "2026-07-22", "99000.00");
+        assertThat(only(similar.build(), "DUP-05").evidence()).hasSize(2);
+    }
+
+    @Test
     void anInvoiceNumberReusedAtTheSameHospitalIsRaised() {
         RiskInputs inputs = RiskInputs.clean();
         inputs.otherBills.add(new OtherBill(UUID.randomUUID(), "CLM-2026-000007", UUID.randomUUID(),

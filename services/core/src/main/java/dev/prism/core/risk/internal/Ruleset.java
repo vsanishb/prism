@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 /** Every rule, in the order reviewers see them. Changing a rule's logic means raising its version. */
 public final class Ruleset {
 
-    public static final String VERSION = "risk-rules-1";
+    public static final String VERSION = "risk-rules-2";
 
     private static final List<Rule> RULES = Stream.of(
                     ConsistencyRules.all(),

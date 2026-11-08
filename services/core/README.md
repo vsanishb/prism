@@ -1,23 +1,25 @@
 # Core service
 
-Spring Boot application and system of record. Built so far: `identity`, `audit`, `policy`, `claim`, `document`, `aiclient`, `system`, and `platform`.
+Spring Boot application and system of record: users and permissions, claims, policies, documents, review, audit, and the Temporal workflows that process claims. It is the only component that accepts user traffic, reads document storage, or calls the AI service.
 
-Owns authentication, authorization, claims, policies, documents, reviews, audit, and Temporal workflows. It is the only component that accepts user traffic, reads document storage, or calls the AI service.
+Run it with `scripts/prism.py run-core`, and test it with `./mvnw test`. See the [repository README](../../README.md#getting-started).
 
-Packages under `dev.prism.core`, built and planned:
+Packages under `dev.prism.core`. Each is a module with a public API, and its `internal` package is private to it, which ArchUnit enforces.
 
 | Package | Responsibility |
 |---|---|
-| `identity` | Users, sessions, roles, invitations |
-| `audit` | Append-only audit events |
-| `policy` | Policy records, versions, publication |
-| `claim` | Claim lifecycle and consolidated claim data |
-| `document` | Upload, validation, storage, retrieval |
-| `intelligence` | AI run records, extraction, assessment, and risk results |
-| `review` | Review tasks and authorized outcomes |
-| `workflow` | Temporal workflows, activities, and the outbox |
-| `aiclient` | Authenticated client for the AI service |
-| `system` | Live status checks |
-| `platform` | Cross-cutting configuration, errors, observability |
+| `identity` | Users, invitations, sign-in, sessions, roles, and permissions |
+| `audit` | Append-only, hash-chained audit trail |
+| `policy` | Policies and their versions |
+| `policyknowledge` | Reading a wording into provisions, review, and publication |
+| `claim` | Claim lifecycle, intake, and the demonstration scenarios |
+| `document` | Upload validation, storage, and page rendering |
+| `intelligence` | Extraction results, consolidated facts and corrections, policy analysis, and risk screening |
+| `risk` | Risk rules, features, and scoring: pure code, no database |
+| `retrieval` | Search index status and search |
+| `review` | Review tasks, routing, outcomes, investigation findings, and the evidence chain |
+| `workflow` | Temporal workflows, activities, and the transactional outbox |
+| `aiclient` | Signed client for the AI service |
+| `system`, `platform` | Status checks, configuration, security, and errors |
 
-See [architecture](../../docs/architecture.md).
+See [architecture](../../docs/architecture.md) and the [module guides](../../docs/modules/README.md).

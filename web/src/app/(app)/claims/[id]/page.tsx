@@ -7,12 +7,13 @@ import { ClaimActions } from "@/features/claims/claim-actions";
 import { ClaimStatusBadge } from "@/features/claims/claim-status";
 import { ClaimTimeline } from "@/features/claims/claim-timeline";
 import { DocumentPanel } from "@/features/claims/document-panel";
+import { ClaimReviewSummary } from "@/features/review/claim-review-summary";
 import { ProcessingPanel } from "@/features/claims/processing-panel";
 import { SubmissionChecklist } from "@/features/claims/submission-checklist";
 import { formatDate, formatDateTime, formatMoney } from "@/lib/format";
 import { CLAIM_TYPE_LABELS, WITHDRAWAL_REASON_LABELS } from "@/lib/labels";
 import { serverFetch } from "@/lib/server-api";
-import type { ClaimDetail, ClaimFacts, ProcessingView, TimelineEntry } from "@/lib/types";
+import type { ClaimDetail, ClaimFacts, ProcessingView, ReviewWorkspace, TimelineEntry } from "@/lib/types";
 
 export const metadata: Metadata = { title: "Claim" };
 
@@ -27,11 +28,12 @@ function Fact({ label, children }: { label: string; children: React.ReactNode })
 
 export default async function ClaimPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [result, timeline, processing, facts] = await Promise.all([
+  const [result, timeline, processing, facts, review] = await Promise.all([
     serverFetch<ClaimDetail>(`/api/v1/claims/${id}`),
     serverFetch<TimelineEntry[]>(`/api/v1/claims/${id}/timeline`),
     serverFetch<ProcessingView>(`/api/v1/claims/${id}/processing`),
     serverFetch<ClaimFacts>(`/api/v1/claims/${id}/facts`),
+    serverFetch<ReviewWorkspace>(`/api/v1/claims/${id}/review`),
   ]);
   if (!result.ok) {
     if (result.status === 404 || result.status === 400) {
@@ -115,6 +117,7 @@ export default async function ClaimPage({ params }: { params: Promise<{ id: stri
 
         <aside className="space-y-8">
           {summary.status === "DRAFT" ? <SubmissionChecklist issues={claim.submissionIssues} /> : null}
+          {summary.status !== "DRAFT" && review.ok ? <ClaimReviewSummary claimId={id} review={review.data} /> : null}
           <div>
             <SectionTitle>Activity</SectionTitle>
             {timeline.ok ? <ClaimTimeline entries={timeline.data} /> : <p className="text-[13px] text-ink-muted">Activity could not be loaded.</p>}

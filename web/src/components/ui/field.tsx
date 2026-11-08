@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from "react";
+import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from "react";
 
 const CONTROL =
   "h-9 w-full rounded-control border border-line-strong bg-surface px-3 text-sm text-ink placeholder:text-ink-faint transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent-soft disabled:bg-subtle disabled:text-ink-muted";
@@ -39,4 +39,8 @@ export function Select({ className = "", children, ...props }: SelectHTMLAttribu
       {children}
     </select>
   );
+}
+
+export function Textarea({ className = "", ...props }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
+  return <textarea className={`${CONTROL} h-auto min-h-24 py-2 leading-relaxed ${className}`} {...props} />;
 }

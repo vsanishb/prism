@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { account, signIn } from "./support";
+import { REACHED_REVIEW, account, signIn } from "./support";
 
 /**
  * The three seeded risk demonstrations, through the real stack: seeded earlier claims, the normal
@@ -28,7 +28,7 @@ async function submitScenario(page: Page, scenario: "SEVERE" | "CLEAN" | "DISGUI
   if (await submit.isVisible()) {
     await submit.click();
     await expect(page).toHaveURL(/\/claims\/[0-9a-f-]{36}$/);
-    await expect(page.locator("header").getByText("In review", { exact: true })).toBeVisible({ timeout: PROCESSING_TIMEOUT });
+    await expect(page.locator("header").getByText(REACHED_REVIEW)).toBeVisible({ timeout: PROCESSING_TIMEOUT });
     await page.getByRole("link", { name: "Read risk screening" }).click();
   } else {
     await screened.click();

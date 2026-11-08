@@ -16,7 +16,12 @@ export type Permission =
   | "POLICY_READ"
   | "POLICY_MANAGE"
   | "CLAIM_READ"
-  | "CLAIM_MANAGE";
+  | "CLAIM_MANAGE"
+  | "REVIEW_QUEUE"
+  | "SENIOR_REVIEW_QUEUE"
+  | "INVESTIGATION_QUEUE"
+  | "OUTCOME_RECORD"
+  | "OUTCOME_REVISE";
 
 export interface CurrentUser {
   id: string;
@@ -242,6 +247,7 @@ export interface ClaimFact {
   state: FactState;
   value: string | null;
   sources: FactSource[];
+  correction: { id: string; reason: string; correctedBy: string; correctedAt: string } | null;
 }
 
 export interface LineItem {
@@ -605,4 +611,179 @@ export interface DemonstrationScenario {
   claim: DemonstrationClaim;
   earlierClaims: DemonstrationClaim[];
   ready: boolean;
+}
+
+// --- Human review (M8). People decide; every outcome is a person's authorized record. ---
+
+export type ReviewQueue = "REVIEW" | "SENIOR_REVIEW" | "INVESTIGATION";
+export type TaskReason =
+  | "STANDARD"
+  | "ABOVE_AUTHORITY_LIMIT"
+  | "HIGH_RISK"
+  | "ESCALATED"
+  | "INVESTIGATED"
+  | "INFORMATION_RECEIVED"
+  | "REQUEST_CANCELLED"
+  | "REANALYZED";
+export type TaskStatus = "OPEN" | "CLAIMED" | "COMPLETED" | "CANCELLED";
+export type TaskCompletion =
+  | "OUTCOME_RECORDED"
+  | "ESCALATED"
+  | "INFORMATION_REQUESTED"
+  | "INVESTIGATION_RECORDED"
+  | "REANALYSIS_REQUESTED"
+  | "REPROCESSING";
+export type Decision = "APPROVED" | "PARTIALLY_APPROVED" | "DENIED";
+export type AiAgreement = "AGREED" | "PARTLY_AGREED" | "DISAGREED" | "NOT_USED";
+export type InvestigationFinding = "NO_CONCERN" | "INCONCLUSIVE" | "CONFIRMED_FRAUD";
+export type ReviewAction =
+  | "ADD_NOTE"
+  | "CLAIM_TASK"
+  | "RELEASE_TASK"
+  | "REQUEST_INFORMATION"
+  | "WITHDRAW_REQUEST"
+  | "ESCALATE"
+  | "RECORD_FINDING"
+  | "RECORD_OUTCOME"
+  | "REVISE_OUTCOME"
+  | "CORRECT_FACT"
+  | "REQUEST_REANALYSIS";
+
+export interface ReviewTask {
+  id: string;
+  claimId: string;
+  queue: ReviewQueue;
+  reason: TaskReason;
+  status: TaskStatus;
+  assigneeId: string | null;
+  assigneeName: string | null;
+  completion: TaskCompletion | null;
+  escalationNote: string | null;
+  createdAt: string;
+  claimedAt: string | null;
+  completedAt: string | null;
+}
+
+export interface ReviewNote {
+  id: string;
+  taskId: string | null;
+  author: string;
+  body: string;
+  createdAt: string;
+}
+
+export interface InformationRequest {
+  id: string;
+  documentTypes: DocumentType[];
+  message: string;
+  status: "OPEN" | "FULFILLED" | "CANCELLED";
+  requestedBy: string;
+  createdAt: string;
+  closedAt: string | null;
+}
+
+export interface FindingRecord {
+  id: string;
+  taskId: string;
+  finding: InvestigationFinding;
+  rationale: string;
+  investigator: string;
+  createdAt: string;
+}
+
+export interface AuthorizedOutcome {
+  id: string;
+  taskId: string | null;
+  decision: Decision;
+  approvedAmount: string | null;
+  currency: string;
+  rationale: string;
+  aiAgreement: AiAgreement;
+  consolidationId: string | null;
+  policyAssessmentId: string | null;
+  riskAssessmentId: string | null;
+  decidedById: string;
+  decidedBy: string;
+  decidedAt: string;
+  supersedesId: string | null;
+  current: boolean;
+}
+
+export interface FactCorrection {
+  id: string;
+  fieldName: string;
+  documentId: string | null;
+  originalValue: string | null;
+  value: string;
+  reason: string;
+  correctedBy: string;
+  createdAt: string;
+  applied: boolean;
+}
+
+export interface ReviewWorkspace {
+  task: ReviewTask | null;
+  taskIsMine: boolean;
+  history: ReviewTask[];
+  notes: ReviewNote[];
+  requests: InformationRequest[];
+  findings: FindingRecord[];
+  outcomes: AuthorizedOutcome[];
+  corrections: FactCorrection[];
+  riskBand: RiskBand | null;
+  createdByYou: boolean;
+  authorityLimit: string;
+  actions: ReviewAction[];
+  escalationTargets: ReviewQueue[];
+}
+
+export interface TaskRow {
+  id: string;
+  claimId: string;
+  claimNumber: string;
+  patientName: string;
+  claimedAmount: string;
+  currency: string;
+  claimStatus: ClaimStatus;
+  queue: ReviewQueue;
+  reason: TaskReason;
+  status: TaskStatus;
+  assigneeName: string | null;
+  mine: boolean;
+  riskBand: RiskBand | null;
+  createdAt: string;
+  claimedAt: string | null;
+}
+
+export interface TaskLists {
+  queues: { queue: ReviewQueue; open: number }[];
+  mine: TaskRow[];
+  available: TaskRow[];
+  authorityLimit: string;
+}
+
+export interface EvidenceChain {
+  claimNumber: string;
+  claimStatus: ClaimStatus;
+  currency: string;
+  outcomes: AuthorizedOutcome[];
+  tasks: ReviewTask[];
+  findings: FindingRecord[];
+  requests: InformationRequest[];
+  notes: number;
+  evidence: {
+    sequence: number;
+    consolidatedAt: string;
+    facts: {
+      name: string;
+      state: FactState;
+      value: string | null;
+      corrected: boolean;
+      sources: { documentId: string; page: number | null; quote: string | null; region: number[] | null }[];
+    }[];
+    policyAssessment: { id: string; pipelineVersion: string; createdAt: string; findings: number; supported: number } | null;
+    riskScreening: { id: string; band: RiskBand; score: number; rulesetVersion: string; modelVersion: string; indicators: number } | null;
+    modelRuns: { task: string; model: string; promptVersion: string; outcome: string; recordedAt: string }[];
+    documents: { id: string; filename: string; documentType: DocumentType; sha256: string; uploadedAt: string }[];
+  } | null;
 }

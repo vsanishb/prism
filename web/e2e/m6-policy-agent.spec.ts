@@ -1,6 +1,6 @@
 import path from "node:path";
 import { expect, test, type Browser, type Page } from "@playwright/test";
-import { READING_TIMEOUT, account, accountByEmail, signIn } from "./support";
+import { READING_TIMEOUT, REACHED_REVIEW, account, accountByEmail, signIn } from "./support";
 
 /**
  * Runs through the real stack: claim processing ends with the Policy Agent reading the claim's
@@ -77,7 +77,7 @@ async function processedClaim(page: Page, policyLabel: RegExp): Promise<void> {
   }
   await page.getByRole("button", { name: "Submit claim" }).click();
   await page.getByRole("button", { name: "Confirm submission" }).click();
-  await expect(page.locator("header").getByText("In review", { exact: true })).toBeVisible({ timeout: PROCESSING_TIMEOUT });
+  await expect(page.locator("header").getByText(REACHED_REVIEW)).toBeVisible({ timeout: PROCESSING_TIMEOUT });
 }
 
 test.describe.configure({ mode: "serial" });

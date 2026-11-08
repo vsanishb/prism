@@ -14,8 +14,8 @@ Each milestone delivers a substantial, testable slice through the frontend. Comp
 | M5 | Hybrid retrieval | Complete | M4 |
 | M6 | Policy Agent | Complete | M3, M5 |
 | M7 | Fraud and risk intelligence | Complete | M3 |
-| M8 | Human review and outcomes | **Next** | M6, M7 |
-| M9 | Production readiness | Planned | M8 |
+| M8 | Human review and outcomes | Complete | M6, M7 |
+| M9 | Production readiness | **Next** | M8 |
 
 Every milestone also requires: tests at the levels in [testing.md](testing.md), a visual review of every new screen at desktop and phone width, synthetic test data, a [frontend test guide](test-guides/README.md), updated docs, and meaningful commits.
 
@@ -203,16 +203,16 @@ Every milestone also requires: tests at the levels in [testing.md](testing.md), 
 **Objective:** complete the loop with human authority and full traceability.
 **Plan:** [human review](plans/human-review.md)
 
-- [ ] Implement review tasks, assignment, and routing
-- [ ] Build the unified review workspace
-- [ ] Implement requests for information
-- [ ] Implement escalation and investigation
-- [ ] Implement authorized outcomes and separation of duties
-- [ ] Complete the workflow with signals
-- [ ] Build the evidence chain view and reviewer dashboard
-- [ ] Add fact correction with versioning
+- [x] Implement review tasks, assignment, and routing ([D-092](decisions.md))
+- [x] Build the unified review workspace
+- [x] Implement requests for information
+- [x] Implement escalation and investigation
+- [x] Implement authorized outcomes, revision, and separation of duties ([D-093](decisions.md))
+- [x] Complete the workflow with signals ([D-091](decisions.md))
+- [x] Build the evidence chain view and reviewer dashboard ([D-095](decisions.md))
+- [x] Add fact correction with versioning ([D-094](decisions.md))
 
-**Frontend test flow:** take a task → inspect evidence → request a document and resume → escalate a high-risk claim → record an outcome → trace it back to source pages.
+**Frontend test flow:** take a task → inspect evidence → request a document and resume → escalate a high-risk claim → record an outcome → trace it back to source pages. See the [test guide](test-guides/m8-human-review.md).
 
 **Testing:** end-to-end claim scenarios; authority limits; concurrent decisions; duplicate signals.
 

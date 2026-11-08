@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, FileStack, FlaskConical, LayoutGrid, LogOut, ScrollText, ShieldCheck, Users, type LucideIcon } from "lucide-react";
+import { Activity, ClipboardCheck, FileStack, FlaskConical, LayoutGrid, LogOut, ScrollText, ShieldCheck, Users, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
@@ -15,12 +15,15 @@ interface NavItem {
   label: string;
   icon: LucideIcon;
   permission?: Permission;
+  /** Shown to anyone with any of these. */
+  anyOf?: Permission[];
   /** Shown only in the local, synthetic environment. Core refuses the page anywhere else. */
   localOnly?: boolean;
 }
 
 const NAVIGATION: NavItem[] = [
   { href: "/overview", label: "Overview", icon: LayoutGrid },
+  { href: "/review", label: "Review", icon: ClipboardCheck, anyOf: ["REVIEW_QUEUE", "SENIOR_REVIEW_QUEUE", "INVESTIGATION_QUEUE"] },
   { href: "/claims", label: "Claims", icon: FileStack, permission: "CLAIM_READ" },
   { href: "/policies", label: "Policies", icon: ShieldCheck, permission: "POLICY_READ" },
   { href: "/demonstrations", label: "Risk demonstrations", icon: FlaskConical, permission: "CLAIM_MANAGE", localOnly: true },
@@ -42,7 +45,10 @@ export function AppShell({
   const router = useRouter();
   const [signingOut, setSigningOut] = useState(false);
   const items = NAVIGATION.filter(
-    (item) => (!item.permission || user.permissions.includes(item.permission)) && (!item.localOnly || syntheticEnvironment),
+    (item) =>
+      (!item.permission || user.permissions.includes(item.permission)) &&
+      (!item.anyOf || item.anyOf.some((permission) => user.permissions.includes(permission))) &&
+      (!item.localOnly || syntheticEnvironment),
   );
 
   async function signOut() {

@@ -44,6 +44,13 @@ export function uniqueEmail(prefix: string): string {
 const DATA = path.resolve(process.cwd(), "../test-data");
 export const READING_TIMEOUT = 45_000;
 
+/**
+ * A processed claim reaches a person: "In review", or "Escalated" when screening routes it to an
+ * investigator first (M8). Tests here share one patient, dates, and documents across many claims,
+ * which the duplicate rules rightly flag, so either can be correct.
+ */
+export const REACHED_REVIEW = /^(In review|Escalated)$/;
+
 /** A fresh version on the Silver policy, in a far-future period so that repeated runs never overlap. */
 export async function uploadFreshVersion(page: Page): Promise<void> {
   const year = 2100 + (Date.now() % 800);

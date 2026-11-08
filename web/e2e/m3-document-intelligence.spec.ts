@@ -1,6 +1,6 @@
 import path from "node:path";
 import { expect, test, type Page } from "@playwright/test";
-import { account, signIn } from "./support";
+import { REACHED_REVIEW, account, signIn } from "./support";
 
 /**
  * Runs through the real stack, including Temporal and the AI service, with a stand-in for the model
@@ -34,7 +34,7 @@ async function submit(page: Page): Promise<void> {
   await page.getByRole("button", { name: "Confirm submission" }).click();
 }
 
-async function expectStatus(page: Page, label: string): Promise<void> {
+async function expectStatus(page: Page, label: string | RegExp): Promise<void> {
   await expect(page.locator("header").getByText(label, { exact: true })).toBeVisible({ timeout: PROCESSING_TIMEOUT });
 }
 
@@ -46,7 +46,7 @@ test("a complete claim is processed to review, with each fact traced to its sour
   await upload(page, "claims/appendectomy/discharge-summary.pdf", "Discharge summary");
   await submit(page);
 
-  await expectStatus(page, "In review");
+  await expectStatus(page, REACHED_REVIEW);
   await expect(page.getByText("Document read").first()).toBeVisible();
   await expect(page.getByText("Ready for review")).toBeVisible();
 
@@ -69,7 +69,7 @@ test("documents that disagree are shown as a conflict, with every source and no 
   await upload(page, "claims/conflicting/hospital-bill.pdf", "Hospital bill");
   await upload(page, "claims/conflicting/discharge-summary.pdf", "Discharge summary");
   await submit(page);
-  await expectStatus(page, "In review");
+  await expectStatus(page, REACHED_REVIEW);
 
   await page.getByRole("link", { name: "Review extracted facts" }).click();
   await expect(page.getByText("Admission date: documents state different values. None has been chosen.")).toBeVisible();
@@ -93,7 +93,7 @@ test("a claim missing documents waits, then resumes when they are added", async 
 
   await upload(page, "claims/appendectomy/claim-form.pdf", "Claim form");
   await upload(page, "claims/appendectomy/discharge-summary.pdf", "Discharge summary");
-  await expectStatus(page, "In review");
+  await expectStatus(page, REACHED_REVIEW);
 });
 
 test("a failed document is shown with its reason, and a retry finishes it", async ({ page }) => {

@@ -6,7 +6,7 @@ The factual record of project state. Update after meaningful work. Newest entrie
 
 ## Current state
 
-**Phase:** M7 complete. M8 is next. M1's CI workflow has still never run.
+**Phase:** M8 complete. M9 (production readiness) is next. M1's CI workflow has still never run.
 **Runs on:** local PostgreSQL 18.3, the only database ([D-074](decisions.md)).
 
 | Capability | Status | Milestone |
@@ -25,7 +25,7 @@ The factual record of project state. Update after meaningful work. Newest entrie
 | Hybrid retrieval | Tested, on synthetic policies only | M5 |
 | Policy Agent | Tested, on synthetic claims only | M6 |
 | Fraud and risk screening | Tested, on synthetic claims only | M7 |
-| Human review | Planned | M8 |
+| Human review and outcomes | Tested, on synthetic claims only | M8 |
 | Production readiness | Planned | M9 |
 
 ## Open items
@@ -36,6 +36,34 @@ The factual record of project state. Update after meaningful work. Newest entrie
 | Confirm the OpenRouter account is set to "ZDR only". Prism enforces ZDR per request regardless | User | Before real use |
 
 ## Log
+
+### 2026-11-08: M8 Human review and outcomes
+
+**Implemented:** a `review` module: tasks routed by risk and amount, one live task per claim, taking, releasing, and taking the next task; notes; requests for information answered by intake; escalation; investigation findings; authorized outcomes with rationale and the reviewer's view of the AI analysis; revision by a superseding record; separation of duties. Fact corrections as versions, applied at consolidation when a reviewer chooses to analyze again. The workflow now ends with a decision. Screens: the review dashboard, the workspace, the evidence chain, and a review summary on the claim page ([review](modules/review.md), [D-091](decisions.md) to [D-095](decisions.md)).
+
+**Test results on the final code:**
+
+| Suite | Result |
+|---|---|
+| Core (JUnit, real PostgreSQL, Temporal test server) | 457 passed, including 13 review flow tests, routing and amount rules, the decision signal, and replay of a pre-M6 history |
+| AI (pytest) | 284 passed, unchanged |
+| Web | ESLint and `tsc` clean. 12 unit tests, unchanged |
+| End-to-end, production build, real Temporal, AI service, and detectors, stand-in model provider | 65 passed, covering M1 to M8, run twice on one stack to show the M7 and M8 specs can be rerun |
+
+**Defects found by testing and fixed:**
+- Duplicate rules raised one indicator per matching claim, so one bill reused across 19 test claims made a claim high risk. Version 2 groups them per document ([D-096](decisions.md)). Found by the end-to-end run.
+- The escalation dialog kept a stale empty target when the reviewer took the task after the page loaded. Found by the end-to-end run.
+- Raw field names on four facts, and model names wrapping letter by letter in the evidence chain. Found by the visual review.
+
+**Changed while building:** earlier end-to-end tests file many claims for one patient, dates, and documents on one policy. Screening rightly flags them, so they now reach `ESCALATED` as well as `IN_REVIEW`, and the tests accept either.
+
+**Screens reviewed** at desktop and phone width: the review dashboard, the workspace, and the evidence chain.
+
+**Note:** the working copy of `roadmap.md` had been overwritten with a pre-M7 version, with a typo, after the M7 commit. It was restored from that commit before the M8 changes.
+
+**Not verified:**
+- Use by real reviewers, and the authority limit's value, which is a project setting.
+- Everything listed under earlier milestones, including CI.
 
 ### 2026-11-08: M7 Fraud and risk intelligence
 

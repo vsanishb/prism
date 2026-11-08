@@ -1,4 +1,10 @@
 import type {
+  AiAgreement,
+  Decision,
+  InvestigationFinding,
+  ReviewQueue,
+  TaskCompletion,
+  TaskReason,
   AnomalyDetector,
   IndicatorKind,
   ReviewRoute,
@@ -75,6 +81,22 @@ const ACTION_LABELS: Record<string, string> = {
   CLAIM_POLICY_ANALYZED: "Claim policy analyzed",
   CLAIM_RISK_SCREENED: "Claim screened for risk",
   CLAIM_SENT_FOR_RISK_SUMMARY: "Claim risk signals sent for an AI summary",
+  CLAIM_RETURNED_TO_REVIEW: "Claim returned to review",
+  CLAIM_ESCALATED: "Claim escalated",
+  CLAIM_DECIDED: "Claim decided",
+  REVIEW_TASK_OPENED: "Review task opened",
+  REVIEW_TASK_CLAIMED: "Review task taken",
+  REVIEW_TASK_RELEASED: "Review task released",
+  REVIEW_TASK_CANCELLED: "Review task cancelled for reprocessing",
+  REVIEW_NOTE_ADDED: "Review note added",
+  INFORMATION_REQUESTED: "Information requested",
+  INFORMATION_REQUEST_WITHDRAWN: "Information request withdrawn",
+  INFORMATION_REQUEST_FULFILLED: "Information request answered",
+  INVESTIGATION_FINDING_RECORDED: "Investigation finding recorded",
+  CLAIM_OUTCOME_RECORDED: "Outcome recorded",
+  CLAIM_OUTCOME_REVISED: "Outcome revised",
+  CLAIM_FACT_CORRECTED: "Claim fact corrected",
+  CLAIM_REANALYSIS_REQUESTED: "Analysis requested with corrections",
   CLAIM_CREATED: "Claim created",
   CLAIM_UPDATED: "Claim edited",
   CLAIM_SUBMITTED: "Claim submitted",
@@ -392,6 +414,10 @@ export const FINDING_PROBLEM_LABELS: Record<string, string> = {
 };
 
 export const FACT_NAME_LABELS: Record<string, string> = {
+  policy_number: "Policy number",
+  claimant_name: "Claimant",
+  patient_name: "Patient",
+  hospital_name: "Hospital",
   admission_date: "Admission date",
   discharge_date: "Discharge date",
   claimed_amount: "Claimed amount",
@@ -473,4 +499,57 @@ export const RISK_SUMMARY_PROBLEMS: Record<string, string> = {
   ai_service_unavailable: "The AI service could not be reached.",
   summary_rejected: "The summary did not pass Prism's checks, so it is not shown.",
   default: "No summary could be written.",
+};
+
+// --- Human review (M8) ---
+
+export const QUEUE_LABELS: Record<ReviewQueue, string> = {
+  REVIEW: "Review",
+  SENIOR_REVIEW: "Senior review",
+  INVESTIGATION: "Investigation",
+};
+
+export const QUEUE_DESCRIPTIONS: Record<ReviewQueue, string> = {
+  REVIEW: "Standard claims within the reviewer authority limit",
+  SENIOR_REVIEW: "Escalated, high-value, and investigated claims",
+  INVESTIGATION: "High-risk claims, before a reviewer decides",
+};
+
+export const TASK_REASON_LABELS: Record<TaskReason, string> = {
+  STANDARD: "Ready for review",
+  ABOVE_AUTHORITY_LIMIT: "Above the reviewer authority limit",
+  HIGH_RISK: "High risk: investigation first",
+  ESCALATED: "Escalated",
+  INVESTIGATED: "Investigation finished",
+  INFORMATION_RECEIVED: "Requested information received",
+  REQUEST_CANCELLED: "Information request withdrawn",
+  REANALYZED: "Analyzed again with corrections",
+};
+
+export const TASK_COMPLETION_LABELS: Record<TaskCompletion, string> = {
+  OUTCOME_RECORDED: "Outcome recorded",
+  ESCALATED: "Escalated",
+  INFORMATION_REQUESTED: "Information requested",
+  INVESTIGATION_RECORDED: "Finding recorded",
+  REANALYSIS_REQUESTED: "Sent for analysis with corrections",
+  REPROCESSING: "Cancelled: claim processed again",
+};
+
+export const DECISION_LABELS: Record<Decision, string> = {
+  APPROVED: "Approved",
+  PARTIALLY_APPROVED: "Partly approved",
+  DENIED: "Denied",
+};
+
+export const AI_AGREEMENT_LABELS: Record<AiAgreement, string> = {
+  AGREED: "The AI analysis agreed with my decision",
+  PARTLY_AGREED: "It partly agreed",
+  DISAGREED: "It disagreed",
+  NOT_USED: "I did not use it",
+};
+
+export const FINDING_LABELS: Record<InvestigationFinding, string> = {
+  NO_CONCERN: "No concern found",
+  INCONCLUSIVE: "Inconclusive",
+  CONFIRMED_FRAUD: "Fraud confirmed by investigation",
 };

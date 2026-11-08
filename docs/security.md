@@ -74,7 +74,9 @@ Authorization is enforced in core at the service layer. Code checks permissions,
 | `FRAUD_INVESTIGATOR` | Investigation | View risk detail, record investigation findings |
 | `AUDITOR` | Oversight | Read-only access to audit trail and evidence |
 
-**Separation of duties:** a user cannot record the outcome for a claim they created, nor publish a policy version they uploaded. Only an investigator can record an investigation finding. Rules are enforced in core and tested.
+**Separation of duties:** a user cannot take, review, or record the outcome for a claim they created, nor publish a policy version they uploaded. Only an investigator can record an investigation finding, and investigators cannot record outcomes. An outcome is revised only by a senior reviewer other than its author. Refusals are audited as denied. Rules are enforced in core and tested ([D-093](decisions.md)).
+
+**Review permissions (M8):** `REVIEW_QUEUE`, `SENIOR_REVIEW_QUEUE`, `INVESTIGATION_QUEUE`, `OUTCOME_RECORD`, and `OUTCOME_REVISE`. Amounts above the reviewer authority limit need `SENIOR_REVIEW_QUEUE`. See [review](modules/review.md#permissions).
 
 ## API security
 

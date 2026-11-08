@@ -64,7 +64,7 @@ One local PostgreSQL 18 database, with two schemas, each with its own runtime ro
 | Documents | `documents` |
 | Intelligence | `ai_runs`, `document_extractions`, `claim_consolidations`, `claim_facts`, `claim_fact_sources`, `claim_line_items`, `validation_findings`, `policy_assessments`, `assessment_citations`, `risk_assessments`, `risk_indicators`, `risk_evidence`, `risk_anomaly_results`, `risk_category_scores`, `risk_summaries` |
 | Workflow | `stage_events`, `outbox_events`. Workflow IDs derive from claim IDs, so no reference table is needed |
-| Review | `review_tasks`, `review_notes`, `document_requests`, `authorized_outcomes` |
+| Review | `review_tasks`, `review_notes`, `information_requests`, `investigation_findings`, `authorized_outcomes`, `fact_corrections` |
 | Audit | `audit_events` (append-only) |
 
 ### `knowledge` schema (owner: AI service)

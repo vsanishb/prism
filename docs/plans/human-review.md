@@ -33,6 +33,8 @@ Give authorized people everything needed to reach a decision, and keep that auth
 - The decision commits first, then the outbox signals the workflow ([flow](../system-flows.md#human-review)).
 - Separation of duties is in [security.md](../security.md#authorization).
 
+**As built (M8):** the routing above, with "after investigation" going to senior review for confirmed fraud or a claim above the limit ([D-092](../decisions.md)). Reopening is a senior reviewer's revision of the outcome, not a new review cycle ([D-093](../decisions.md)). See [review](../modules/review.md).
+
 ## Dependencies
 M6, M7, and M3 workflow.
 

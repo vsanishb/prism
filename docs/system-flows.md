@@ -164,7 +164,7 @@ sequenceDiagram
     T->>T: Workflow completes
 ```
 
-The database is the record of the decision. The signal is deduplicated by decision ID, so it can be retried safely.
+The database is the record of the decision. The signal only sets a flag, so a repeated one changes nothing. A task opens when processing finishes, routed by risk and amount; a request for information or a request to analyze corrected facts starts another processing cycle, and a new task opens after it ([D-091](decisions.md), [D-092](decisions.md)). As built: [review](modules/review.md).
 
 ## Audit
 

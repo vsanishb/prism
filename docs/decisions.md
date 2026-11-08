@@ -493,3 +493,29 @@ scikit-learn 1.9.1 and NumPy 2.5.4, the current releases, with Windows wheels fo
 On 2026-11-08, on 2,000 held-out synthetic normal claims and 210 controlled synthetic anomalies of 7 types: Isolation Forest 0.9% false positives, 47.6% recall, ROC AUC 0.902; LOF 1.1%, 93.3%, 0.995; either detector 1.8% and 94.8%. Isolation Forest misses inflated claims entirely, because almost every baseline claim asks for exactly its bill. That is a known limit of axis-parallel splits, and is kept visible in a test; rule FIN-03 covers those claims. The three demonstrations give HIGH (100), LOW (0), and HIGH (57, rules alone 37), as designed. The summary on DeepSeek V4.1 Flash passed every check in 10 of 10 runs, 5 after one repair, for $0.006.
 These results describe agreement with a synthetic generator. They are evidence that the implementation works as designed, and no evidence of how it would detect anything in real claims.
 
+
+## Milestone 8
+
+### D-091 Review actions are single transactions, and review never runs processing
+**Status:** Accepted · **Source:** Dev
+A `review` module owns tasks, notes, requests, findings, and outcomes. Each action commits the record, the task change, the claim's status (through the claim module's `ClaimReview`), the audit event, and any outbox event together. Review never calls the workflow: an outcome sends `CLAIM_DECIDED`, which ends it, and a request to analyze corrected facts sends `CLAIM_REANALYSIS_REQUESTED`, which the workflow treats as changed documents. A request for information needs no signal: intake's new documents already restart processing. The workflow only opens a task when a claim is ready, and cancels it when processing starts again. ArchUnit keeps review away from Temporal and the AI client.
+
+### D-092 Task routing, one live task, and the authority limit
+**Status:** Accepted · **Source:** User (rules) / Dev (design)
+A ready claim goes to an investigator first if its latest screening is `HIGH` and it has no investigation finding yet; else to senior review above the reviewer authority limit; else to review. After a finding, confirmed fraud and large claims go to senior review, others to review. Escalation only goes up. The limit is configuration (`PRISM_REVIEWER_AUTHORITY_LIMIT`, INR 3,00,000 by default), a project setting, not a regulatory figure. A claim has at most one live task, which the database enforces with a partial unique index. Taking a task is a conditional update, and "take next" uses `SKIP LOCKED`, so two people never hold the same claim. Every action names the task it acts on, and is refused if the task has changed. Investigations and escalations show the claim as `ESCALATED`.
+
+### D-093 Outcomes, separation of duties, and revision
+**Status:** Accepted · **Source:** User (principle) / Dev (rules)
+Approved pays the claimed amount, partly approved a smaller one, denied nothing, each with a rationale of at least 10 characters and the reviewer's view of the AI analysis, recorded for evaluation. An outcome stores the consolidation, analysis, and screening it was made with. Outcomes are insert-only. A senior reviewer revises one with a new record that supersedes it, and someone other than its author must do so. Nobody takes or decides a claim they created, and refusals are audited as denied. Investigators record findings, never outcomes: confirmed fraud exists only as an investigator's finding, and a reviewer still decides.
+
+### D-094 Fact corrections are versions applied at consolidation
+**Status:** Accepted · **Source:** Dev
+A correction is an insert-only row naming the fact it corrects. The newest correction for a fact applies at the next consolidation: the fact becomes `PRESENT` with the corrected value and a link to the correction, and keeps its document sources, so the screen still shows what each document said. Validation, analysis, and screening then use the corrected value. Analyzing again is the reviewer's choice, and never automatic. Audit records the field corrected, never the value.
+
+### D-095 The evidence chain is assembled from records, not copied
+**Status:** Accepted · **Source:** Dev
+The chain reads, in order: outcomes, the path through the queues, findings and requests, the analysis and screening the outcome was made with, that consolidation's facts and source pages, the AI runs, and the documents with their SHA-256. Nothing is copied into a report that could drift from its source. Claim intelligence provides its part through `ReviewSupport`. Auditors and claim readers see it. Administrators do not.
+
+### D-096 Duplicate indicators are grouped per document (ruleset `risk-rules-2`)
+**Status:** Accepted · **Source:** Dev (found by testing)
+Version 1 of the duplicate rules raised one indicator per matching claim. M8's end-to-end run found a claim whose bill was reused in 19 earlier test claims: 19 indicators filled the duplicate category's cap, made the claim high risk, and sent it to investigation, on the strength of one reused file. Version 2 raises at most one indicator per document (DUP-01 to DUP-03), or one per claim (DUP-04, DUP-05), and lists every matching claim as evidence. A reused file is one signal however often it recurs, which is what the category caps were meant to ensure (D-085). The demonstrations' results do not change: each of their matches involves a single other claim.

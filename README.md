@@ -67,6 +67,7 @@ prism/
 │   └── migrations/      Flyway migrations for every schema (the only place schema changes are made)
 ├── scripts/             prism.py, the local development tool, and synthetic document generators
 ├── test-data/           Synthetic documents and policies used by tests and demonstrations
+├── demo/                Three claims to upload by hand in a demonstration: blatant, clean, disguised
 ├── docs/                Architecture, decisions, plans, module guides, and test guides
 ├── infra/               Deployment configuration (placeholder until Milestone 9)
 └── .github/workflows/   Continuous integration
@@ -191,6 +192,16 @@ python -m uv run --project services/ai python scripts/prism.py run-web
 Open <http://localhost:3000>. The Temporal console is at <http://localhost:8233>.
 
 After a reboot, start the database first with `scripts/prism.py db-start`.
+
+### Prepare a demonstration (optional)
+
+With all four services running:
+
+```powershell
+python -m uv run --project services/ai python scripts/prism.py demo-prepare
+```
+
+It publishes every policy and loads 25 claims in every state, using the real model (a few minutes, and well under a US dollar of model calls). It then prints what each claim raised. The three cases in [demo/](demo/README.md) are ready to upload by hand afterwards; each folder's README gives the values to type and what Prism should show.
 
 ### 6. Sign in and try it
 

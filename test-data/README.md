@@ -16,6 +16,7 @@ python -m uv run --project services/ai python scripts/generate_test_data.py
 | `claims/conflicting/` | Disagrees with `appendectomy` on the admission date, with charges that do not add up |
 | `claims/hard/` | Evaluation hard cases: dense, degraded, handwriting-style, sparse, injected. Generating these needs a Windows script font |
 | `claims/risk-demo/` | The M7 demonstrations: severe, clean, and disguised claims, the earlier claims they are compared with, and a manifest. Regenerate with `scripts/generate_risk_demo.py` |
+| `claims/demo-corpus/` | The presentation set: 25 claims covering every risk rule and every review state, with a manifest of the rules each should raise. Loaded by `prism.py demo-prepare`. Regenerate with `scripts/generate_demo.py`, which also writes `demo/` and the Silver and Plus wordings in `policies/` |
 | `invalid/` | Files that upload validation must refuse |
 
 Later milestones add their own scenarios.

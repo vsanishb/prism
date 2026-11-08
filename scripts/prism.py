@@ -478,6 +478,14 @@ def e2e_stack() -> None:
         stop_all(processes)
 
 
+def demo_prepare() -> None:
+    """Publishes every policy and loads the presentation claims, through the API of the running stack."""
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import demo_prepare as preparation
+
+    preparation.main(read_env()["PRISM_CORE_BASE_URL"])
+
+
 COMMANDS = {
     "setup": setup,
     "db-start": db_start,
@@ -494,6 +502,7 @@ COMMANDS = {
     "install-pgvector": install_pgvector,
     "run-model-stub": run_model_stub,
     "e2e-stack": e2e_stack,
+    "demo-prepare": demo_prepare,
 }
 
 

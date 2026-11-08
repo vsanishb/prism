@@ -1,0 +1,963 @@
+{
+  "note": "Synthetic presentation data for Prism. Fictional people, hospitals, and amounts.",
+  "claims": [
+    {
+      "key": "C01",
+      "folder": "01-clean-appendectomy",
+      "title": "Clean claim, approved",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Kavya",
+      "hospital": "Synthetic Sunrise Hospital, Hyderabad (Fictional)",
+      "admissionDate": "2026-05-11",
+      "dischargeDate": "2026-05-14",
+      "claimedAmount": "105850.00",
+      "documents": [
+        {
+          "file": "01-clean-appendectomy/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "01-clean-appendectomy/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "01-clean-appendectomy/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [],
+      "plan": [
+        "decide:APPROVED:AGREED:Documents agree and the treatment is covered under Clause 2.1.",
+        "revise:PARTIALLY_APPROVED:-2550:AGREED:Nursing charges are part of room rent under the tariff; revised on audit."
+      ],
+      "wave": 1,
+      "note": ""
+    },
+    {
+      "key": "C02",
+      "folder": "02-clean-fracture-partial",
+      "title": "Clean claim, partly approved",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Rohan",
+      "hospital": "Synthetic Meadow Hospital, Bengaluru (Fictional)",
+      "admissionDate": "2026-06-02",
+      "dischargeDate": "2026-06-05",
+      "claimedAmount": "155300.00",
+      "documents": [
+        {
+          "file": "02-clean-fracture-partial/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "02-clean-fracture-partial/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "02-clean-fracture-partial/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [],
+      "plan": [
+        "decide:PARTIALLY_APPROVED:-3150:AGREED:Attendant charges and toiletries are non-medical items under Clause 4.4."
+      ],
+      "wave": 1,
+      "note": ""
+    },
+    {
+      "key": "C04",
+      "folder": "04-clean-dengue-information",
+      "title": "Clean claim, waiting for a report",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Imran",
+      "hospital": "Synthetic Cedar Hospital, Lucknow (Fictional)",
+      "admissionDate": "2026-08-03",
+      "dischargeDate": "2026-08-07",
+      "claimedAmount": "70600.00",
+      "documents": [
+        {
+          "file": "04-clean-dengue-information/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "04-clean-dengue-information/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "04-clean-dengue-information/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [],
+      "plan": [
+        "request:DIAGNOSTIC_REPORT:Please upload the platelet count reports from the admission."
+      ],
+      "wave": 1,
+      "note": ""
+    },
+    {
+      "key": "C05",
+      "folder": "05-large-angioplasty-senior",
+      "title": "Large claim, approved by a senior reviewer",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Gopal",
+      "hospital": "Synthetic Harbour Hospital, Chennai (Fictional)",
+      "admissionDate": "2026-06-15",
+      "dischargeDate": "2026-06-21",
+      "claimedAmount": "445550.00",
+      "documents": [
+        {
+          "file": "05-large-angioplasty-senior/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "05-large-angioplasty-senior/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "05-large-angioplasty-senior/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [],
+      "plan": [
+        "decide:APPROVED:AGREED:Above the reviewer limit. Documents agree and the procedure is covered."
+      ],
+      "wave": 1,
+      "note": ""
+    },
+    {
+      "key": "E-BLATANT",
+      "folder": "earlier-blatant-femur-fracture",
+      "title": "Earlier claim the blatant demonstration copies",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Kiran",
+      "hospital": "Synthetic Crescent Hospital, Visakhapatnam (Fictional)",
+      "admissionDate": "2026-08-04",
+      "dischargeDate": "2026-08-08",
+      "claimedAmount": "281850.00",
+      "documents": [
+        {
+          "file": "earlier-blatant-femur-fracture/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "earlier-blatant-femur-fracture/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "earlier-blatant-femur-fracture/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [],
+      "plan": [
+        "decide:APPROVED:AGREED:Documents agree and the treatment is covered."
+      ],
+      "wave": 1,
+      "note": ""
+    },
+    {
+      "key": "E-DISGUISED-1",
+      "folder": "earlier-disguised-viral-fever",
+      "title": "Earlier claim for the disguised demonstration's patient",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Raghav",
+      "hospital": "Synthetic Seaview Hospital, Mangaluru (Fictional)",
+      "admissionDate": "2026-04-20",
+      "dischargeDate": "2026-04-23",
+      "claimedAmount": "47160.00",
+      "documents": [
+        {
+          "file": "earlier-disguised-viral-fever/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "earlier-disguised-viral-fever/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "earlier-disguised-viral-fever/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [],
+      "plan": [
+        "decide:APPROVED:AGREED:Documents agree and the treatment is covered."
+      ],
+      "wave": 1,
+      "note": ""
+    },
+    {
+      "key": "E-DISGUISED-2",
+      "folder": "earlier-disguised-cholecystectomy",
+      "title": "Earlier claim the disguised demonstration resembles",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Raghav",
+      "hospital": "Synthetic Seaview Hospital, Mangaluru (Fictional)",
+      "admissionDate": "2026-09-14",
+      "dischargeDate": "2026-09-17",
+      "claimedAmount": "374350.00",
+      "documents": [
+        {
+          "file": "earlier-disguised-cholecystectomy/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "earlier-disguised-cholecystectomy/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "earlier-disguised-cholecystectomy/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [],
+      "plan": [
+        "decide:APPROVED:AGREED:Above the reviewer limit. Documents agree and the procedure is covered."
+      ],
+      "wave": 1,
+      "note": ""
+    },
+    {
+      "key": "C03",
+      "folder": "03-cataract-waiting-period",
+      "title": "Covered treatment inside its waiting period, denied",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Lakshmi",
+      "hospital": "Synthetic Orchid Hospital, Indore (Fictional)",
+      "admissionDate": "2026-07-20",
+      "dischargeDate": "2026-07-21",
+      "claimedAmount": "61940.00",
+      "documents": [
+        {
+          "file": "03-cataract-waiting-period/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "03-cataract-waiting-period/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "03-cataract-waiting-period/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [],
+      "plan": [
+        "decide:DENIED:AGREED:Cataract has a 24-month waiting period under Clause 3.2, and cover began in April 2025."
+      ],
+      "wave": 2,
+      "note": ""
+    },
+    {
+      "key": "C06",
+      "folder": "06-patient-differs",
+      "title": "The bill names a different patient",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Divya",
+      "hospital": "Synthetic Banyan Hospital, Ahmedabad (Fictional)",
+      "admissionDate": "2026-07-06",
+      "dischargeDate": "2026-07-09",
+      "claimedAmount": "57330.00",
+      "documents": [
+        {
+          "file": "06-patient-differs/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "06-patient-differs/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "06-patient-differs/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [
+        "CON-01"
+      ],
+      "plan": [
+        "escalate:SENIOR_REVIEW:The bill names another patient. Asking a senior reviewer before deciding."
+      ],
+      "wave": 2,
+      "note": ""
+    },
+    {
+      "key": "C07",
+      "folder": "07-hospital-and-dates-differ",
+      "title": "The discharge summary names another hospital and date",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Neel",
+      "hospital": "Synthetic Maple Hospital, Kolkata (Fictional)",
+      "admissionDate": "2026-08-10",
+      "dischargeDate": "2026-08-13",
+      "claimedAmount": "68880.00",
+      "documents": [
+        {
+          "file": "07-hospital-and-dates-differ/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "07-hospital-and-dates-differ/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "07-hospital-and-dates-differ/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [
+        "CON-02",
+        "CON-03"
+      ],
+      "plan": [
+        "take"
+      ],
+      "wave": 2,
+      "note": ""
+    },
+    {
+      "key": "C08",
+      "folder": "08-bill-before-admission",
+      "title": "The bill is dated before the admission, with an old prescription",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Pooja",
+      "hospital": "Synthetic Silverline Hospital, Bhopal (Fictional)",
+      "admissionDate": "2026-09-01",
+      "dischargeDate": "2026-09-04",
+      "claimedAmount": "75860.00",
+      "documents": [
+        {
+          "file": "08-bill-before-admission/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "08-bill-before-admission/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "08-bill-before-admission/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        },
+        {
+          "file": "08-bill-before-admission/prescription.pdf",
+          "type": "PRESCRIPTION"
+        }
+      ],
+      "expectedRules": [
+        "CON-04",
+        "CON-06"
+      ],
+      "plan": [
+        "wait"
+      ],
+      "wave": 2,
+      "note": ""
+    },
+    {
+      "key": "C09",
+      "folder": "09-discharge-before-admission",
+      "title": "The documents put the discharge before the admission",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Arjun",
+      "hospital": "Synthetic Cedar Hospital, Lucknow (Fictional)",
+      "admissionDate": "2026-05-20",
+      "dischargeDate": "2026-05-23",
+      "claimedAmount": "49870.00",
+      "documents": [
+        {
+          "file": "09-discharge-before-admission/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "09-discharge-before-admission/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "09-discharge-before-admission/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [
+        "CON-03",
+        "CON-05"
+      ],
+      "plan": [
+        "wait"
+      ],
+      "wave": 2,
+      "note": ""
+    },
+    {
+      "key": "C10",
+      "folder": "10-items-do-not-add-up",
+      "title": "Bill items do not add up, and one is repeated",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Sneha",
+      "hospital": "Synthetic Sunrise Hospital, Hyderabad (Fictional)",
+      "admissionDate": "2026-09-08",
+      "dischargeDate": "2026-09-12",
+      "claimedAmount": "121040.00",
+      "documents": [
+        {
+          "file": "10-items-do-not-add-up/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "10-items-do-not-add-up/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "10-items-do-not-add-up/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [
+        "FIN-01",
+        "FIN-02"
+      ],
+      "plan": [
+        "wait"
+      ],
+      "wave": 2,
+      "note": ""
+    },
+    {
+      "key": "C11",
+      "folder": "11-claimed-above-bill",
+      "title": "The claim asks for more than the bill",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Manoj",
+      "hospital": "Synthetic Cedar Hospital, Lucknow (Fictional)",
+      "admissionDate": "2026-07-14",
+      "dischargeDate": "2026-07-18",
+      "claimedAmount": "185000.00",
+      "documents": [
+        {
+          "file": "11-claimed-above-bill/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "11-claimed-above-bill/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "11-claimed-above-bill/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [
+        "FIN-03"
+      ],
+      "plan": [
+        "decide:PARTIALLY_APPROVED:=152400:AGREED:Approved at the billed amount; the claim asked for more than the bill."
+      ],
+      "wave": 2,
+      "note": ""
+    },
+    {
+      "key": "C12",
+      "folder": "12-above-sum-insured",
+      "title": "Above the sum insured, at a very high daily amount",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Farida",
+      "hospital": "Synthetic Harbour Hospital, Chennai (Fictional)",
+      "admissionDate": "2026-02-10",
+      "dischargeDate": "2026-02-12",
+      "claimedAmount": "563000.00",
+      "documents": [
+        {
+          "file": "12-above-sum-insured/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "12-above-sum-insured/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "12-above-sum-insured/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [
+        "FIN-04",
+        "FIN-06"
+      ],
+      "plan": [
+        "wait"
+      ],
+      "wave": 2,
+      "note": "Policy year 2025-26: sum insured INR 5,00,000."
+    },
+    {
+      "key": "C13",
+      "folder": "13-near-sum-insured",
+      "title": "Close to the whole sum insured",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Suresh",
+      "hospital": "Synthetic Orchid Hospital, Indore (Fictional)",
+      "admissionDate": "2026-01-05",
+      "dischargeDate": "2026-01-12",
+      "claimedAmount": "471000.00",
+      "documents": [
+        {
+          "file": "13-near-sum-insured/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "13-near-sum-insured/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "13-near-sum-insured/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [
+        "FIN-05"
+      ],
+      "plan": [
+        "wait"
+      ],
+      "wave": 2,
+      "note": "Policy year 2025-26: sum insured INR 5,00,000."
+    },
+    {
+      "key": "C14",
+      "folder": "14-copied-bill",
+      "title": "The bill is another claim's file, unchanged",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Tanvi",
+      "hospital": "Synthetic Sunrise Hospital, Hyderabad (Fictional)",
+      "admissionDate": "2026-09-21",
+      "dischargeDate": "2026-09-24",
+      "claimedAmount": "105850.00",
+      "documents": [
+        {
+          "file": "14-copied-bill/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "14-copied-bill/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "14-copied-bill/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [
+        "DUP-01",
+        "CON-01",
+        "CON-03",
+        "CON-04"
+      ],
+      "plan": [
+        "finding:CONFIRMED_FRAUD:The bill is the same file as another patient's claim; the hospital confirmed it issued no such bill for this patient.",
+        "decide:DENIED:AGREED:The investigator confirmed the bill belongs to another claim."
+      ],
+      "wave": 2,
+      "note": ""
+    },
+    {
+      "key": "C15",
+      "folder": "15-invoice-number-reused",
+      "title": "The bill number belongs to another claim at the same hospital",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Vivek",
+      "hospital": "Synthetic Meadow Hospital, Bengaluru (Fictional)",
+      "admissionDate": "2026-09-02",
+      "dischargeDate": "2026-09-05",
+      "claimedAmount": "64890.00",
+      "documents": [
+        {
+          "file": "15-invoice-number-reused/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "15-invoice-number-reused/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "15-invoice-number-reused/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [
+        "DUP-02"
+      ],
+      "plan": [
+        "wait"
+      ],
+      "wave": 2,
+      "note": ""
+    },
+    {
+      "key": "C16",
+      "folder": "16-near-identical-bill",
+      "title": "A lightly altered copy of another patient's bill",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Ramesh",
+      "hospital": "Synthetic Harbour Hospital, Chennai (Fictional)",
+      "admissionDate": "2026-10-05",
+      "dischargeDate": "2026-10-11",
+      "claimedAmount": "448350.00",
+      "documents": [
+        {
+          "file": "16-near-identical-bill/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "16-near-identical-bill/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "16-near-identical-bill/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [
+        "DUP-03"
+      ],
+      "plan": [
+        "finding:NO_CONCERN:The hospital confirmed both bills follow its fixed angioplasty package, which explains the matching lines.",
+        "wait"
+      ],
+      "wave": 2,
+      "note": ""
+    },
+    {
+      "key": "C17",
+      "folder": "17-overlapping-stay",
+      "title": "The same patient was in another hospital at the same time",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Kavya",
+      "hospital": "Synthetic Maple Hospital, Kolkata (Fictional)",
+      "admissionDate": "2026-05-13",
+      "dischargeDate": "2026-05-16",
+      "claimedAmount": "57310.00",
+      "documents": [
+        {
+          "file": "17-overlapping-stay/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "17-overlapping-stay/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "17-overlapping-stay/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [
+        "DUP-04"
+      ],
+      "plan": [
+        "wait"
+      ],
+      "wave": 2,
+      "note": ""
+    },
+    {
+      "key": "C18",
+      "folder": "18-similar-claim-soon-after",
+      "title": "A similar claim at the same hospital weeks later",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Imran",
+      "hospital": "Synthetic Cedar Hospital, Lucknow (Fictional)",
+      "admissionDate": "2026-08-25",
+      "dischargeDate": "2026-08-29",
+      "claimedAmount": "76420.00",
+      "documents": [
+        {
+          "file": "18-similar-claim-soon-after/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "18-similar-claim-soon-after/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "18-similar-claim-soon-after/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [
+        "DUP-05"
+      ],
+      "plan": [
+        "decide:APPROVED:PARTLY_AGREED:A second admission is plausible after dengue; reports confirm a relapse."
+      ],
+      "wave": 2,
+      "note": ""
+    },
+    {
+      "key": "C19",
+      "folder": "19-document-type-differs",
+      "title": "A report uploaded as a prescription",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Meher",
+      "hospital": "Synthetic Banyan Hospital, Ahmedabad (Fictional)",
+      "admissionDate": "2026-10-02",
+      "dischargeDate": "2026-10-04",
+      "claimedAmount": "44620.00",
+      "documents": [
+        {
+          "file": "19-document-type-differs/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "19-document-type-differs/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "19-document-type-differs/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        },
+        {
+          "file": "19-document-type-differs/endoscopy-report.pdf",
+          "type": "PRESCRIPTION"
+        }
+      ],
+      "expectedRules": [
+        "DOC-01"
+      ],
+      "plan": [
+        "decide:APPROVED:AGREED:The report was uploaded under the wrong type; its content supports the claim."
+      ],
+      "wave": 2,
+      "note": ""
+    },
+    {
+      "key": "C20",
+      "folder": "20-bill-without-details",
+      "title": "A bill with no number and no items",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Yusuf",
+      "hospital": "Synthetic Silverline Hospital, Bhopal (Fictional)",
+      "admissionDate": "2026-10-12",
+      "dischargeDate": "2026-10-15",
+      "claimedAmount": "68500.00",
+      "documents": [
+        {
+          "file": "20-bill-without-details/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "20-bill-without-details/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "20-bill-without-details/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [
+        "DOC-02",
+        "DOC-03"
+      ],
+      "plan": [
+        "request:ITEMIZED_INVOICE:The bill has no number or items. Please upload the itemized invoice."
+      ],
+      "wave": 2,
+      "note": ""
+    },
+    {
+      "key": "C21",
+      "folder": "21-missing-discharge-summary",
+      "title": "The discharge summary was never supplied",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Bhavna",
+      "hospital": "Synthetic Maple Hospital, Kolkata (Fictional)",
+      "admissionDate": "2026-10-19",
+      "dischargeDate": "2026-10-22",
+      "claimedAmount": "53960.00",
+      "documents": [
+        {
+          "file": "21-missing-discharge-summary/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "21-missing-discharge-summary/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        }
+      ],
+      "expectedRules": [],
+      "plan": [
+        "wait"
+      ],
+      "wave": 2,
+      "note": "Waits for the discharge summary. It is screened, and MIS-01 raised, only if the 14-day wait expires."
+    },
+    {
+      "key": "C22",
+      "folder": "22-diagnosis-not-stated",
+      "title": "The discharge summary gives no diagnosis",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Harini",
+      "hospital": "Synthetic Orchid Hospital, Indore (Fictional)",
+      "admissionDate": "2026-10-26",
+      "dischargeDate": "2026-10-28",
+      "claimedAmount": "39600.00",
+      "documents": [
+        {
+          "file": "22-diagnosis-not-stated/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "22-diagnosis-not-stated/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "22-diagnosis-not-stated/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [
+        "MIS-02"
+      ],
+      "plan": [
+        "wait"
+      ],
+      "wave": 2,
+      "note": ""
+    }
+  ],
+  "demonstrations": [
+    {
+      "key": "DEMO-BLATANT",
+      "folder": "1-blatant-fraud",
+      "title": "Blatant: plainly inconsistent, with a bill copied from another claim",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Aditya",
+      "hospital": "Synthetic Crescent Hospital, Visakhapatnam (Fictional)",
+      "admissionDate": "2026-10-12",
+      "dischargeDate": "2026-10-13",
+      "claimedAmount": "1060000.00",
+      "documents": [
+        {
+          "file": "1-blatant-fraud/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "1-blatant-fraud/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "1-blatant-fraud/itemized-invoice.pdf",
+          "type": "ITEMIZED_INVOICE"
+        },
+        {
+          "file": "1-blatant-fraud/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [
+        "DUP-01",
+        "DUP-02",
+        "CON-01",
+        "CON-03",
+        "CON-04",
+        "FIN-01",
+        "FIN-02",
+        "FIN-03",
+        "FIN-04",
+        "FIN-06"
+      ],
+      "plan": [],
+      "wave": 2,
+      "note": ""
+    },
+    {
+      "key": "DEMO-CLEAN",
+      "folder": "2-clean-claim",
+      "title": "Clean: an ordinary, consistent claim",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Ananya",
+      "hospital": "Synthetic Greenleaf Hospital, Mysuru (Fictional)",
+      "admissionDate": "2026-10-05",
+      "dischargeDate": "2026-10-08",
+      "claimedAmount": "96870.00",
+      "documents": [
+        {
+          "file": "2-clean-claim/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "2-clean-claim/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "2-clean-claim/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [],
+      "plan": [],
+      "wave": 2,
+      "note": ""
+    },
+    {
+      "key": "DEMO-DISGUISED",
+      "folder": "3-disguised-fraud",
+      "title": "Disguised: consistent documents, but the bill is a light copy of an earlier one",
+      "policyNumber": "SYN-FFG-2026-0001",
+      "claimant": "Synthetic Policyholder One",
+      "patient": "Synthetic Patient Raghav",
+      "hospital": "Synthetic Seaview Hospital, Mangaluru (Fictional)",
+      "admissionDate": "2026-10-05",
+      "dischargeDate": "2026-10-07",
+      "claimedAmount": "382650.00",
+      "documents": [
+        {
+          "file": "3-disguised-fraud/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "3-disguised-fraud/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "3-disguised-fraud/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ],
+      "expectedRules": [
+        "DUP-03",
+        "DUP-05"
+      ],
+      "plan": [],
+      "wave": 2,
+      "note": ""
+    }
+  ]
+}

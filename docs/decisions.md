@@ -519,3 +519,13 @@ The chain reads, in order: outcomes, the path through the queues, findings and r
 ### D-096 Duplicate indicators are grouped per document (ruleset `risk-rules-2`)
 **Status:** Accepted · **Source:** Dev (found by testing)
 Version 1 of the duplicate rules raised one indicator per matching claim. M8's end-to-end run found a claim whose bill was reused in 19 earlier test claims: 19 indicators filled the duplicate category's cap, made the claim high risk, and sent it to investigation, on the strength of one reused file. Version 2 raises at most one indicator per document (DUP-01 to DUP-03), or one per claim (DUP-04, DUP-05), and lists every matching claim as evidence. A reused file is one signal however often it recurs, which is what the category caps were meant to ensure (D-085). The demonstrations' results do not change: each of their matches involves a single other claim.
+
+## Presentation readiness
+
+### D-097 A read-only overview endpoint for the home page
+**Status:** Accepted · **Source:** User (presentation)
+The home page shows open claims, claims with reviewers, claims waiting for information, decisions, risk bands, open review work by queue, and the six newest claims. `GET /api/v1/overview` (`CLAIM_READ`) returns these counts from SQL in a small `overview` module, rather than the web page calling several list endpoints and counting pages of results. Drafts are counted only for staff with `CLAIM_MANAGE`, the same rule as the claim list. Staff without `CLAIM_READ` see the page's links and roles, without figures.
+
+### D-098 Presentation data is loaded through the public API, not seeded
+**Status:** Accepted · **Source:** User (presentation)
+`prism.py demo-prepare` publishes every policy and loads 25 synthetic claims (`test-data/claims/demo-corpus/`) as staff would: it signs in as each synthetic role, uploads, submits, waits for real processing, and works each claim through review according to its plan. Seeding through services, as the earlier seeders do, would skip extraction and screening, and the point of this data is to show what they produce. Values a policy manager would correct (a "Nil" deductible, a policy period read as a duration) are corrected with a stated reason, never confirmed as read. The three hand-uploaded cases in `demo/` depend on earlier claims in this set. A claim loaded from an older version of the set is withdrawn as entered in error and loaded again, since withdrawn claims are never compared against.

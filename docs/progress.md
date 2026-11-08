@@ -32,10 +32,19 @@ The factual record of project state. Update after meaningful work. Newest entrie
 
 | Item | Owner | Needed by |
 |---|---|---|
-| Create a Git remote, then confirm the first CI run | User | Before relying on CI |
+| Confirm the first CI run on GitHub | User | Before relying on CI |
+| Add OpenRouter credit: the account is overdrawn, so model calls fail with 402. Then rerun `demo-prepare` | User | Before the presentation |
 | Confirm the OpenRouter account is set to "ZDR only". Prism enforces ZDR per request regardless | User | Before real use |
 
 ## Log
+
+### 2026-11-08: Presentation readiness
+
+- **Interface:** larger type and controls from a 17px rem scale, a grouped sidebar with larger items, a two-column sign-in page, and a home dashboard backed by `GET /api/v1/overview` ([D-097](decisions.md)). Labels and flows are unchanged.
+- **Data:** `scripts/generate_demo.py` writes `demo/` (blatant, clean, and disguised cases to upload by hand) and `test-data/claims/demo-corpus/` (25 claims). `prism.py demo-prepare` publishes every policy, now including Platinum and wordings for Silver and Plus, and loads the claims through the API ([D-098](decisions.md)).
+- **First run, real model:** all five policy versions published. Of the first 17 claims screened, every planted rule fired. Three also raised FIN-03, because their claimed amounts had been typed by hand and did not match the bills; amounts are now taken from the bills. The copied-bill expectations were corrected: DUP-02 and DUP-03 deliberately skip a file DUP-01 already reports (D-096).
+- **Not finished:** the OpenRouter account ran out of credit mid-run (402). Five claims wait with failed extraction, and five claims carry the old amounts. `demo-prepare` retries failed stages and replaces the old claims when run again.
+- **Tests:** `OverviewTest` (3) and `ArchitectureTest` pass. Web types and lint clean.
 
 ### 2026-11-08: M8 Human review and outcomes
 

@@ -260,3 +260,7 @@ The evaluation scripts in `services/ai/evals/` measure the AI components against
 - **Not production ready.** There is no deployment, monitoring, multi-factor authentication, or key rotation yet. These are Milestone 9.
 - **Windows-first local setup.** The tooling downloads Windows builds of Temporal and builds pgvector with Visual Studio.
 - **India as the primary context.** Amounts are in rupees, and the synthetic policies follow Indian health insurance conventions. Prism makes no regulatory compliance claims.
+
+## License
+
+Released under the [MIT License](LICENSE).

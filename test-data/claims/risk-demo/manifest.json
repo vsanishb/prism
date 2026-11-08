@@ -1,0 +1,1071 @@
+{
+  "note": "Synthetic demonstration data for Prism M7. Fictional people, hospitals, and policy.",
+  "policy": {
+    "policyNumber": "SYN-RSK-2026-0003",
+    "product": "Family Health Plus (Synthetic)",
+    "policyholder": "Synthetic Policyholder Four",
+    "effectiveFrom": "2026-01-01",
+    "effectiveTo": "2026-12-31",
+    "sumInsured": "500000.00"
+  },
+  "claims": [
+    {
+      "scenario": "SEVERE",
+      "role": "EARLIER",
+      "position": 1,
+      "claimant": "Synthetic Policyholder Four",
+      "patient": "Synthetic Patient Meenal",
+      "hospital": "Synthetic Lotus Hospital, Nagpur (Fictional)",
+      "admissionDate": "2026-07-01",
+      "dischargeDate": "2026-07-05",
+      "claimedAmount": "112600.00",
+      "documents": [
+        {
+          "file": "severe-earlier-1/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "severe-earlier-1/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "severe-earlier-1/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ]
+    },
+    {
+      "scenario": "DISGUISED",
+      "role": "EARLIER",
+      "position": 1,
+      "claimant": "Synthetic Policyholder Four",
+      "patient": "Synthetic Patient Vikram",
+      "hospital": "Synthetic Riverside Hospital, Kochi (Fictional)",
+      "admissionDate": "2026-04-12",
+      "dischargeDate": "2026-04-15",
+      "claimedAmount": "46800.00",
+      "documents": [
+        {
+          "file": "disguised-earlier-1/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "disguised-earlier-1/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "disguised-earlier-1/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ]
+    },
+    {
+      "scenario": "DISGUISED",
+      "role": "EARLIER",
+      "position": 2,
+      "claimant": "Synthetic Policyholder Four",
+      "patient": "Synthetic Patient Vikram",
+      "hospital": "Synthetic Riverside Hospital, Kochi (Fictional)",
+      "admissionDate": "2026-08-28",
+      "dischargeDate": "2026-08-31",
+      "claimedAmount": "384500.00",
+      "documents": [
+        {
+          "file": "disguised-earlier-2/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "disguised-earlier-2/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "disguised-earlier-2/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ]
+    },
+    {
+      "scenario": "SEVERE",
+      "role": "SCENARIO",
+      "position": 1,
+      "claimant": "Synthetic Policyholder Four",
+      "patient": "Synthetic Patient Farhan",
+      "hospital": "Synthetic Lotus Hospital, Nagpur (Fictional)",
+      "admissionDate": "2026-08-10",
+      "dischargeDate": "2026-08-11",
+      "claimedAmount": "740000.00",
+      "documents": [
+        {
+          "file": "severe-scenario-1/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "severe-scenario-1/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "severe-scenario-1/itemized-invoice.pdf",
+          "type": "ITEMIZED_INVOICE"
+        },
+        {
+          "file": "severe-scenario-1/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ]
+    },
+    {
+      "scenario": "CLEAN",
+      "role": "SCENARIO",
+      "position": 1,
+      "claimant": "Synthetic Policyholder Four",
+      "patient": "Synthetic Patient Nisha",
+      "hospital": "Synthetic Greenfield Hospital, Jaipur (Fictional)",
+      "admissionDate": "2026-07-07",
+      "dischargeDate": "2026-07-10",
+      "claimedAmount": "98400.00",
+      "documents": [
+        {
+          "file": "clean-scenario-1/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "clean-scenario-1/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "clean-scenario-1/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ]
+    },
+    {
+      "scenario": "DISGUISED",
+      "role": "SCENARIO",
+      "position": 1,
+      "claimant": "Synthetic Policyholder Four",
+      "patient": "Synthetic Patient Vikram",
+      "hospital": "Synthetic Riverside Hospital, Kochi (Fictional)",
+      "admissionDate": "2026-09-18",
+      "dischargeDate": "2026-09-20",
+      "claimedAmount": "392000.00",
+      "documents": [
+        {
+          "file": "disguised-scenario-1/claim-form.pdf",
+          "type": "CLAIM_FORM"
+        },
+        {
+          "file": "disguised-scenario-1/hospital-bill.pdf",
+          "type": "HOSPITAL_BILL"
+        },
+        {
+          "file": "disguised-scenario-1/discharge-summary.pdf",
+          "type": "DISCHARGE_SUMMARY"
+        }
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "marker": "RDM-SEVERE-EARLIER-1-FORM",
+      "type": "CLAIM_FORM",
+      "fields": {
+        "policy_number": {
+          "value": "SYN-RSK-2026-0003",
+          "quote": "SYN-RSK-2026-0003"
+        },
+        "claimant_name": {
+          "value": "Synthetic Policyholder Four",
+          "quote": "Synthetic Policyholder Four"
+        },
+        "patient_name": {
+          "value": "Synthetic Patient Meenal",
+          "quote": "Synthetic Patient Meenal"
+        },
+        "hospital_name": {
+          "value": "Synthetic Lotus Hospital, Nagpur (Fictional)",
+          "quote": "Synthetic Lotus Hospital, Nagpur (Fictional)"
+        },
+        "admission_date": {
+          "value": "01/07/2026",
+          "quote": "01/07/2026"
+        },
+        "discharge_date": {
+          "value": "05/07/2026",
+          "quote": "05/07/2026"
+        },
+        "claimed_amount": {
+          "value": "1,12,600.00",
+          "quote": "INR 1,12,600.00"
+        }
+      },
+      "lineItems": []
+    },
+    {
+      "marker": "RDM-E1-BILL",
+      "type": "HOSPITAL_BILL",
+      "fields": {
+        "bill_number": {
+          "value": "LH-2026-30418",
+          "quote": "LH-2026-30418"
+        },
+        "bill_date": {
+          "value": "05/07/2026",
+          "quote": "05/07/2026"
+        },
+        "patient_name": {
+          "value": "Synthetic Patient Meenal",
+          "quote": "Synthetic Patient Meenal"
+        },
+        "hospital_name": {
+          "value": "Synthetic Lotus Hospital, Nagpur (Fictional)",
+          "quote": "Synthetic Lotus Hospital, Nagpur (Fictional)"
+        },
+        "admission_date": {
+          "value": "01/07/2026",
+          "quote": "01/07/2026 to 05/07/2026"
+        },
+        "discharge_date": {
+          "value": "05/07/2026",
+          "quote": "01/07/2026 to 05/07/2026"
+        },
+        "total_amount": {
+          "value": "1,12,600.00",
+          "quote": "Total 1,12,600.00"
+        }
+      },
+      "lineItems": [
+        {
+          "description": "Room rent (twin sharing)",
+          "quantity": "4",
+          "unit_price": "5,500.00",
+          "amount": "22,000.00",
+          "quote": "Room rent (twin sharing) 4 5,500.00 22,000.00"
+        },
+        {
+          "description": "ICU charges",
+          "quantity": "1",
+          "unit_price": "18,000.00",
+          "amount": "18,000.00",
+          "quote": "ICU charges 1 18,000.00 18,000.00"
+        },
+        {
+          "description": "Consultation fees",
+          "quantity": "1",
+          "unit_price": "9,600.00",
+          "amount": "9,600.00",
+          "quote": "Consultation fees 1 9,600.00 9,600.00"
+        },
+        {
+          "description": "Platelet transfusion",
+          "quantity": "2",
+          "unit_price": "8,500.00",
+          "amount": "17,000.00",
+          "quote": "Platelet transfusion 2 8,500.00 17,000.00"
+        },
+        {
+          "description": "Pharmacy and consumables",
+          "quantity": "1",
+          "unit_price": "24,300.00",
+          "amount": "24,300.00",
+          "quote": "Pharmacy and consumables 1 24,300.00 24,300.00"
+        },
+        {
+          "description": "Laboratory investigations",
+          "quantity": "1",
+          "unit_price": "14,700.00",
+          "amount": "14,700.00",
+          "quote": "Laboratory investigations 1 14,700.00 14,700.00"
+        },
+        {
+          "description": "Nursing charges",
+          "quantity": "4",
+          "unit_price": "1,750.00",
+          "amount": "7,000.00",
+          "quote": "Nursing charges 4 1,750.00 7,000.00"
+        }
+      ]
+    },
+    {
+      "marker": "RDM-SEVERE-EARLIER-1-DISCHARGE",
+      "type": "DISCHARGE_SUMMARY",
+      "fields": {
+        "patient_name": {
+          "value": "Synthetic Patient Meenal",
+          "quote": "Synthetic Patient Meenal"
+        },
+        "hospital_name": {
+          "value": "Synthetic Lotus Hospital, Nagpur (Fictional)",
+          "quote": "Synthetic Lotus Hospital, Nagpur (Fictional)"
+        },
+        "admission_date": {
+          "value": "01/07/2026",
+          "quote": "01/07/2026"
+        },
+        "discharge_date": {
+          "value": "05/07/2026",
+          "quote": "05/07/2026"
+        },
+        "treating_doctor": {
+          "value": "Dr Synthetic Physician (Fictional)",
+          "quote": "Dr Synthetic Physician (Fictional)"
+        },
+        "diagnosis": {
+          "value": "Dengue fever with thrombocytopenia",
+          "quote": "Dengue fever with thrombocytopenia"
+        },
+        "procedure": {
+          "value": "Platelet transfusion",
+          "quote": "Platelet transfusion"
+        }
+      },
+      "lineItems": []
+    },
+    {
+      "marker": "RDM-DISGUISED-EARLIER-1-FORM",
+      "type": "CLAIM_FORM",
+      "fields": {
+        "policy_number": {
+          "value": "SYN-RSK-2026-0003",
+          "quote": "SYN-RSK-2026-0003"
+        },
+        "claimant_name": {
+          "value": "Synthetic Policyholder Four",
+          "quote": "Synthetic Policyholder Four"
+        },
+        "patient_name": {
+          "value": "Synthetic Patient Vikram",
+          "quote": "Synthetic Patient Vikram"
+        },
+        "hospital_name": {
+          "value": "Synthetic Riverside Hospital, Kochi (Fictional)",
+          "quote": "Synthetic Riverside Hospital, Kochi (Fictional)"
+        },
+        "admission_date": {
+          "value": "12/04/2026",
+          "quote": "12/04/2026"
+        },
+        "discharge_date": {
+          "value": "15/04/2026",
+          "quote": "15/04/2026"
+        },
+        "claimed_amount": {
+          "value": "46,800.00",
+          "quote": "INR 46,800.00"
+        }
+      },
+      "lineItems": []
+    },
+    {
+      "marker": "RDM-E2-BILL",
+      "type": "HOSPITAL_BILL",
+      "fields": {
+        "bill_number": {
+          "value": "RH-2026-10233",
+          "quote": "RH-2026-10233"
+        },
+        "bill_date": {
+          "value": "15/04/2026",
+          "quote": "15/04/2026"
+        },
+        "patient_name": {
+          "value": "Synthetic Patient Vikram",
+          "quote": "Synthetic Patient Vikram"
+        },
+        "hospital_name": {
+          "value": "Synthetic Riverside Hospital, Kochi (Fictional)",
+          "quote": "Synthetic Riverside Hospital, Kochi (Fictional)"
+        },
+        "admission_date": {
+          "value": "12/04/2026",
+          "quote": "12/04/2026 to 15/04/2026"
+        },
+        "discharge_date": {
+          "value": "15/04/2026",
+          "quote": "12/04/2026 to 15/04/2026"
+        },
+        "total_amount": {
+          "value": "46,800.00",
+          "quote": "Total 46,800.00"
+        }
+      },
+      "lineItems": [
+        {
+          "description": "Room rent (single private)",
+          "quantity": "3",
+          "unit_price": "6,000.00",
+          "amount": "18,000.00",
+          "quote": "Room rent (single private) 3 6,000.00 18,000.00"
+        },
+        {
+          "description": "Consultation fees",
+          "quantity": "1",
+          "unit_price": "6,400.00",
+          "amount": "6,400.00",
+          "quote": "Consultation fees 1 6,400.00 6,400.00"
+        },
+        {
+          "description": "Pharmacy and consumables",
+          "quantity": "1",
+          "unit_price": "12,900.00",
+          "amount": "12,900.00",
+          "quote": "Pharmacy and consumables 1 12,900.00 12,900.00"
+        },
+        {
+          "description": "Laboratory investigations",
+          "quantity": "1",
+          "unit_price": "9,500.00",
+          "amount": "9,500.00",
+          "quote": "Laboratory investigations 1 9,500.00 9,500.00"
+        }
+      ]
+    },
+    {
+      "marker": "RDM-DISGUISED-EARLIER-1-DISCHARGE",
+      "type": "DISCHARGE_SUMMARY",
+      "fields": {
+        "patient_name": {
+          "value": "Synthetic Patient Vikram",
+          "quote": "Synthetic Patient Vikram"
+        },
+        "hospital_name": {
+          "value": "Synthetic Riverside Hospital, Kochi (Fictional)",
+          "quote": "Synthetic Riverside Hospital, Kochi (Fictional)"
+        },
+        "admission_date": {
+          "value": "12/04/2026",
+          "quote": "12/04/2026"
+        },
+        "discharge_date": {
+          "value": "15/04/2026",
+          "quote": "15/04/2026"
+        },
+        "treating_doctor": {
+          "value": "Dr Synthetic Physician (Fictional)",
+          "quote": "Dr Synthetic Physician (Fictional)"
+        },
+        "diagnosis": {
+          "value": "Viral fever",
+          "quote": "Viral fever"
+        },
+        "procedure": {
+          "value": "Supportive care",
+          "quote": "Supportive care"
+        }
+      },
+      "lineItems": []
+    },
+    {
+      "marker": "RDM-DISGUISED-EARLIER-2-FORM",
+      "type": "CLAIM_FORM",
+      "fields": {
+        "policy_number": {
+          "value": "SYN-RSK-2026-0003",
+          "quote": "SYN-RSK-2026-0003"
+        },
+        "claimant_name": {
+          "value": "Synthetic Policyholder Four",
+          "quote": "Synthetic Policyholder Four"
+        },
+        "patient_name": {
+          "value": "Synthetic Patient Vikram",
+          "quote": "Synthetic Patient Vikram"
+        },
+        "hospital_name": {
+          "value": "Synthetic Riverside Hospital, Kochi (Fictional)",
+          "quote": "Synthetic Riverside Hospital, Kochi (Fictional)"
+        },
+        "admission_date": {
+          "value": "28/08/2026",
+          "quote": "28/08/2026"
+        },
+        "discharge_date": {
+          "value": "31/08/2026",
+          "quote": "31/08/2026"
+        },
+        "claimed_amount": {
+          "value": "3,84,500.00",
+          "quote": "INR 3,84,500.00"
+        }
+      },
+      "lineItems": []
+    },
+    {
+      "marker": "RDM-E3-BILL",
+      "type": "HOSPITAL_BILL",
+      "fields": {
+        "bill_number": {
+          "value": "RH-2026-11702",
+          "quote": "RH-2026-11702"
+        },
+        "bill_date": {
+          "value": "31/08/2026",
+          "quote": "31/08/2026"
+        },
+        "patient_name": {
+          "value": "Synthetic Patient Vikram",
+          "quote": "Synthetic Patient Vikram"
+        },
+        "hospital_name": {
+          "value": "Synthetic Riverside Hospital, Kochi (Fictional)",
+          "quote": "Synthetic Riverside Hospital, Kochi (Fictional)"
+        },
+        "admission_date": {
+          "value": "28/08/2026",
+          "quote": "28/08/2026 to 31/08/2026"
+        },
+        "discharge_date": {
+          "value": "31/08/2026",
+          "quote": "28/08/2026 to 31/08/2026"
+        },
+        "total_amount": {
+          "value": "3,84,500.00",
+          "quote": "Total 3,84,500.00"
+        }
+      },
+      "lineItems": [
+        {
+          "description": "Room rent (single private)",
+          "quantity": "3",
+          "unit_price": "8,500.00",
+          "amount": "25,500.00",
+          "quote": "Room rent (single private) 3 8,500.00 25,500.00"
+        },
+        {
+          "description": "Surgeon fee: laparoscopic cholecystectomy",
+          "quantity": "1",
+          "unit_price": "1,65,000.00",
+          "amount": "1,65,000.00",
+          "quote": "Surgeon fee: laparoscopic cholecystectomy 1 1,65,000.00 1,65,000.00"
+        },
+        {
+          "description": "Anaesthetist fee",
+          "quantity": "1",
+          "unit_price": "38,000.00",
+          "amount": "38,000.00",
+          "quote": "Anaesthetist fee 1 38,000.00 38,000.00"
+        },
+        {
+          "description": "Operation theatre charges",
+          "quantity": "1",
+          "unit_price": "72,000.00",
+          "amount": "72,000.00",
+          "quote": "Operation theatre charges 1 72,000.00 72,000.00"
+        },
+        {
+          "description": "Surgical consumables and implants",
+          "quantity": "1",
+          "unit_price": "54,000.00",
+          "amount": "54,000.00",
+          "quote": "Surgical consumables and implants 1 54,000.00 54,000.00"
+        },
+        {
+          "description": "Pharmacy",
+          "quantity": "1",
+          "unit_price": "20,500.00",
+          "amount": "20,500.00",
+          "quote": "Pharmacy 1 20,500.00 20,500.00"
+        },
+        {
+          "description": "Laboratory and imaging",
+          "quantity": "1",
+          "unit_price": "9,500.00",
+          "amount": "9,500.00",
+          "quote": "Laboratory and imaging 1 9,500.00 9,500.00"
+        }
+      ]
+    },
+    {
+      "marker": "RDM-DISGUISED-EARLIER-2-DISCHARGE",
+      "type": "DISCHARGE_SUMMARY",
+      "fields": {
+        "patient_name": {
+          "value": "Synthetic Patient Vikram",
+          "quote": "Synthetic Patient Vikram"
+        },
+        "hospital_name": {
+          "value": "Synthetic Riverside Hospital, Kochi (Fictional)",
+          "quote": "Synthetic Riverside Hospital, Kochi (Fictional)"
+        },
+        "admission_date": {
+          "value": "28/08/2026",
+          "quote": "28/08/2026"
+        },
+        "discharge_date": {
+          "value": "31/08/2026",
+          "quote": "31/08/2026"
+        },
+        "treating_doctor": {
+          "value": "Dr Synthetic Physician (Fictional)",
+          "quote": "Dr Synthetic Physician (Fictional)"
+        },
+        "diagnosis": {
+          "value": "Acute calculous cholecystitis",
+          "quote": "Acute calculous cholecystitis"
+        },
+        "procedure": {
+          "value": "Laparoscopic cholecystectomy on 28/08/2026",
+          "quote": "Laparoscopic cholecystectomy on 28/08/2026"
+        }
+      },
+      "lineItems": []
+    },
+    {
+      "marker": "RDM-SEVERE-SCENARIO-1-FORM",
+      "type": "CLAIM_FORM",
+      "fields": {
+        "policy_number": {
+          "value": "SYN-RSK-2026-0003",
+          "quote": "SYN-RSK-2026-0003"
+        },
+        "claimant_name": {
+          "value": "Synthetic Policyholder Four",
+          "quote": "Synthetic Policyholder Four"
+        },
+        "patient_name": {
+          "value": "Synthetic Patient Farhan",
+          "quote": "Synthetic Patient Farhan"
+        },
+        "hospital_name": {
+          "value": "Synthetic Lotus Hospital, Nagpur (Fictional)",
+          "quote": "Synthetic Lotus Hospital, Nagpur (Fictional)"
+        },
+        "admission_date": {
+          "value": "10/08/2026",
+          "quote": "10/08/2026"
+        },
+        "discharge_date": {
+          "value": "11/08/2026",
+          "quote": "11/08/2026"
+        },
+        "claimed_amount": {
+          "value": "7,40,000.00",
+          "quote": "INR 7,40,000.00"
+        }
+      },
+      "lineItems": []
+    },
+    {
+      "marker": "RDM-S1-INVOICE",
+      "type": "ITEMIZED_INVOICE",
+      "fields": {
+        "bill_number": {
+          "value": "LH-2026-30418",
+          "quote": "LH-2026-30418"
+        },
+        "bill_date": {
+          "value": "06/08/2026",
+          "quote": "06/08/2026"
+        },
+        "patient_name": {
+          "value": "Synthetic Patient Farhan",
+          "quote": "Synthetic Patient Farhan"
+        },
+        "hospital_name": {
+          "value": "Synthetic Lotus Hospital, Nagpur (Fictional)",
+          "quote": "Synthetic Lotus Hospital, Nagpur (Fictional)"
+        },
+        "admission_date": {
+          "value": "10/08/2026",
+          "quote": "10/08/2026 to 11/08/2026"
+        },
+        "discharge_date": {
+          "value": "11/08/2026",
+          "quote": "10/08/2026 to 11/08/2026"
+        },
+        "total_amount": {
+          "value": "3,80,000.00",
+          "quote": "Total 3,80,000.00"
+        }
+      },
+      "lineItems": [
+        {
+          "description": "ICU charges",
+          "quantity": "1",
+          "unit_price": "45,000.00",
+          "amount": "45,000.00",
+          "quote": "ICU charges 1 45,000.00 45,000.00"
+        },
+        {
+          "description": "ICU charges",
+          "quantity": "1",
+          "unit_price": "45,000.00",
+          "amount": "45,000.00",
+          "quote": "ICU charges 1 45,000.00 45,000.00"
+        },
+        {
+          "description": "Ventilator support",
+          "quantity": "1",
+          "unit_price": "62,000.00",
+          "amount": "62,000.00",
+          "quote": "Ventilator support 1 62,000.00 62,000.00"
+        },
+        {
+          "description": "Specialist consultations",
+          "quantity": "1",
+          "unit_price": "38,000.00",
+          "amount": "38,000.00",
+          "quote": "Specialist consultations 1 38,000.00 38,000.00"
+        },
+        {
+          "description": "Pharmacy and consumables",
+          "quantity": "1",
+          "unit_price": "74,000.00",
+          "amount": "74,000.00",
+          "quote": "Pharmacy and consumables 1 74,000.00 74,000.00"
+        },
+        {
+          "description": "Laboratory investigations",
+          "quantity": "1",
+          "unit_price": "46,000.00",
+          "amount": "46,000.00",
+          "quote": "Laboratory investigations 1 46,000.00 46,000.00"
+        }
+      ]
+    },
+    {
+      "marker": "RDM-SEVERE-SCENARIO-1-DISCHARGE",
+      "type": "DISCHARGE_SUMMARY",
+      "fields": {
+        "patient_name": {
+          "value": "Synthetic Patient Farhan",
+          "quote": "Synthetic Patient Farhan"
+        },
+        "hospital_name": {
+          "value": "Synthetic Lotus Hospital, Nagpur (Fictional)",
+          "quote": "Synthetic Lotus Hospital, Nagpur (Fictional)"
+        },
+        "admission_date": {
+          "value": "10/08/2026",
+          "quote": "10/08/2026"
+        },
+        "discharge_date": {
+          "value": "11/08/2026",
+          "quote": "11/08/2026"
+        },
+        "treating_doctor": {
+          "value": "Dr Synthetic Physician (Fictional)",
+          "quote": "Dr Synthetic Physician (Fictional)"
+        },
+        "diagnosis": {
+          "value": "Acute gastroenteritis with dehydration",
+          "quote": "Acute gastroenteritis with dehydration"
+        },
+        "procedure": {
+          "value": "Intravenous rehydration",
+          "quote": "Intravenous rehydration"
+        }
+      },
+      "lineItems": []
+    },
+    {
+      "marker": "RDM-CLEAN-SCENARIO-1-FORM",
+      "type": "CLAIM_FORM",
+      "fields": {
+        "policy_number": {
+          "value": "SYN-RSK-2026-0003",
+          "quote": "SYN-RSK-2026-0003"
+        },
+        "claimant_name": {
+          "value": "Synthetic Policyholder Four",
+          "quote": "Synthetic Policyholder Four"
+        },
+        "patient_name": {
+          "value": "Synthetic Patient Nisha",
+          "quote": "Synthetic Patient Nisha"
+        },
+        "hospital_name": {
+          "value": "Synthetic Greenfield Hospital, Jaipur (Fictional)",
+          "quote": "Synthetic Greenfield Hospital, Jaipur (Fictional)"
+        },
+        "admission_date": {
+          "value": "07/07/2026",
+          "quote": "07/07/2026"
+        },
+        "discharge_date": {
+          "value": "10/07/2026",
+          "quote": "10/07/2026"
+        },
+        "claimed_amount": {
+          "value": "98,400.00",
+          "quote": "INR 98,400.00"
+        }
+      },
+      "lineItems": []
+    },
+    {
+      "marker": "RDM-C1-BILL",
+      "type": "HOSPITAL_BILL",
+      "fields": {
+        "bill_number": {
+          "value": "GF-2026-05521",
+          "quote": "GF-2026-05521"
+        },
+        "bill_date": {
+          "value": "10/07/2026",
+          "quote": "10/07/2026"
+        },
+        "patient_name": {
+          "value": "Synthetic Patient Nisha",
+          "quote": "Synthetic Patient Nisha"
+        },
+        "hospital_name": {
+          "value": "Synthetic Greenfield Hospital, Jaipur (Fictional)",
+          "quote": "Synthetic Greenfield Hospital, Jaipur (Fictional)"
+        },
+        "admission_date": {
+          "value": "07/07/2026",
+          "quote": "07/07/2026 to 10/07/2026"
+        },
+        "discharge_date": {
+          "value": "10/07/2026",
+          "quote": "07/07/2026 to 10/07/2026"
+        },
+        "total_amount": {
+          "value": "98,400.00",
+          "quote": "Total 98,400.00"
+        }
+      },
+      "lineItems": [
+        {
+          "description": "Room rent (single private)",
+          "quantity": "3",
+          "unit_price": "5,200.00",
+          "amount": "15,600.00",
+          "quote": "Room rent (single private) 3 5,200.00 15,600.00"
+        },
+        {
+          "description": "Surgeon fee: laparoscopic appendectomy",
+          "quantity": "1",
+          "unit_price": "42,000.00",
+          "amount": "42,000.00",
+          "quote": "Surgeon fee: laparoscopic appendectomy 1 42,000.00 42,000.00"
+        },
+        {
+          "description": "Anaesthetist fee",
+          "quantity": "1",
+          "unit_price": "11,000.00",
+          "amount": "11,000.00",
+          "quote": "Anaesthetist fee 1 11,000.00 11,000.00"
+        },
+        {
+          "description": "Operation theatre charges",
+          "quantity": "1",
+          "unit_price": "16,500.00",
+          "amount": "16,500.00",
+          "quote": "Operation theatre charges 1 16,500.00 16,500.00"
+        },
+        {
+          "description": "Pharmacy and consumables",
+          "quantity": "1",
+          "unit_price": "7,600.00",
+          "amount": "7,600.00",
+          "quote": "Pharmacy and consumables 1 7,600.00 7,600.00"
+        },
+        {
+          "description": "Laboratory investigations",
+          "quantity": "1",
+          "unit_price": "3,900.00",
+          "amount": "3,900.00",
+          "quote": "Laboratory investigations 1 3,900.00 3,900.00"
+        },
+        {
+          "description": "Nursing charges",
+          "quantity": "3",
+          "unit_price": "600.00",
+          "amount": "1,800.00",
+          "quote": "Nursing charges 3 600.00 1,800.00"
+        }
+      ]
+    },
+    {
+      "marker": "RDM-CLEAN-SCENARIO-1-DISCHARGE",
+      "type": "DISCHARGE_SUMMARY",
+      "fields": {
+        "patient_name": {
+          "value": "Synthetic Patient Nisha",
+          "quote": "Synthetic Patient Nisha"
+        },
+        "hospital_name": {
+          "value": "Synthetic Greenfield Hospital, Jaipur (Fictional)",
+          "quote": "Synthetic Greenfield Hospital, Jaipur (Fictional)"
+        },
+        "admission_date": {
+          "value": "07/07/2026",
+          "quote": "07/07/2026"
+        },
+        "discharge_date": {
+          "value": "10/07/2026",
+          "quote": "10/07/2026"
+        },
+        "treating_doctor": {
+          "value": "Dr Synthetic Physician (Fictional)",
+          "quote": "Dr Synthetic Physician (Fictional)"
+        },
+        "diagnosis": {
+          "value": "Acute appendicitis",
+          "quote": "Acute appendicitis"
+        },
+        "procedure": {
+          "value": "Laparoscopic appendectomy on 07/07/2026",
+          "quote": "Laparoscopic appendectomy on 07/07/2026"
+        }
+      },
+      "lineItems": []
+    },
+    {
+      "marker": "RDM-DISGUISED-SCENARIO-1-FORM",
+      "type": "CLAIM_FORM",
+      "fields": {
+        "policy_number": {
+          "value": "SYN-RSK-2026-0003",
+          "quote": "SYN-RSK-2026-0003"
+        },
+        "claimant_name": {
+          "value": "Synthetic Policyholder Four",
+          "quote": "Synthetic Policyholder Four"
+        },
+        "patient_name": {
+          "value": "Synthetic Patient Vikram",
+          "quote": "Synthetic Patient Vikram"
+        },
+        "hospital_name": {
+          "value": "Synthetic Riverside Hospital, Kochi (Fictional)",
+          "quote": "Synthetic Riverside Hospital, Kochi (Fictional)"
+        },
+        "admission_date": {
+          "value": "18/09/2026",
+          "quote": "18/09/2026"
+        },
+        "discharge_date": {
+          "value": "20/09/2026",
+          "quote": "20/09/2026"
+        },
+        "claimed_amount": {
+          "value": "3,92,000.00",
+          "quote": "INR 3,92,000.00"
+        }
+      },
+      "lineItems": []
+    },
+    {
+      "marker": "RDM-D1-BILL",
+      "type": "HOSPITAL_BILL",
+      "fields": {
+        "bill_number": {
+          "value": "RH-2026-11873",
+          "quote": "RH-2026-11873"
+        },
+        "bill_date": {
+          "value": "20/09/2026",
+          "quote": "20/09/2026"
+        },
+        "patient_name": {
+          "value": "Synthetic Patient Vikram",
+          "quote": "Synthetic Patient Vikram"
+        },
+        "hospital_name": {
+          "value": "Synthetic Riverside Hospital, Kochi (Fictional)",
+          "quote": "Synthetic Riverside Hospital, Kochi (Fictional)"
+        },
+        "admission_date": {
+          "value": "18/09/2026",
+          "quote": "18/09/2026 to 20/09/2026"
+        },
+        "discharge_date": {
+          "value": "20/09/2026",
+          "quote": "18/09/2026 to 20/09/2026"
+        },
+        "total_amount": {
+          "value": "3,92,000.00",
+          "quote": "Total 3,92,000.00"
+        }
+      },
+      "lineItems": [
+        {
+          "description": "Room rent (single private)",
+          "quantity": "2",
+          "unit_price": "8,500.00",
+          "amount": "17,000.00",
+          "quote": "Room rent (single private) 2 8,500.00 17,000.00"
+        },
+        {
+          "description": "Surgeon fee: laparoscopic cholecystectomy",
+          "quantity": "1",
+          "unit_price": "1,65,000.00",
+          "amount": "1,65,000.00",
+          "quote": "Surgeon fee: laparoscopic cholecystectomy 1 1,65,000.00 1,65,000.00"
+        },
+        {
+          "description": "Anaesthetist fee",
+          "quantity": "1",
+          "unit_price": "38,000.00",
+          "amount": "38,000.00",
+          "quote": "Anaesthetist fee 1 38,000.00 38,000.00"
+        },
+        {
+          "description": "Operation theatre charges",
+          "quantity": "1",
+          "unit_price": "72,000.00",
+          "amount": "72,000.00",
+          "quote": "Operation theatre charges 1 72,000.00 72,000.00"
+        },
+        {
+          "description": "Surgical consumables and implants",
+          "quantity": "1",
+          "unit_price": "54,000.00",
+          "amount": "54,000.00",
+          "quote": "Surgical consumables and implants 1 54,000.00 54,000.00"
+        },
+        {
+          "description": "Pharmacy",
+          "quantity": "1",
+          "unit_price": "36,500.00",
+          "amount": "36,500.00",
+          "quote": "Pharmacy 1 36,500.00 36,500.00"
+        },
+        {
+          "description": "Laboratory and imaging",
+          "quantity": "1",
+          "unit_price": "9,500.00",
+          "amount": "9,500.00",
+          "quote": "Laboratory and imaging 1 9,500.00 9,500.00"
+        }
+      ]
+    },
+    {
+      "marker": "RDM-DISGUISED-SCENARIO-1-DISCHARGE",
+      "type": "DISCHARGE_SUMMARY",
+      "fields": {
+        "patient_name": {
+          "value": "Synthetic Patient Vikram",
+          "quote": "Synthetic Patient Vikram"
+        },
+        "hospital_name": {
+          "value": "Synthetic Riverside Hospital, Kochi (Fictional)",
+          "quote": "Synthetic Riverside Hospital, Kochi (Fictional)"
+        },
+        "admission_date": {
+          "value": "18/09/2026",
+          "quote": "18/09/2026"
+        },
+        "discharge_date": {
+          "value": "20/09/2026",
+          "quote": "20/09/2026"
+        },
+        "treating_doctor": {
+          "value": "Dr Synthetic Physician (Fictional)",
+          "quote": "Dr Synthetic Physician (Fictional)"
+        },
+        "diagnosis": {
+          "value": "Acute calculous cholecystitis",
+          "quote": "Acute calculous cholecystitis"
+        },
+        "procedure": {
+          "value": "Laparoscopic cholecystectomy on 18/09/2026",
+          "quote": "Laparoscopic cholecystectomy on 18/09/2026"
+        }
+      },
+      "lineItems": []
+    }
+  ]
+}

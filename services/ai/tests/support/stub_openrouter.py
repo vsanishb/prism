@@ -8,6 +8,8 @@ distinctive piece of their text. Test tooling only: it is never imported by the 
 import asyncio
 import json
 import os
+import re
+from pathlib import Path
 from typing import Any
 
 import uvicorn
@@ -103,8 +105,27 @@ MISMATCHED_ITEMS = [
     item("Operation theatre charges", "1", "43,500.00", "43,500.00"),
 ]
 
-# (marker in the document's text, document type, fields, line items)
+RISK_DEMO = Path(__file__).parents[4] / "test-data/claims/risk-demo/manifest.json"
+
+
+def risk_demo_documents() -> list[tuple[str, DocumentType, dict[str, Any], list[dict[str, Any]]]]:
+    """The M7 demonstration documents, answered exactly as printed, from the generator's manifest."""
+    manifest = json.loads(RISK_DEMO.read_text(encoding="utf-8"))
+    return [
+        (
+            document["marker"],
+            DocumentType(document["type"]),
+            {name: stated(field["value"], field["quote"]) for name, field in document["fields"].items()},
+            [item | {"page": 1} for item in document["lineItems"]],
+        )
+        for document in manifest["documents"]
+    ]
+
+
+# (marker in the document's text, document type, fields, line items). The demonstration documents
+# come first: their claim forms also carry the older "Health Claim Form" marker.
 KNOWN_DOCUMENTS: list[tuple[str, DocumentType, dict[str, Any], list[dict[str, Any]]]] = [
+    *risk_demo_documents(),
     ("Health Claim Form", DocumentType.CLAIM_FORM, CLAIM_FORM, []),
     (
         "SCH-IP-2026-004417",
@@ -162,6 +183,21 @@ def extraction(body: dict[str, Any], text: str) -> dict[str, Any]:
 def reread(body: dict[str, Any]) -> dict[str, Any]:
     names = body["response_format"]["json_schema"]["schema"]["properties"]["fields"]["required"]
     return {"fields": {name: {"value": SCAN_FIELDS.get(name, MISSING)["value"]} for name in names}}
+
+
+SIGNAL = re.compile(
+    r"\[(S\d+)\] [A-Z_]+, [A-Z_]+, [A-Z_]+(?:, severity [A-Z]+)?, contribution \d+: ([^.]+)\."
+)
+
+
+def risk_summary(content: str) -> dict[str, Any]:
+    """Names the first two signals by their titles, which carry no numbers, as the checks require."""
+    signals = SIGNAL.findall(content)[:2]
+    parts = [f"{title[0].lower()}{title[1:]} [{signal_id}]" for signal_id, title in signals]
+    return {
+        "summary": f"This claim needs a closer look: {'; and '.join(parts)}. A reviewer decides.",
+        "signals_cited": [signal_id for signal_id, _ in signals],
+    }
 
 
 def completion(content: dict[str, Any]) -> dict[str, Any]:
@@ -296,6 +332,8 @@ async def chat(request: Request) -> dict[str, Any] | JSONResponse:
         return completion(agent_plan())
     if schema_name == "issue_finding":
         return completion(agent_finding(body["messages"][-1]["content"]))
+    if schema_name == "risk_summary":
+        return completion(risk_summary(body["messages"][-1]["content"]))
     if schema_name == "policy_pages":
         await asyncio.sleep(DELAY_SECONDS)
         return completion(policy_pages(text))

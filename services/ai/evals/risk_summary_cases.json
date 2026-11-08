@@ -1,0 +1,192 @@
+[
+  {
+    "name": "SEVERE",
+    "request": {
+      "band": "HIGH",
+      "score": 100,
+      "route": "SENIOR_REVIEW",
+      "signals": [
+        {
+          "id": "S1",
+          "source": "RULE",
+          "kind": "DATA_INCONSISTENCY",
+          "category": "CONSISTENCY",
+          "severity": "HIGH",
+          "title": "The patient differs across documents",
+          "explanation": "The patient's name is not the same in every document.",
+          "contribution": 25
+        },
+        {
+          "id": "S2",
+          "source": "RULE",
+          "kind": "DATA_INCONSISTENCY",
+          "category": "CONSISTENCY",
+          "severity": "MEDIUM",
+          "title": "The dates of stay differ across documents",
+          "explanation": "The admission or discharge date is not the same in every document.",
+          "contribution": 12
+        },
+        {
+          "id": "S3",
+          "source": "RULE",
+          "kind": "DATA_INCONSISTENCY",
+          "category": "CONSISTENCY",
+          "severity": "HIGH",
+          "title": "A bill is dated before the admission",
+          "explanation": "Hospital bill is dated 5 Jul 2026, before the admission on 10 Aug 2026.",
+          "contribution": 25
+        },
+        {
+          "id": "S4",
+          "source": "RULE",
+          "kind": "DATA_INCONSISTENCY",
+          "category": "CONSISTENCY",
+          "severity": "HIGH",
+          "title": "A bill is dated before the admission",
+          "explanation": "Itemized invoice is dated 6 Aug 2026, before the admission on 10 Aug 2026.",
+          "contribution": 25
+        },
+        {
+          "id": "S5",
+          "source": "RULE",
+          "kind": "DATA_INCONSISTENCY",
+          "category": "FINANCIAL",
+          "severity": "HIGH",
+          "title": "Line items do not add up to the bill's total",
+          "explanation": "Itemized invoice states a total of INR 3,80,000.00, but its line items add up to INR 3,10,000.00.",
+          "contribution": 25
+        },
+        {
+          "id": "S6",
+          "source": "RULE",
+          "kind": "RISK_INDICATOR",
+          "category": "FINANCIAL",
+          "severity": "MEDIUM",
+          "title": "A line item is repeated on a bill",
+          "explanation": "Itemized invoice lists the same item at INR 45,000.00 2 times.",
+          "contribution": 12
+        },
+        {
+          "id": "S7",
+          "source": "RULE",
+          "kind": "RISK_INDICATOR",
+          "category": "FINANCIAL",
+          "severity": "HIGH",
+          "title": "The claimed amount is more than the bills",
+          "explanation": "The claim asks for INR 7,40,000.00, but the bills total INR 4,92,600.00.",
+          "contribution": 25
+        },
+        {
+          "id": "S8",
+          "source": "RULE",
+          "kind": "RISK_INDICATOR",
+          "category": "FINANCIAL",
+          "severity": "HIGH",
+          "title": "The claimed amount is above the sum insured",
+          "explanation": "The claim asks for INR 7,40,000.00, above the sum insured of INR 5,00,000.00.",
+          "contribution": 25
+        },
+        {
+          "id": "S9",
+          "source": "RULE",
+          "kind": "RISK_INDICATOR",
+          "category": "FINANCIAL",
+          "severity": "MEDIUM",
+          "title": "A very high amount per day of stay",
+          "explanation": "The claim asks for INR 7,40,000.00 a day, over 1 day of stay.",
+          "contribution": 12
+        },
+        {
+          "id": "S10",
+          "source": "RULE",
+          "kind": "FRAUD_INDICATOR",
+          "category": "DUPLICATE",
+          "severity": "HIGH",
+          "title": "The same file is in another claim",
+          "explanation": "Hospital bill is the same file as a document in another claim.",
+          "contribution": 25
+        },
+        {
+          "id": "S11",
+          "source": "RULE",
+          "kind": "FRAUD_INDICATOR",
+          "category": "DUPLICATE",
+          "severity": "HIGH",
+          "title": "An invoice number is reused at the same hospital",
+          "explanation": "Itemized invoice has the same invoice number as a bill from the same hospital in another claim.",
+          "contribution": 25
+        },
+        {
+          "id": "S12",
+          "source": "ISOLATION_FOREST",
+          "kind": "STATISTICAL_ANOMALY",
+          "category": "STATISTICAL",
+          "severity": null,
+          "title": "Statistically unusual compared with all baseline claims",
+          "explanation": "Isolation Forest scores this claim as more unusual than 99.82% of the synthetic baseline claims.",
+          "contribution": 10
+        },
+        {
+          "id": "S13",
+          "source": "LOCAL_OUTLIER_FACTOR",
+          "kind": "STATISTICAL_ANOMALY",
+          "category": "STATISTICAL",
+          "severity": null,
+          "title": "Statistically unusual compared with similar claims",
+          "explanation": "Local Outlier Factor scores this claim as more unusual than 100% of the synthetic baseline claims.",
+          "contribution": 10
+        }
+      ]
+    }
+  },
+  {
+    "name": "DISGUISED",
+    "request": {
+      "band": "HIGH",
+      "score": 57,
+      "route": "SENIOR_REVIEW",
+      "signals": [
+        {
+          "id": "S1",
+          "source": "RULE",
+          "kind": "FRAUD_INDICATOR",
+          "category": "DUPLICATE",
+          "severity": "HIGH",
+          "title": "A bill closely matches a bill in another claim",
+          "explanation": "5 of 7 line items on the hospital bill match, by description and amount, a bill from the same hospital in another claim.",
+          "contribution": 25
+        },
+        {
+          "id": "S2",
+          "source": "RULE",
+          "kind": "FRAUD_INDICATOR",
+          "category": "DUPLICATE",
+          "severity": "MEDIUM",
+          "title": "A similar claim shortly before or after",
+          "explanation": "Another claim for the same patient at the same hospital, 18 days apart, is for a similar amount.",
+          "contribution": 12
+        },
+        {
+          "id": "S3",
+          "source": "ISOLATION_FOREST",
+          "kind": "STATISTICAL_ANOMALY",
+          "category": "STATISTICAL",
+          "severity": null,
+          "title": "Statistically unusual compared with all baseline claims",
+          "explanation": "Isolation Forest scores this claim as more unusual than 99.84% of the synthetic baseline claims.",
+          "contribution": 10
+        },
+        {
+          "id": "S4",
+          "source": "LOCAL_OUTLIER_FACTOR",
+          "kind": "STATISTICAL_ANOMALY",
+          "category": "STATISTICAL",
+          "severity": null,
+          "title": "Statistically unusual compared with similar claims",
+          "explanation": "Local Outlier Factor scores this claim as more unusual than 99.88% of the synthetic baseline claims.",
+          "contribution": 10
+        }
+      ]
+    }
+  }
+]

@@ -11,6 +11,7 @@ from prism_ai.api.documents import processing_failure
 from prism_ai.api.documents import router as documents_router
 from prism_ai.api.internal import router as internal_router
 from prism_ai.api.retrieval import router as retrieval_router
+from prism_ai.api.risk import router as risk_router
 from prism_ai.api.service_auth import ServiceTokenVerifier
 from prism_ai.database import create_pool
 from prism_ai.documents.pipeline import DocumentPipeline
@@ -21,6 +22,8 @@ from prism_ai.gateway.routes import load_routes
 from prism_ai.policies.pipeline import PolicyPipeline
 from prism_ai.retrieval.pipeline import RetrievalPipeline
 from prism_ai.retrieval.store import IndexStore
+from prism_ai.risk.detectors import load_models
+from prism_ai.risk.summary import RiskSummarizer
 from prism_ai.settings import Settings, get_settings
 
 structlog.configure(
@@ -46,6 +49,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         pool = create_pool(config.database_url.get_secret_value())
         await pool.open(wait=False)
         app.state.db_pool = pool
+        # Fitted at startup and checked against the manifest, so a mismatch stops the service (D-084).
+        app.state.anomaly_models = load_models()
         app.state.token_verifier = ServiceTokenVerifier(
             config.service_jwt_public_key_path.read_text(encoding="ascii"),
             config.service_token_max_lifetime_seconds,
@@ -57,6 +62,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             retrieval = RetrievalPipeline(gateway, IndexStore(pool))
             app.state.retrieval_pipeline = retrieval
             app.state.policy_agent = PolicyAgent(gateway, retrieval)
+            app.state.risk_summarizer = RiskSummarizer(gateway)
             yield
         await pool.close()
 
@@ -66,6 +72,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(documents_router)
     app.include_router(retrieval_router)
     app.include_router(agent_router)
+    app.include_router(risk_router)
     app.add_exception_handler(ProcessingError, processing_failure)
 
     @app.get("/health/live")

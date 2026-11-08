@@ -40,6 +40,14 @@ escalation = "anthropic/claude-haiku-5.5"
 claim_data = true
 max_tokens = 3000
 
+# Risk summary (M7, D-086). De-identified signals only. The configured model on both attempts: the
+# summary is optional, and no other model is introduced for it.
+[tasks.risk_summary]
+primary = "deepseek/deepseek-v4.1-flash-1017"
+escalation = "deepseek/deepseek-v4.1-flash-1017"
+claim_data = true
+max_tokens = 800
+
 # Search (M5, D-075). Queries will carry claim facts in M6, so these are held to the same rules.
 # The index records its embedding model, and a query is embedded with that model, not this one.
 [embedding]

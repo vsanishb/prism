@@ -1,0 +1,22 @@
+{
+  "modelVersion": "anomaly-1",
+  "featureVersion": "risk-features-1",
+  "generatorVersion": "synthetic-claims-1",
+  "seed": 7301,
+  "baselineSize": 5000,
+  "flagQuantile": 0.99,
+  "isolationForest": {
+    "n_estimators": 200,
+    "max_samples": 256,
+    "random_state": 7310
+  },
+  "localOutlierFactor": {
+    "n_neighbors": 35,
+    "novelty": true
+  },
+  "fingerprint": "1968266bc83f22f0a5e192b7247008765bdf513629eb98324ade2bbd583d5620",
+  "thresholds": {
+    "ISOLATION_FOREST": 0.6044850139896987,
+    "LOCAL_OUTLIER_FACTOR": 1.416391695653013
+  }
+}

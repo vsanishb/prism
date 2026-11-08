@@ -15,6 +15,7 @@ python -m uv run --project services/ai python scripts/generate_test_data.py
 | `claims/scanned/` | Image documents: PNG, JPEG, and a two-page TIFF |
 | `claims/conflicting/` | Disagrees with `appendectomy` on the admission date, with charges that do not add up |
 | `claims/hard/` | Evaluation hard cases: dense, degraded, handwriting-style, sparse, injected. Generating these needs a Windows script font |
+| `claims/risk-demo/` | The M7 demonstrations: severe, clean, and disguised claims, the earlier claims they are compared with, and a manifest. Regenerate with `scripts/generate_risk_demo.py` |
 | `invalid/` | Files that upload validation must refuse |
 
-Later milestones add their own scenarios, such as anomalous claims for M7.
+Later milestones add their own scenarios.

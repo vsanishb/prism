@@ -17,6 +17,8 @@ from fastapi.responses import JSONResponse
 from prism_ai.documents.catalog import DocumentType, fields_for
 from prism_ai.gateway.routes import load_routes
 from tests.support.fake_models import embeddings_reply, rerank_reply
+from tests.support.stub_agent import finding as agent_finding
+from tests.support.stub_agent import plan as agent_plan
 
 PORT = 8099
 FAIL_ONCE_MARKER = "SCH-IP-2026-007300"
@@ -290,6 +292,10 @@ async def chat(request: Request) -> dict[str, Any] | JSONResponse:
         return completion(classification(text))
     if schema_name == "document_reread":
         return completion(reread(body))
+    if schema_name == "claim_issue_plan":
+        return completion(agent_plan())
+    if schema_name == "issue_finding":
+        return completion(agent_finding(body["messages"][-1]["content"]))
     if schema_name == "policy_pages":
         await asyncio.sleep(DELAY_SECONDS)
         return completion(policy_pages(text))

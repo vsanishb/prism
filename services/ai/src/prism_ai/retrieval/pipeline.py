@@ -32,7 +32,7 @@ from prism_ai.retrieval.schemas import (
     StageHit,
     StageScore,
 )
-from prism_ai.retrieval.store import ChunkRow, IndexStore, RelationRow
+from prism_ai.retrieval.store import ChunkRow, IndexStore, ProvisionRow, RelationRow
 
 logger = structlog.get_logger()
 
@@ -73,6 +73,12 @@ class RetrievalPipeline:
             pipeline_version=PIPELINE_VERSION,
             runs=runs,
         )
+
+    async def provisions(self, version_id: UUID, provision_ids: list[UUID]) -> list[ProvisionRow]:
+        """Whole provisions of one version, for callers that must check quotes against them."""
+        if not provision_ids:
+            return []
+        return await self._store.provisions(version_id, provision_ids)
 
     async def search(self, request: SearchRequest) -> SearchResponse:
         index = await self._store.index(request.version_id)

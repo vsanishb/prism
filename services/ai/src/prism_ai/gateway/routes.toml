@@ -27,6 +27,19 @@ escalation = "anthropic/claude-haiku-5.5"
 claim_data = true
 max_tokens = 16000
 
+# Policy Agent (M6, D-079). Claim facts are sent, de-identified. Findings are validated by code.
+[tasks.agent_plan]
+primary = "deepseek/deepseek-v4.1-flash-1017"
+escalation = "anthropic/claude-haiku-5.5"
+claim_data = true
+max_tokens = 1500
+
+[tasks.agent_analysis]
+primary = "deepseek/deepseek-v4.1-flash-1017"
+escalation = "anthropic/claude-haiku-5.5"
+claim_data = true
+max_tokens = 3000
+
 # Search (M5, D-075). Queries will carry claim facts in M6, so these are held to the same rules.
 # The index records its embedding model, and a query is embedded with that model, not this one.
 [embedding]

@@ -19,7 +19,7 @@ export function AiSummary({ summary, onCite }: { summary: RiskSummary | null; on
       </h2>
       {summary?.status === "AVAILABLE" && summary.text ? (
         <>
-          <p className="mt-2 text-[13px] leading-relaxed" data-testid="risk-summary">
+          <p className="mt-2 text-sm leading-relaxed" data-testid="risk-summary">
             {summary.text.split(REFERENCE).map((part, index) => {
               const match = /^\[(S\d+)\]$/.exec(part);
               const id = match?.[1];
@@ -44,7 +44,7 @@ export function AiSummary({ summary, onCite }: { summary: RiskSummary | null; on
           </p>
         </>
       ) : (
-        <p className="mt-2 text-[13px] text-ink-muted">
+        <p className="mt-2 text-sm text-ink-muted">
           {summary?.status === "NOT_NEEDED"
             ? "Nothing to summarize: no rule or detector raised a signal."
             : `${summary ? (RISK_SUMMARY_PROBLEMS[summary.problem ?? ""] ?? RISK_SUMMARY_PROBLEMS.default) : "No summary yet."} The screening below is complete without it.`}

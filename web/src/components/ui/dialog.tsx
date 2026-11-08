@@ -25,7 +25,7 @@ export function Dialog({ open, onOpenChange, title, description, children }: Dia
             <div>
               <Primitive.Title className="text-base font-semibold">{title}</Primitive.Title>
               {description ? (
-                <Primitive.Description className="mt-1 text-[13px] text-ink-muted">{description}</Primitive.Description>
+                <Primitive.Description className="mt-1 text-sm text-ink-muted">{description}</Primitive.Description>
               ) : null}
             </div>
             <Primitive.Close aria-label="Close" className="rounded-control p-1 text-ink-muted hover:bg-subtle">

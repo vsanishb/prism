@@ -35,7 +35,7 @@ export function RiskScreeningView({ screening, currency }: { screening: RiskScre
   return (
     <>
       {!screening.current ? (
-        <div role="status" className="mb-6 rounded-control bg-caution-soft px-3 py-2.5 text-[13px] text-caution">
+        <div role="status" className="mb-6 rounded-control bg-caution-soft px-3 py-2.5 text-sm text-caution">
           The claim&apos;s facts have changed since this screening. A new one follows when processing finishes.
         </div>
       ) : null}
@@ -64,7 +64,7 @@ export function RiskScreeningView({ screening, currency }: { screening: RiskScre
           <SectionTitle>Evidence</SectionTitle>
           {source ? (
             <>
-              <p className="mb-2 text-[13px] font-medium">
+              <p className="mb-2 text-sm font-medium">
                 {source.label}
                 {source.label.includes("page") ? "" : ` · Page ${source.page}`}
               </p>

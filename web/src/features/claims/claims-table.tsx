@@ -76,10 +76,10 @@ export function ClaimsTable({
               <li key={claim.id}>
                 <Link href={`/claims/${claim.id}`} className="block px-4 py-3.5">
                   <span className="flex items-center justify-between gap-3">
-                    <span className="text-[13px] font-medium">{claim.claimNumber}</span>
+                    <span className="text-sm font-medium">{claim.claimNumber}</span>
                     <ClaimStatusBadge status={claim.status} />
                   </span>
-                  <span className="mt-1 block truncate text-[13px]">{claim.patientName}</span>
+                  <span className="mt-1 block truncate text-sm">{claim.patientName}</span>
                   <span className="mt-0.5 flex justify-between gap-3 text-xs text-ink-muted">
                     <span>{formatDate(claim.admissionDate)}</span>
                     <span className="tabular-nums">{formatMoney(claim.claimedAmount, claim.currency)}</span>
@@ -125,7 +125,7 @@ export function ClaimsTable({
         )}
       </Panel>
 
-      <div className="mt-4 flex gap-4 text-[13px] font-medium">
+      <div className="mt-4 flex gap-4 text-sm font-medium">
         {paged ? (
           <Link href={href({ cursor: "" })} className="text-accent">
             Back to latest

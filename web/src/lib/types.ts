@@ -787,3 +787,30 @@ export interface EvidenceChain {
     documents: { id: string; filename: string; documentType: DocumentType; sha256: string; uploadedAt: string }[];
   } | null;
 }
+
+export interface MoneyTotal {
+  currency: string;
+  amount: string;
+}
+
+/** The home page's figures (GET /api/v1/overview). Drafts are counted only for staff who manage claims. */
+export interface Overview {
+  claimsByStatus: Partial<Record<ClaimStatus, number>>;
+  riskBands: Partial<Record<RiskBand, number>>;
+  openTasks: Partial<Record<ReviewQueue, number>>;
+  outcomes: Partial<Record<Decision, number>>;
+  openClaimed: MoneyTotal[];
+  approved: MoneyTotal[];
+  recent: {
+    id: string;
+    claimNumber: string;
+    patientName: string;
+    hospitalName: string;
+    status: ClaimStatus;
+    admissionDate: string;
+    claimedAmount: string;
+    currency: string;
+    riskBand: RiskBand | null;
+    createdAt: string;
+  }[];
+}

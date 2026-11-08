@@ -154,7 +154,7 @@ export function PolicyVersions({
                     <p className="font-medium">Version {version.versionNumber}</p>
                     <Badge tone={KNOWLEDGE_TONES[version.knowledgeStatus]}>{KNOWLEDGE_STATUS_LABELS[version.knowledgeStatus]}</Badge>
                   </div>
-                  <p className="text-[13px] text-ink-muted">
+                  <p className="text-sm text-ink-muted">
                     {formatDate(version.effectiveFrom)} to {formatDate(version.effectiveTo)} · Sum insured{" "}
                     {formatMoney(version.sumInsured, version.currency)}
                   </p>
@@ -163,7 +163,7 @@ export function PolicyVersions({
                   {version.knowledgeStatus !== "NO_WORDING" ? (
                     <Link
                       href={`/policies/${policyId}/versions/${version.id}`}
-                      className="inline-flex items-center gap-1.5 text-[13px] font-medium text-accent"
+                      className="inline-flex items-center gap-1.5 text-sm font-medium text-accent"
                     >
                       <FileSearch aria-hidden className="size-4" />
                       {version.knowledgeStatus === "IN_REVIEW" ? "Review knowledge" : "View knowledge"}
@@ -172,13 +172,13 @@ export function PolicyVersions({
                   {wording ? (
                     <Link
                       href={`/documents/${wording.id}?back=/policies/${policyId}`}
-                      className="inline-flex items-center gap-1.5 text-[13px] font-medium text-accent"
+                      className="inline-flex items-center gap-1.5 text-sm font-medium text-accent"
                     >
                       <FileText aria-hidden className="size-4" />
                       View wording
                     </Link>
                   ) : (
-                    <span className="text-[13px] text-ink-muted">No wording uploaded</span>
+                    <span className="text-sm text-ink-muted">No wording uploaded</span>
                   )}
                   {canManage && version.knowledgeStatus !== "PUBLISHED" ? (
                     <Button

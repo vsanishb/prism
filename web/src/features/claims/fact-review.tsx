@@ -77,7 +77,7 @@ function FactRow({
     <>
       <span className="min-w-0 flex-1">
         <span className="block text-xs text-ink-muted">{fieldLabel(fact.name)}</span>
-        <span className={`mt-0.5 block text-[13px] break-words ${fact.value ? "font-medium" : "text-ink-muted"}`}>{value}</span>
+        <span className={`mt-0.5 block text-sm break-words ${fact.value ? "font-medium" : "text-ink-muted"}`}>{value}</span>
       </span>
       <Badge tone={STATE_TONES[fact.state]}>{FACT_STATE_LABELS[fact.state]}</Badge>
     </>
@@ -128,7 +128,7 @@ function SourceView({
   return (
     <Panel>
       <div className="border-b border-line px-4 py-3">
-        <p className="text-[13px] font-medium">{selection.title}</p>
+        <p className="text-sm font-medium">{selection.title}</p>
         {selection.sources.length > 1 ? (
           <div className="mt-2 flex flex-wrap gap-1.5">
             {selection.sources.map((candidate, index) => {
@@ -157,7 +157,7 @@ function SourceView({
         </p>
       </div>
       {source.quote ? (
-        <blockquote className="border-b border-line px-4 py-2.5 text-[13px] text-ink-muted">“{source.quote}”</blockquote>
+        <blockquote className="border-b border-line px-4 py-2.5 text-sm text-ink-muted">“{source.quote}”</blockquote>
       ) : null}
       {source.reason ? (
         <p className="flex gap-2 border-b border-line bg-caution-soft px-4 py-2.5 text-xs text-caution">
@@ -192,7 +192,7 @@ function FindingList({ findings, documents }: { findings: Finding[]; documents: 
       <Panel>
         <ul className="divide-y divide-line">
           {findings.map((finding, index) => (
-            <li key={`${finding.code}-${index}`} className="flex gap-2.5 px-4 py-3 text-[13px]">
+            <li key={`${finding.code}-${index}`} className="flex gap-2.5 px-4 py-3 text-sm">
               <TriangleAlert aria-hidden className={`mt-0.5 size-4 shrink-0 ${finding.severity === "INFO" ? "text-ink-faint" : "text-caution"}`} />
               <span>{findingMessage(finding, documents)}</span>
             </li>
@@ -224,7 +224,7 @@ function LineItems({
               type="button"
               aria-pressed={selectedKey === key}
               onClick={() => onSelect(item, key)}
-              className={`flex w-full items-start justify-between gap-3 px-4 py-2.5 text-left text-[13px] transition-colors ${
+              className={`flex w-full items-start justify-between gap-3 px-4 py-2.5 text-left text-sm transition-colors ${
                 selectedKey === key ? "bg-accent-soft" : "hover:bg-subtle"
               }`}
             >

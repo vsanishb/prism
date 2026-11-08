@@ -58,7 +58,7 @@ export function SourcePane({
       {source ? (
         <>
           <div className="mb-2 flex items-center justify-between gap-2">
-            <p className="text-[13px] font-medium" data-testid="source-label">
+            <p className="text-sm font-medium" data-testid="source-label">
               {source.label}
             </p>
             {current && current.pageCount > 1 ? (

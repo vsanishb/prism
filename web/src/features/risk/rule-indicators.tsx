@@ -46,7 +46,7 @@ function EvidenceItem({
   );
   if (evidence.matchedClaim) {
     return (
-      <li className="text-[13px]">
+      <li className="text-sm">
         <Link href={`/claims/${evidence.matchedClaim.id}`} className="inline-flex items-center gap-1 text-accent hover:text-accent-hover">
           <ExternalLink aria-hidden className="size-3.5" />
           Other claim {evidence.matchedClaim.claimNumber}
@@ -65,7 +65,7 @@ function EvidenceItem({
           onClick={() =>
             onOpen({ key: sourceKey, documentId, page: evidence.page ?? 1, region: evidence.region, label: evidence.label })
           }
-          className={`flex w-full items-start gap-1.5 rounded-control border px-2.5 py-1.5 text-left text-[13px] hover:bg-subtle ${
+          className={`flex w-full items-start gap-1.5 rounded-control border px-2.5 py-1.5 text-left text-sm hover:bg-subtle ${
             selected ? "border-accent bg-accent-soft/40" : "border-line"
           }`}
         >
@@ -75,7 +75,7 @@ function EvidenceItem({
       </li>
     );
   }
-  return <li className="px-2.5 text-[13px] break-words">{body}</li>;
+  return <li className="px-2.5 text-sm break-words">{body}</li>;
 }
 
 function IndicatorCard({
@@ -102,7 +102,7 @@ function IndicatorCard({
         </span>
         <Badge tone={SEVERITY_TONES[indicator.severity]}>{RISK_SEVERITY_LABELS[indicator.severity]} severity</Badge>
       </div>
-      <p className="mt-2 text-[13px]">{indicator.explanation}</p>
+      <p className="mt-2 text-sm">{indicator.explanation}</p>
       {indicator.kind === "FRAUD_INDICATOR" ? (
         <p className="mt-1 text-xs text-ink-muted">{INDICATOR_KIND_DESCRIPTIONS.FRAUD_INDICATOR}</p>
       ) : null}
@@ -152,7 +152,7 @@ export function RuleIndicators({
         }
         return (
           <section key={category}>
-            <h3 className="mb-2 text-[13px] font-medium">{RISK_CATEGORY_LABELS[category]}</h3>
+            <h3 className="mb-2 text-sm font-medium">{RISK_CATEGORY_LABELS[category]}</h3>
             <Panel>
               <ol className="divide-y divide-line">
                 {found.map((indicator) => (
@@ -172,7 +172,7 @@ export function RuleChecklist({ rules, open }: { rules: RiskRule[]; open: boolea
   const passed = rules.filter((rule) => !rule.triggered).length;
   return (
     <details open={open} className="group rounded-panel border border-line bg-surface">
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-3.5 text-[13px] font-medium">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-3.5 text-sm font-medium">
         <span className="flex items-center gap-2">
           <ListChecks aria-hidden className="size-4 text-ink-muted" />
           Every rule checked ({passed} of {rules.length} found nothing)
@@ -188,7 +188,7 @@ export function RuleChecklist({ rules, open }: { rules: RiskRule[]; open: boolea
               {rules
                 .filter((rule) => rule.category === category)
                 .map((rule) => (
-                  <li key={rule.id} className="flex items-start gap-2 text-[13px]" data-testid="risk-rule">
+                  <li key={rule.id} className="flex items-start gap-2 text-sm" data-testid="risk-rule">
                     {rule.triggered ? (
                       <Badge tone="caution">Raised</Badge>
                     ) : (

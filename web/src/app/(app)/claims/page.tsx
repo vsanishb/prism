@@ -40,7 +40,7 @@ export default async function ClaimsPage({ searchParams }: { searchParams: Promi
           user?.permissions.includes("CLAIM_MANAGE") ? (
             <Link
               href="/claims/new"
-              className="inline-flex h-9 items-center gap-2 rounded-control bg-accent px-3.5 text-[13px] font-medium text-white transition-colors hover:bg-accent-hover"
+              className="inline-flex h-9 items-center gap-2 rounded-control bg-accent px-3.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
             >
               <Plus aria-hidden className="size-4" />
               New claim

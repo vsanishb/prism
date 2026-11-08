@@ -27,7 +27,7 @@ function Section({ icon: Icon, title, link, children }: { icon: typeof Scale; ti
   return (
     <Panel>
       <div className="flex items-center justify-between gap-3 border-b border-line px-5 py-3">
-        <h2 className="flex items-center gap-1.5 text-[13px] font-medium">
+        <h2 className="flex items-center gap-1.5 text-sm font-medium">
           <Icon aria-hidden className="size-4 text-ink-muted" />
           {title}
         </h2>
@@ -88,7 +88,7 @@ export function FactsPanel({
       }
     >
       {claimFacts.length === 0 ? (
-        <p className="text-[13px] text-ink-muted">No facts yet.</p>
+        <p className="text-sm text-ink-muted">No facts yet.</p>
       ) : (
         <dl className="divide-y divide-line">
           {claimFacts.map((fact) => {
@@ -97,8 +97,8 @@ export function FactsPanel({
             const key = `fact-${fact.id}`;
             return (
               <div key={fact.id} className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1 py-2" data-testid="workspace-fact">
-                <dt className="text-[13px] text-ink-muted">{FACT_NAME_LABELS[fact.name] ?? fact.name}</dt>
-                <dd className="flex min-w-0 flex-wrap items-center justify-end gap-1.5 text-right text-[13px]">
+                <dt className="text-sm text-ink-muted">{FACT_NAME_LABELS[fact.name] ?? fact.name}</dt>
+                <dd className="flex min-w-0 flex-wrap items-center justify-end gap-1.5 text-right text-sm">
                   {fact.state === "PRESENT" && value ? (
                     <span className="font-medium break-words">{value}</span>
                   ) : (
@@ -152,11 +152,11 @@ export function AnalysisPanel({ claimId, assessment }: { claimId: string; assess
       }
     >
       {assessment === null ? (
-        <p className="text-[13px] text-ink-muted">No policy analysis. The claim&apos;s policy version may not be published.</p>
+        <p className="text-sm text-ink-muted">No policy analysis. The claim&apos;s policy version may not be published.</p>
       ) : (
         <ul className="space-y-2">
           {assessment.findings.map((finding) => (
-            <li key={finding.position} className="flex items-start justify-between gap-3 text-[13px]">
+            <li key={finding.position} className="flex items-start justify-between gap-3 text-sm">
               <span className="min-w-0">{finding.question}</span>
               <Badge tone={finding.status === "SUPPORTED" ? "positive" : finding.status === "POTENTIALLY_EXCLUDED" ? "critical" : "caution"}>
                 {FINDING_STATUS_LABELS[finding.status]}
@@ -193,10 +193,10 @@ export function RiskPanel({
       }
     >
       {screening === null ? (
-        <p className="text-[13px] text-ink-muted">Not screened yet.</p>
+        <p className="text-sm text-ink-muted">Not screened yet.</p>
       ) : (
         <>
-          <div className="flex flex-wrap items-center gap-2 text-[13px]">
+          <div className="flex flex-wrap items-center gap-2 text-sm">
             <Badge tone={BAND_TONES[screening.band]}>{RISK_BAND_LABELS[screening.band]}</Badge>
             <span className="tabular-nums">{screening.score} / 100</span>
             <span className="text-ink-muted">
@@ -209,7 +209,7 @@ export function RiskPanel({
                 const evidence = indicator.evidence.find((item) => item.documentId);
                 const key = `risk-${indicator.position}`;
                 return (
-                  <li key={indicator.position} className="text-[13px]">
+                  <li key={indicator.position} className="text-sm">
                     <div className="flex flex-wrap items-center gap-1.5">
                       <span className="font-medium">{indicator.title}</span>
                       <Badge tone={indicator.kind === "FRAUD_INDICATOR" ? "critical" : "neutral"}>{INDICATOR_KIND_LABELS[indicator.kind]}</Badge>
@@ -229,7 +229,7 @@ export function RiskPanel({
               })}
             </ul>
           ) : (
-            <p className="mt-2 text-[13px] text-ink-muted">No rule raised an indicator.</p>
+            <p className="mt-2 text-sm text-ink-muted">No rule raised an indicator.</p>
           )}
           <p className="mt-3 text-xs text-ink-muted">Screening signals for review. None of them is a finding of fraud.</p>
         </>
@@ -245,9 +245,9 @@ export function QuestionsPanel({ facts, assessment }: { facts: ClaimFacts | null
   return (
     <Section icon={CircleHelp} title="Open questions">
       {unsettled.length === 0 && questions.length === 0 ? (
-        <p className="text-[13px] text-ink-muted">None.</p>
+        <p className="text-sm text-ink-muted">None.</p>
       ) : (
-        <ul className="list-disc space-y-1 pl-5 text-[13px]">
+        <ul className="list-disc space-y-1 pl-5 text-sm">
           {unsettled.map((fact) => (
             <li key={fact.id}>
               {FACT_NAME_LABELS[fact.name] ?? fact.name}: {FACT_STATE_LABELS[fact.state].toLowerCase()} in the documents.
@@ -268,10 +268,10 @@ export function RecordPanel({ review }: { review: ReviewWorkspace }) {
     <div className="space-y-4">
       {review.outcomes.length > 0 ? (
         <Panel className="p-5" >
-          <h2 className="text-[13px] font-medium">Authorized outcome</h2>
+          <h2 className="text-sm font-medium">Authorized outcome</h2>
           <ol className="mt-2 space-y-3">
             {[...review.outcomes].reverse().map((outcome) => (
-              <li key={outcome.id} className={`text-[13px] ${outcome.current ? "" : "text-ink-muted"}`} data-testid="outcome">
+              <li key={outcome.id} className={`text-sm ${outcome.current ? "" : "text-ink-muted"}`} data-testid="outcome">
                 <div className="flex flex-wrap items-center gap-2">
                   <Badge tone={outcome.decision === "DENIED" ? "critical" : outcome.decision === "APPROVED" ? "positive" : "caution"}>
                     {DECISION_LABELS[outcome.decision]}
@@ -290,9 +290,9 @@ export function RecordPanel({ review }: { review: ReviewWorkspace }) {
       ) : null}
       {review.findings.length > 0 ? (
         <Panel className="p-5">
-          <h2 className="text-[13px] font-medium">Investigation</h2>
+          <h2 className="text-sm font-medium">Investigation</h2>
           {review.findings.map((finding) => (
-            <div key={finding.id} className="mt-2 text-[13px]" data-testid="investigation-finding">
+            <div key={finding.id} className="mt-2 text-sm" data-testid="investigation-finding">
               <Badge tone={finding.finding === "CONFIRMED_FRAUD" ? "critical" : finding.finding === "NO_CONCERN" ? "positive" : "caution"}>
                 {FINDING_LABELS[finding.finding]}
               </Badge>
@@ -305,8 +305,8 @@ export function RecordPanel({ review }: { review: ReviewWorkspace }) {
         </Panel>
       ) : null}
       <Panel className="p-5">
-        <h2 className="text-[13px] font-medium">Review history</h2>
-        <ol className="mt-2 space-y-2 text-[13px]">
+        <h2 className="text-sm font-medium">Review history</h2>
+        <ol className="mt-2 space-y-2 text-sm">
           {review.history.map((task) => (
             <li key={task.id} className="flex flex-wrap justify-between gap-x-3" data-testid="task-history">
               <span>

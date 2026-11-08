@@ -53,10 +53,10 @@ function OutcomeForm({
     <div className="space-y-4">
       {error ? <Notice tone="critical" title={error} /> : null}
       <fieldset>
-        <legend className="mb-1.5 text-[13px] font-medium">Decision</legend>
+        <legend className="mb-1.5 text-sm font-medium">Decision</legend>
         <div className="space-y-1.5">
           {(Object.keys(DECISION_LABELS) as Decision[]).map((value) => (
-            <label key={value} className="flex items-center gap-2 text-[13px]">
+            <label key={value} className="flex items-center gap-2 text-sm">
               <input type="radio" name="decision" value={value} checked={decision === value} onChange={() => setDecision(value)} />
               {DECISION_LABELS[value]}
               {value === "APPROVED" ? <span className="text-ink-muted">({formatMoney(claimedAmount, currency)})</span> : null}
@@ -245,10 +245,10 @@ export function TaskActions({
         <div className="space-y-4">
           {error ? <Notice tone="critical" title={error} /> : null}
           <fieldset>
-            <legend className="mb-1.5 text-[13px] font-medium">Documents needed</legend>
+            <legend className="mb-1.5 text-sm font-medium">Documents needed</legend>
             <div className="grid grid-cols-2 gap-1.5">
               {REQUESTABLE.map((type) => (
-                <label key={type} className="flex items-center gap-2 text-[13px]">
+                <label key={type} className="flex items-center gap-2 text-sm">
                   <input
                     type="checkbox"
                     checked={types.includes(type)}
@@ -334,7 +334,7 @@ export function TaskActions({
       >
         <div className="space-y-4">
           {error ? <Notice tone="critical" title={error} /> : null}
-          <p className="text-[13px] text-ink-muted">Current: {correcting?.value ?? "not established"}</p>
+          <p className="text-sm text-ink-muted">Current: {correcting?.value ?? "not established"}</p>
           <Field label="Corrected value" htmlFor="corrected-value" hint={correcting?.kind === "DATE" ? "As YYYY-MM-DD" : correcting?.kind === "AMOUNT" ? "A number, such as 98400.00" : undefined}>
             <Input id="corrected-value" value={value} onChange={(event) => setValue(event.target.value)} />
           </Field>
@@ -382,11 +382,11 @@ export function NotesPanel({ claimId, review }: { claimId: string; review: Revie
 
   return (
     <div className="rounded-panel border border-line bg-surface p-5">
-      <h2 className="text-[13px] font-medium">Notes</h2>
-      {review.notes.length === 0 ? <p className="mt-2 text-[13px] text-ink-muted">No notes yet.</p> : null}
+      <h2 className="text-sm font-medium">Notes</h2>
+      {review.notes.length === 0 ? <p className="mt-2 text-sm text-ink-muted">No notes yet.</p> : null}
       <ol className="mt-2 space-y-3">
         {review.notes.map((item) => (
-          <li key={item.id} className="text-[13px]" data-testid="review-note">
+          <li key={item.id} className="text-sm" data-testid="review-note">
             <p className="whitespace-pre-line">{item.body}</p>
             <p className="mt-0.5 text-xs text-ink-muted">
               {item.author}, {formatDateTime(item.createdAt)}

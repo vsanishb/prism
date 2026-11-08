@@ -26,6 +26,10 @@
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
+  /* Sizes are in rem, so the whole interface scales from the root size below. */
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.45;
+
   --radius-control: 8px;
   --radius-panel: 12px;
 
@@ -33,16 +37,18 @@
 }
 
 @layer base {
+  /* 17px: comfortable on a laptop and still readable on a projector. */
   html {
     color-scheme: light;
+    font-size: 106.25%;
   }
 
   body {
     background: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-sans);
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 0.9375rem;
+    line-height: 1.55;
     -webkit-font-smoothing: antialiased;
   }
 

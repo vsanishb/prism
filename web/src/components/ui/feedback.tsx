@@ -23,7 +23,7 @@ export function Notice({ tone, title, children }: { tone: "positive" | "critical
   const Icon = tone === "positive" ? CircleCheck : CircleAlert;
   const color = tone === "positive" ? "bg-positive-soft text-positive" : "bg-critical-soft text-critical";
   return (
-    <div role={tone === "critical" ? "alert" : "status"} className={`flex gap-2.5 rounded-control px-3 py-2.5 text-[13px] ${color}`}>
+    <div role={tone === "critical" ? "alert" : "status"} className={`flex gap-2.5 rounded-control px-3 py-2.5 text-sm ${color}`}>
       <Icon aria-hidden className="mt-0.5 size-4 shrink-0" />
       <div>
         <p className="font-medium">{title}</p>
@@ -48,7 +48,7 @@ export function EmptyState({
         <Icon aria-hidden className="size-5" />
       </span>
       <p className="font-medium">{title}</p>
-      {children ? <div className="mt-1 max-w-sm text-[13px] text-ink-muted">{children}</div> : null}
+      {children ? <div className="mt-1 max-w-sm text-sm text-ink-muted">{children}</div> : null}
     </div>
   );
 }

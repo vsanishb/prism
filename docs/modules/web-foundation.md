@@ -14,6 +14,12 @@ The design system and application shell. Code: `web/src`. Design: [plan](../plan
 
 Design tokens live in `app/globals.css`. Use them, never raw colors.
 
+Sizes are in rem from a 17px root, so the interface scales as a whole. Use the type scale (`text-xs`, `text-sm`, `text-base`, and up), not pixel sizes. The sidebar groups navigation into Work and Administration; its labels are stable, because the browser tests find links by name.
+
+## Home page
+
+`/overview` shows four figures, recent claims, risk bands, review work by queue, and outcomes, from `GET /api/v1/overview` ([D-097](../decisions.md)), then links and roles. Staff without claim access see only the links and roles.
+
 ## Data access
 
 - Server Components use `serverFetch`, which forwards the visitor's cookies to core.

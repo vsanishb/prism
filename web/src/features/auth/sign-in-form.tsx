@@ -31,10 +31,10 @@ export function SignInForm() {
   }
 
   return (
-    <form onSubmit={submit} className="space-y-4">
-      <div className="mb-6">
-        <h1 className="text-lg font-semibold tracking-tight">Sign in</h1>
-        <p className="mt-0.5 text-[13px] text-ink-muted">Use your staff account.</p>
+    <form onSubmit={submit} className="space-y-5">
+      <div className="mb-8">
+        <h1 className="text-[1.75rem] leading-tight font-semibold tracking-tight">Sign in</h1>
+        <p className="mt-1.5 text-ink-muted">Use your staff account.</p>
       </div>
       {error ? <Notice tone="critical" title={error} /> : null}
       <Field label="Email" htmlFor="email">
@@ -57,10 +57,10 @@ export function SignInForm() {
           onChange={(event) => setPassword(event.target.value)}
         />
       </Field>
-      <Button type="submit" loading={busy} className="w-full">
+      <Button type="submit" loading={busy} className="h-11 w-full">
         Sign in
       </Button>
-      <p className="text-center text-xs text-ink-muted">Forgotten your password? Ask an administrator for a reset link.</p>
+      <p className="border-t border-line pt-5 text-center text-xs text-ink-muted">Forgotten your password? Ask an administrator for a reset link.</p>
     </form>
   );
 }

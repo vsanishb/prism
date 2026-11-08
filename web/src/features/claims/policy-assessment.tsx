@@ -70,7 +70,7 @@ function FindingCard({
       </div>
 
       {finding.proposedStatus ? (
-        <div className="mt-3 flex gap-2 rounded-control bg-subtle px-3 py-2 text-[13px] text-ink-muted" role="note">
+        <div className="mt-3 flex gap-2 rounded-control bg-subtle px-3 py-2 text-sm text-ink-muted" role="note">
           <CircleAlert aria-hidden className="mt-0.5 size-4 shrink-0" />
           <div>
             <p>
@@ -88,9 +88,9 @@ function FindingCard({
 
       <Part icon={Info} title="Claim facts used">
         {finding.facts.length === 0 ? (
-          <p className="text-[13px] text-ink-muted">None named.</p>
+          <p className="text-sm text-ink-muted">None named.</p>
         ) : (
-          <ul className="space-y-0.5 text-[13px]">
+          <ul className="space-y-0.5 text-sm">
             {finding.facts.map((fact) => (
               <li key={fact.id}>
                 <span className="text-ink-muted">{FACT_NAME_LABELS[fact.name] ?? fact.name}: </span>
@@ -103,7 +103,7 @@ function FindingCard({
 
       <Part icon={Quote} title="Policy evidence">
         {finding.citations.length === 0 ? (
-          <p className="text-[13px] text-ink-muted">No passage of the wording supports this finding.</p>
+          <p className="text-sm text-ink-muted">No passage of the wording supports this finding.</p>
         ) : (
           <ul className="space-y-2">
             {finding.citations.map((citation, index) => {
@@ -118,10 +118,10 @@ function FindingCard({
                     }
                     className={`block w-full rounded-control border px-3 py-2 text-left hover:bg-subtle ${selected === id ? "border-accent bg-accent-soft/40" : "border-line"}`}
                   >
-                    <span className="text-[13px] font-medium text-accent">
+                    <span className="text-sm font-medium text-accent">
                       {citationName(citation)} · Page {citation.pageStart}
                     </span>
-                    <blockquote className="mt-0.5 text-[13px] text-ink">“{citation.quote}”</blockquote>
+                    <blockquote className="mt-0.5 text-sm text-ink">“{citation.quote}”</blockquote>
                   </button>
                 </li>
               );
@@ -132,7 +132,7 @@ function FindingCard({
 
       {finding.reasoning ? (
         <Part icon={Scale} title="Reasoning, by AI">
-          <p className="text-[13px]">{finding.reasoning}</p>
+          <p className="text-sm">{finding.reasoning}</p>
         </Part>
       ) : null}
 
@@ -140,7 +140,7 @@ function FindingCard({
         <Part icon={Calculator} title="Calculated by Prism">
           <ul className="space-y-3">
             {finding.calculations.map((calculation, index) => (
-              <li key={index} className="rounded-control bg-subtle px-3 py-2.5 text-[13px]" data-testid="calculation">
+              <li key={index} className="rounded-control bg-subtle px-3 py-2.5 text-sm" data-testid="calculation">
                 <p className="font-medium">{VALUE_ROLE_LABELS[calculation.role]}</p>
                 <dl className="mt-1 grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5">
                   {calculation.inputs.map(([label, value]) => (
@@ -172,9 +172,9 @@ function FindingCard({
 
       <Part icon={HelpCircle} title="Open questions">
         {finding.unresolved.length === 0 ? (
-          <p className="text-[13px] text-ink-muted">None raised.</p>
+          <p className="text-sm text-ink-muted">None raised.</p>
         ) : (
-          <ul className="list-disc space-y-0.5 pl-5 text-[13px]">
+          <ul className="list-disc space-y-0.5 pl-5 text-sm">
             {finding.unresolved.map((question) => (
               <li key={question}>{question}</li>
             ))}
@@ -207,12 +207,12 @@ export function PolicyAssessmentView({ assessment, currency }: { assessment: Pol
     <>
       <div className="mb-6 space-y-3">
         {!assessment.current ? (
-          <div role="status" className="rounded-control bg-caution-soft px-3 py-2.5 text-[13px] text-caution">
+          <div role="status" className="rounded-control bg-caution-soft px-3 py-2.5 text-sm text-caution">
             The claim&apos;s facts have changed since this analysis. A new one follows when processing finishes.
           </div>
         ) : null}
         {assessment.degradedSearches > 0 ? (
-          <p className="text-[13px] text-ink-muted">
+          <p className="text-sm text-ink-muted">
             {assessment.degradedSearches} {assessment.degradedSearches === 1 ? "search" : "searches"} ran without every stage, so some
             evidence may have been missed.
           </p>
@@ -230,7 +230,7 @@ export function PolicyAssessmentView({ assessment, currency }: { assessment: Pol
           <SectionTitle>Policy wording</SectionTitle>
           {source && assessment.wordingDocumentId ? (
             <>
-              <p className="mb-2 text-[13px] font-medium">
+              <p className="mb-2 text-sm font-medium">
                 {source.title} · Page {source.page}
               </p>
               <SourcePage

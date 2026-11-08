@@ -14,8 +14,8 @@ export function PageHeader({
   return (
     <header className="mb-8 flex flex-wrap items-start justify-between gap-4">
       <div>
-        <h1 className="text-[22px] font-semibold tracking-tight">{title}</h1>
-        {description ? <p className="mt-1 max-w-2xl text-ink-muted">{description}</p> : null}
+        <h1 className="text-[1.75rem] leading-tight font-semibold tracking-tight">{title}</h1>
+        {description ? <p className="mt-1.5 max-w-2xl text-ink-muted">{description}</p> : null}
       </div>
       {actions ? <div className="flex items-center gap-2">{actions}</div> : null}
     </header>
@@ -27,7 +27,7 @@ export function Panel({ children, className = "" }: { children: ReactNode; class
 }
 
 export function SectionTitle({ children }: { children: ReactNode }) {
-  return <h2 className="mb-3 text-[13px] font-medium text-ink-muted">{children}</h2>;
+  return <h2 className="mb-3 text-sm font-semibold text-ink">{children}</h2>;
 }
 
 export function AccessDenied() {

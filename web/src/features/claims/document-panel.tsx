@@ -36,7 +36,7 @@ function DocumentRow({
     <div className={`flex items-center gap-3 px-5 py-3.5 ${active ? "" : "opacity-60"}`}>
       <FileText aria-hidden className="size-5 shrink-0 text-ink-faint" />
       <div className="min-w-0 flex-1">
-        <Link href={`/documents/${document.id}?back=/claims/${claimId}`} className="block truncate text-[13px] font-medium hover:text-accent">
+        <Link href={`/documents/${document.id}?back=/claims/${claimId}`} className="block truncate text-sm font-medium hover:text-accent">
           {document.originalFilename}
         </Link>
         <p className="text-xs text-ink-muted">
@@ -172,7 +172,7 @@ export function DocumentPanel({ claim }: { claim: ClaimDetail }) {
                   {upload.message}
                 </Notice>
               ) : (
-                <p key={upload.name} role="status" className="flex items-center gap-2 text-[13px] text-ink-muted">
+                <p key={upload.name} role="status" className="flex items-center gap-2 text-sm text-ink-muted">
                   <span aria-hidden className="size-3.5 animate-spin rounded-full border-2 border-current border-r-transparent" />
                   Uploading {upload.name}
                 </p>
@@ -197,7 +197,7 @@ export function DocumentPanel({ claim }: { claim: ClaimDetail }) {
                 }}
                 onDragLeave={() => setDragging(false)}
                 onDrop={onDrop}
-                className={`flex h-9 min-w-48 flex-1 items-center justify-center gap-2 rounded-control border border-dashed text-[13px] transition-colors ${
+                className={`flex h-9 min-w-48 flex-1 items-center justify-center gap-2 rounded-control border border-dashed text-sm transition-colors ${
                   dragging ? "border-accent bg-accent-soft text-accent" : "border-line-strong text-ink-muted hover:border-accent hover:text-accent"
                 }`}
               >

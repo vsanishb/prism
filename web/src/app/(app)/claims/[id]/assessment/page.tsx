@@ -28,17 +28,17 @@ export default async function ClaimAssessmentPage({ params }: { params: Promise<
 
   return (
     <>
-      <Link href={`/claims/${id}`} className="mb-4 inline-flex items-center gap-1 text-[13px] text-ink-muted hover:text-ink">
+      <Link href={`/claims/${id}`} className="mb-4 inline-flex items-center gap-1 text-sm text-ink-muted hover:text-ink">
         <ChevronLeft aria-hidden className="size-4" />
         {summary.claimNumber}
       </Link>
       <header className="mb-6">
-        <h1 className="text-[22px] font-semibold tracking-tight">Policy analysis</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Policy analysis</h1>
         <p className="mt-1 max-w-2xl text-ink-muted">
           Each issue the claim raises, read against the published policy wording by AI. Citations are checked against the wording, and
           amounts and dates are calculated by Prism from values a person confirmed.
         </p>
-        <p className="mt-2 max-w-2xl text-[13px] font-medium" role="note">
+        <p className="mt-2 max-w-2xl text-sm font-medium" role="note">
           This analysis assists review. It is not a claim decision.
         </p>
       </header>

@@ -13,7 +13,7 @@ export function ClaimReviewSummary({ claimId, review }: { claimId: string; revie
   return (
     <div>
       <SectionTitle>Review</SectionTitle>
-      <Panel className="space-y-3 p-4 text-[13px]">
+      <Panel className="space-y-3 p-4 text-sm">
         {request ? (
           <div className="rounded-control bg-caution-soft px-3 py-2.5" role="status" data-testid="information-request">
             <p className="font-medium text-caution">Information requested</p>

@@ -28,12 +28,12 @@ export default async function ClaimFactsPage({ params }: { params: Promise<{ id:
 
   return (
     <>
-      <Link href={`/claims/${id}`} className="mb-4 inline-flex items-center gap-1 text-[13px] text-ink-muted hover:text-ink">
+      <Link href={`/claims/${id}`} className="mb-4 inline-flex items-center gap-1 text-sm text-ink-muted hover:text-ink">
         <ChevronLeft aria-hidden className="size-4" />
         {summary.claimNumber}
       </Link>
       <header className="mb-8">
-        <h1 className="text-[22px] font-semibold tracking-tight">Extracted facts</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Extracted facts</h1>
         <p className="mt-1 max-w-2xl text-ink-muted">
           Read from the documents by AI and checked by rules. The source documents remain the authority, so open a fact to see where it came
           from.

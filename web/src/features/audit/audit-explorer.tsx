@@ -18,7 +18,7 @@ const OUTCOME_LABELS: Record<AuditOutcome, string> = { SUCCESS: "Success", DENIE
 
 function DetailRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="grid grid-cols-[120px_1fr] gap-3 py-1.5 text-[13px]">
+    <div className="grid grid-cols-[120px_1fr] gap-3 py-1.5 text-sm">
       <dt className="text-ink-muted">{label}</dt>
       <dd className="min-w-0 break-words">{value}</dd>
     </div>
@@ -106,7 +106,7 @@ export function AuditExplorer({
         )}
       </Panel>
 
-      <div className="mt-4 flex gap-4 text-[13px] font-medium">
+      <div className="mt-4 flex gap-4 text-sm font-medium">
         {paged ? (
           <Link href={search({})} className="text-accent">
             Back to latest

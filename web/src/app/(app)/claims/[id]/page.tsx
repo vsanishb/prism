@@ -21,7 +21,7 @@ function Fact({ label, children }: { label: string; children: React.ReactNode })
   return (
     <div>
       <dt className="text-xs text-ink-muted">{label}</dt>
-      <dd className="mt-0.5 text-[13px]">{children}</dd>
+      <dd className="mt-0.5 text-sm">{children}</dd>
     </div>
   );
 }
@@ -47,14 +47,14 @@ export default async function ClaimPage({ params }: { params: Promise<{ id: stri
 
   return (
     <>
-      <Link href="/claims" className="mb-4 inline-flex items-center gap-1 text-[13px] text-ink-muted hover:text-ink">
+      <Link href="/claims" className="mb-4 inline-flex items-center gap-1 text-sm text-ink-muted hover:text-ink">
         <ChevronLeft aria-hidden className="size-4" />
         Claims
       </Link>
       <header className="mb-8 flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-[22px] font-semibold tracking-tight">{summary.claimNumber}</h1>
+            <h1 className="text-2xl font-semibold tracking-tight">{summary.claimNumber}</h1>
             <ClaimStatusBadge status={summary.status} />
           </div>
           <p className="mt-1 text-ink-muted">
@@ -120,7 +120,7 @@ export default async function ClaimPage({ params }: { params: Promise<{ id: stri
           {summary.status !== "DRAFT" && review.ok ? <ClaimReviewSummary claimId={id} review={review.data} /> : null}
           <div>
             <SectionTitle>Activity</SectionTitle>
-            {timeline.ok ? <ClaimTimeline entries={timeline.data} /> : <p className="text-[13px] text-ink-muted">Activity could not be loaded.</p>}
+            {timeline.ok ? <ClaimTimeline entries={timeline.data} /> : <p className="text-sm text-ink-muted">Activity could not be loaded.</p>}
           </div>
         </aside>
       </div>

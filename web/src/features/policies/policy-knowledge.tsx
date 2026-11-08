@@ -92,7 +92,7 @@ function ValueRow({
           <span className="block text-xs text-ink-muted">
             {provisionName(provision)} · {value.name}
           </span>
-          <span className="mt-0.5 block text-[13px] font-medium break-words">
+          <span className="mt-0.5 block text-sm font-medium break-words">
             {valueLabel(value, knowledge.currency)}
             {value.qualifier ? <span className="font-normal text-ink-muted"> {value.qualifier}</span> : null}
           </span>
@@ -176,12 +176,12 @@ function SourcePanel({ source, knowledge }: { source: Source | null; knowledge: 
   return (
     <Panel>
       <div className="border-b border-line px-4 py-3">
-        <p className="text-[13px] font-medium">{source.title}</p>
+        <p className="text-sm font-medium">{source.title}</p>
         <p className="mt-0.5 text-xs text-ink-muted">
           {knowledge.documentName} · Page {source.page}
         </p>
       </div>
-      {source.quote ? <blockquote className="border-b border-line px-4 py-2.5 text-[13px] text-ink-muted">“{source.quote}”</blockquote> : null}
+      {source.quote ? <blockquote className="border-b border-line px-4 py-2.5 text-sm text-ink-muted">“{source.quote}”</blockquote> : null}
       {source.note ? (
         <p className="flex gap-2 border-b border-line bg-caution-soft px-4 py-2.5 text-xs text-caution">
           <TriangleAlert aria-hidden className="mt-px size-3.5 shrink-0" />
@@ -224,12 +224,12 @@ function Structure({ knowledge, onOpen }: { knowledge: PolicyKnowledge; onOpen: 
                     className="block w-full px-4 py-3 text-left transition-colors hover:bg-subtle"
                   >
                     <span className="flex flex-wrap items-baseline justify-between gap-2">
-                      <span className="text-[13px] font-medium">{provisionName(provision)}</span>
+                      <span className="text-sm font-medium">{provisionName(provision)}</span>
                       <span className="text-xs text-ink-muted">
                         {provision.pageStart === provision.pageEnd ? `Page ${provision.pageStart}` : `Pages ${provision.pageStart} to ${provision.pageEnd}`}
                       </span>
                     </span>
-                    <span className="mt-1 block text-[13px] text-ink-muted break-words">{provision.text}</span>
+                    <span className="mt-1 block text-sm text-ink-muted break-words">{provision.text}</span>
                     {provision.exceptions.length > 0 ? (
                       <span className="mt-2 block space-y-1">
                         {provision.exceptions.map((exception) => (
@@ -369,13 +369,13 @@ export function PolicyKnowledgeReview({ policyId, knowledge, canManage }: { poli
       <Panel>
         <ol className="divide-y divide-line">
           {knowledge.batches.length === 0 ? (
-            <li className="flex items-center gap-3 px-5 py-3 text-[13px]">
+            <li className="flex items-center gap-3 px-5 py-3 text-sm">
               <LoaderCircle aria-hidden className="size-4 animate-spin text-accent" />
               Waiting to start reading
             </li>
           ) : (
             knowledge.batches.map((batch) => (
-              <li key={batch.firstPage} className="flex items-center gap-3 px-5 py-3 text-[13px]">
+              <li key={batch.firstPage} className="flex items-center gap-3 px-5 py-3 text-sm">
                 {batch.status === "COMPLETED" ? (
                   <CircleCheck aria-hidden className="size-4 text-positive" />
                 ) : batch.status === "FAILED" ? (
@@ -395,7 +395,7 @@ export function PolicyKnowledgeReview({ policyId, knowledge, canManage }: { poli
         </ol>
         {failed && canManage ? (
           <div className="flex items-center justify-between gap-3 border-t border-line px-5 py-3.5">
-            <p className="text-[13px] text-critical">Part of the wording could not be read. Retry, or upload a clearer copy.</p>
+            <p className="text-sm text-critical">Part of the wording could not be read. Retry, or upload a clearer copy.</p>
             <Button variant="secondary" loading={busy} onClick={() => void act("retry")}>
               {busy ? null : <RotateCw aria-hidden className="size-4" />}
               Retry
@@ -440,13 +440,13 @@ export function PolicyKnowledgeReview({ policyId, knowledge, canManage }: { poli
                 {reviewed} of {critical.length} critical values reviewed
               </p>
               {knowledge.blockers.length > 0 ? (
-                <ul className="mt-1 list-disc space-y-0.5 pl-5 text-[13px] text-ink-muted">
+                <ul className="mt-1 list-disc space-y-0.5 pl-5 text-sm text-ink-muted">
                   {knowledge.blockers.map((blocker) => (
                     <li key={blocker.code}>{blocker.message}</li>
                   ))}
                 </ul>
               ) : (
-                <p className="mt-1 text-[13px] text-ink-muted">Ready to publish. A policy manager other than the uploader must publish it.</p>
+                <p className="mt-1 text-sm text-ink-muted">Ready to publish. A policy manager other than the uploader must publish it.</p>
               )}
             </div>
             {canManage ? (
@@ -482,7 +482,7 @@ export function PolicyKnowledgeReview({ policyId, knowledge, canManage }: { poli
             role="tab"
             aria-selected={tab === key}
             onClick={() => setTab(key)}
-            className={`-mb-px border-b-2 px-3 py-2 text-[13px] font-medium ${tab === key ? "border-accent text-ink" : "border-transparent text-ink-muted hover:text-ink"}`}
+            className={`-mb-px border-b-2 px-3 py-2 text-sm font-medium ${tab === key ? "border-accent text-ink" : "border-transparent text-ink-muted hover:text-ink"}`}
           >
             {label}
           </button>
@@ -540,7 +540,7 @@ export function PolicyKnowledgeReview({ policyId, knowledge, canManage }: { poli
               ) : (
                 <ul className="divide-y divide-line">
                   {knowledge.findings.map((finding, index) => (
-                    <li key={`${finding.code}-${index}`} className="flex gap-2.5 px-4 py-3 text-[13px]">
+                    <li key={`${finding.code}-${index}`} className="flex gap-2.5 px-4 py-3 text-sm">
                       <TriangleAlert
                         aria-hidden
                         className={`mt-0.5 size-4 shrink-0 ${finding.severity === "ERROR" ? "text-critical" : finding.severity === "WARNING" ? "text-caution" : "text-ink-faint"}`}

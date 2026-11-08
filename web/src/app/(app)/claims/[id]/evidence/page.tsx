@@ -20,12 +20,12 @@ export default async function EvidenceChainPage({ params }: { params: Promise<{ 
   }
   return (
     <>
-      <Link href={`/claims/${id}`} className="mb-4 inline-flex items-center gap-1 text-[13px] text-ink-muted hover:text-ink">
+      <Link href={`/claims/${id}`} className="mb-4 inline-flex items-center gap-1 text-sm text-ink-muted hover:text-ink">
         <ChevronLeft aria-hidden className="size-4" />
         {result.data.claimNumber}
       </Link>
       <header className="mb-8">
-        <h1 className="text-[22px] font-semibold tracking-tight">Evidence chain</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Evidence chain</h1>
         <p className="mt-1 max-w-2xl text-ink-muted">
           From the authorized outcome back to the people, the analysis and screening it was decided with, the facts, their source pages,
           the AI runs, and the documents.

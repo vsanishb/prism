@@ -49,7 +49,7 @@ function TaskTable({ rows, onTake, busy }: { rows: TaskRow[]; onTake?: (row: Tas
                     Take
                   </Button>
                 ) : (
-                  <Link href={`/claims/${row.claimId}/review`} className="text-[13px] font-medium text-accent hover:text-accent-hover">
+                  <Link href={`/claims/${row.claimId}/review`} className="text-sm font-medium text-accent hover:text-accent-hover">
                     Open
                   </Link>
                 )}
@@ -86,8 +86,8 @@ export function ReviewDashboard({ lists }: { lists: TaskLists }) {
       <div className="grid gap-3 sm:grid-cols-3">
         {lists.queues.map((queue) => (
           <Panel key={queue.queue} className="p-4">
-            <p className="text-[13px] font-medium">{QUEUE_LABELS[queue.queue]}</p>
-            <p className="mt-1 text-[22px] font-semibold tabular-nums" data-testid={`queue-${queue.queue}`}>
+            <p className="text-sm font-medium">{QUEUE_LABELS[queue.queue]}</p>
+            <p className="mt-1 text-2xl font-semibold tabular-nums" data-testid={`queue-${queue.queue}`}>
               {queue.open}
             </p>
             <p className="text-xs text-ink-muted">waiting · {QUEUE_DESCRIPTIONS[queue.queue]}</p>

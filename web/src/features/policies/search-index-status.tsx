@@ -73,7 +73,7 @@ export function SearchIndexStatus({
             <p className="font-medium" data-testid="search-index-status">
               {SEARCH_INDEX_LABELS[index.status]}
             </p>
-            <p className="mt-0.5 text-[13px] text-ink-muted">
+            <p className="mt-0.5 text-sm text-ink-muted">
               {index.status === "READY"
                 ? `${index.chunkCount ?? 0} passages indexed${index.completedAt ? ` on ${formatDateTime(index.completedAt)}` : ""}.`
                 : index.status === "FAILED"

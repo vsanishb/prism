@@ -21,7 +21,7 @@ export function SystemChecks({ status }: { status: SystemStatus }) {
           <Badge tone={failing === 0 ? "positive" : "critical"}>
             {failing === 0 ? "All checks passing" : `${failing} ${failing === 1 ? "check" : "checks"} failing`}
           </Badge>
-          <p className="text-[13px] text-ink-muted">Checked {formatDateTime(status.checkedAt)}</p>
+          <p className="text-sm text-ink-muted">Checked {formatDateTime(status.checkedAt)}</p>
         </div>
         <Button variant="secondary" loading={refreshing} onClick={() => startRefresh(() => router.refresh())}>
           {refreshing ? null : <RefreshCw aria-hidden className="size-3.5" />}
@@ -38,7 +38,7 @@ export function SystemChecks({ status }: { status: SystemStatus }) {
             )}
             <div>
               <p className="font-medium">{check.name}</p>
-              <p className="text-[13px] text-ink-muted">{check.detail}</p>
+              <p className="text-sm text-ink-muted">{check.detail}</p>
             </div>
           </div>
         ))}

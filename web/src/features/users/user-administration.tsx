@@ -22,7 +22,7 @@ function MenuItem({ onSelect, danger, children }: { onSelect: () => void; danger
   return (
     <DropdownMenu.Item
       onSelect={onSelect}
-      className={`cursor-pointer rounded-[6px] px-2.5 py-1.5 text-[13px] outline-none data-[highlighted]:bg-subtle ${danger ? "text-critical" : ""}`}
+      className={`cursor-pointer rounded-[6px] px-2.5 py-1.5 text-sm outline-none data-[highlighted]:bg-subtle ${danger ? "text-critical" : ""}`}
     >
       {children}
     </DropdownMenu.Item>
@@ -165,7 +165,7 @@ export function UserAdministration({
         )}
       </Panel>
 
-      <div className="mt-4 flex gap-4 text-[13px] font-medium">
+      <div className="mt-4 flex gap-4 text-sm font-medium">
         {paged ? (
           <Link href="/admin/users" className="text-accent">
             Back to first page

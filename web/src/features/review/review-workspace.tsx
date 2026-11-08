@@ -16,13 +16,13 @@ function TaskStatus({ review }: { review: ReviewWorkspace }) {
   if (!task) {
     const decided = review.outcomes.some((outcome) => outcome.current);
     return (
-      <p className="text-[13px] text-ink-muted">
+      <p className="text-sm text-ink-muted">
         {decided ? "This claim is decided. Its outcome is below." : "No task is open for this claim."}
       </p>
     );
   }
   return (
-    <div className="flex flex-wrap items-center gap-2 text-[13px]" data-testid="task-status">
+    <div className="flex flex-wrap items-center gap-2 text-sm" data-testid="task-status">
       <Badge tone={task.queue === "INVESTIGATION" ? "critical" : task.queue === "SENIOR_REVIEW" ? "caution" : "accent"}>
         {QUEUE_LABELS[task.queue]}
       </Badge>
@@ -72,7 +72,7 @@ export function ReviewWorkspaceView({
         <Panel className="space-y-3 p-5">
           <TaskStatus review={review} />
           {review.task?.escalationNote ? (
-            <div className="flex gap-2 rounded-control bg-caution-soft px-3 py-2 text-[13px]" role="note">
+            <div className="flex gap-2 rounded-control bg-caution-soft px-3 py-2 text-sm" role="note">
               <ArrowUpRight aria-hidden className="mt-0.5 size-4 shrink-0 text-caution" />
               <p>
                 <span className="font-medium">Escalated: </span>
@@ -81,7 +81,7 @@ export function ReviewWorkspaceView({
             </div>
           ) : null}
           {openRequest ? (
-            <div className="rounded-control bg-subtle px-3 py-2 text-[13px]" role="status">
+            <div className="rounded-control bg-subtle px-3 py-2 text-sm" role="status">
               <p className="font-medium">
                 Waiting for {openRequest.documentTypes.map((type) => DOCUMENT_TYPE_LABELS[type].toLowerCase()).join(", ")}
               </p>
@@ -89,7 +89,7 @@ export function ReviewWorkspaceView({
             </div>
           ) : null}
           {review.createdByYou ? (
-            <div className="flex gap-2 rounded-control bg-subtle px-3 py-2 text-[13px] text-ink-muted" role="note">
+            <div className="flex gap-2 rounded-control bg-subtle px-3 py-2 text-sm text-ink-muted" role="note">
               <Info aria-hidden className="mt-0.5 size-4 shrink-0" />
               You created this claim, so someone else must review and decide it.
             </div>
@@ -116,8 +116,8 @@ export function ReviewWorkspaceView({
         />
         {pending.length > 0 ? (
           <Panel className="p-5" >
-            <h2 className="text-[13px] font-medium">Corrections not yet analyzed</h2>
-            <ul className="mt-2 space-y-1.5 text-[13px]" data-testid="pending-corrections">
+            <h2 className="text-sm font-medium">Corrections not yet analyzed</h2>
+            <ul className="mt-2 space-y-1.5 text-sm" data-testid="pending-corrections">
               {pending.map((correction) => (
                 <li key={correction.id}>
                   {FACT_NAME_LABELS[correction.fieldName] ?? correction.fieldName}: {correction.originalValue ?? "not established"} →{" "}

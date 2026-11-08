@@ -48,7 +48,7 @@ function ChainStep({ step, icon: Icon, title, children }: { step: number; icon: 
         <Icon aria-hidden className="size-4" />
       </span>
       <p className="text-xs text-ink-muted">Step {step}</p>
-      <h2 className="text-[15px] font-semibold">{title}</h2>
+      <h2 className="text-base font-semibold">{title}</h2>
       <div className="mt-2">{children}</div>
     </li>
   );
@@ -73,11 +73,11 @@ export function EvidenceChainView({ claimId, chain }: { claimId: string; chain: 
       <ol className="min-w-0 space-y-8 border-l border-line pl-0 [&>li]:-ml-3.5">
         <ChainStep step={1} icon={Gavel} title="Authorized outcome">
           {chain.outcomes.length === 0 ? (
-            <p className="text-[13px] text-ink-muted">No outcome yet. The rest of the chain shows the claim as it stands.</p>
+            <p className="text-sm text-ink-muted">No outcome yet. The rest of the chain shows the claim as it stands.</p>
           ) : (
             <ol className="space-y-3">
               {[...chain.outcomes].reverse().map((outcome) => (
-                <li key={outcome.id} className={`rounded-panel border border-line bg-surface p-4 text-[13px] ${outcome.current ? "" : "opacity-70"}`}>
+                <li key={outcome.id} className={`rounded-panel border border-line bg-surface p-4 text-sm ${outcome.current ? "" : "opacity-70"}`}>
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge tone={outcome.decision === "DENIED" ? "critical" : outcome.decision === "APPROVED" ? "positive" : "caution"}>
                       <span data-testid={outcome.current ? "chain-decision" : undefined}>{DECISION_LABELS[outcome.decision]}</span>
@@ -97,7 +97,7 @@ export function EvidenceChainView({ claimId, chain }: { claimId: string; chain: 
         </ChainStep>
 
         <ChainStep step={2} icon={Users} title="People and the path through review">
-          <ol className="space-y-1.5 text-[13px]">
+          <ol className="space-y-1.5 text-sm">
             {chain.tasks.map((task) => (
               <li key={task.id} className="flex flex-wrap justify-between gap-x-3">
                 <span>
@@ -111,13 +111,13 @@ export function EvidenceChainView({ claimId, chain }: { claimId: string; chain: 
             ))}
           </ol>
           {chain.findings.map((finding) => (
-            <p key={finding.id} className="mt-2 text-[13px]">
+            <p key={finding.id} className="mt-2 text-sm">
               <Badge tone={finding.finding === "CONFIRMED_FRAUD" ? "critical" : "neutral"}>{FINDING_LABELS[finding.finding]}</Badge>{" "}
               {finding.rationale} <span className="text-xs text-ink-muted">· {finding.investigator}</span>
             </p>
           ))}
           {chain.requests.map((request) => (
-            <p key={request.id} className="mt-2 text-[13px] text-ink-muted">
+            <p key={request.id} className="mt-2 text-sm text-ink-muted">
               Requested {request.documentTypes.map((type) => DOCUMENT_TYPE_LABELS[type].toLowerCase()).join(", ")} ({request.status.toLowerCase()}): “
               {request.message}”
             </p>
@@ -127,10 +127,10 @@ export function EvidenceChainView({ claimId, chain }: { claimId: string; chain: 
 
         <ChainStep step={3} icon={ScrollText} title="What it was decided with">
           {evidence === null ? (
-            <p className="text-[13px] text-ink-muted">No facts were read.</p>
+            <p className="text-sm text-ink-muted">No facts were read.</p>
           ) : (
             <div className="grid gap-3 sm:grid-cols-2">
-              <Panel className="p-4 text-[13px]">
+              <Panel className="p-4 text-sm">
                 <p className="font-medium">Policy analysis, by AI</p>
                 {evidence.policyAssessment ? (
                   <>
@@ -146,7 +146,7 @@ export function EvidenceChainView({ claimId, chain }: { claimId: string; chain: 
                   <p className="mt-1 text-ink-muted">None for these facts.</p>
                 )}
               </Panel>
-              <Panel className="p-4 text-[13px]">
+              <Panel className="p-4 text-sm">
                 <p className="flex items-center gap-1.5 font-medium">
                   <ShieldAlert aria-hidden className="size-4 text-ink-muted" />
                   Risk screening
@@ -176,7 +176,7 @@ export function EvidenceChainView({ claimId, chain }: { claimId: string; chain: 
           <ChainStep step={4} icon={FileText} title={`Facts, from reading ${evidence.sequence} on ${formatDate(evidence.consolidatedAt.slice(0, 10))}`}>
             <ul className="divide-y divide-line rounded-panel border border-line bg-surface">
               {evidence.facts.map((fact) => (
-                <li key={fact.name} className="px-4 py-2.5 text-[13px]" data-testid="chain-fact">
+                <li key={fact.name} className="px-4 py-2.5 text-sm" data-testid="chain-fact">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <span className="text-ink-muted">{FACT_NAME_LABELS[fact.name] ?? fact.name}</span>
                     <span className="flex items-center gap-1.5">
@@ -212,7 +212,7 @@ export function EvidenceChainView({ claimId, chain }: { claimId: string; chain: 
 
         {evidence ? (
           <ChainStep step={5} icon={Bot} title="AI runs">
-            <ol className="divide-y divide-line rounded-panel border border-line bg-surface text-[13px]">
+            <ol className="divide-y divide-line rounded-panel border border-line bg-surface text-sm">
               {evidence.modelRuns.map((run, index) => (
                 <li key={index} className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 px-4 py-2" data-testid="chain-run">
                   <span>
@@ -225,13 +225,13 @@ export function EvidenceChainView({ claimId, chain }: { claimId: string; chain: 
                 </li>
               ))}
             </ol>
-            {evidence.modelRuns.length === 0 ? <p className="mt-2 text-[13px] text-ink-muted">No model calls recorded.</p> : null}
+            {evidence.modelRuns.length === 0 ? <p className="mt-2 text-sm text-ink-muted">No model calls recorded.</p> : null}
           </ChainStep>
         ) : null}
 
         {evidence ? (
           <ChainStep step={6} icon={FileText} title="Source documents">
-            <ul className="space-y-1.5 text-[13px]">
+            <ul className="space-y-1.5 text-sm">
               {evidence.documents.map((document) => (
                 <li key={document.id} className="flex flex-wrap gap-x-2" data-testid="chain-document">
                   <Link href={`/documents/${document.id}?back=/claims/${claimId}/evidence`} className="font-medium hover:text-accent">
@@ -251,7 +251,7 @@ export function EvidenceChainView({ claimId, chain }: { claimId: string; chain: 
         <SectionTitle>Source page</SectionTitle>
         {selected ? (
           <>
-            <p className="mb-2 text-[13px] font-medium" data-testid="source-label">
+            <p className="mb-2 text-sm font-medium" data-testid="source-label">
               {selected.label}
             </p>
             <SourcePage documentId={selected.documentId} page={selected.page} region={selected.region} label={selected.label} />

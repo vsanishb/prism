@@ -78,7 +78,7 @@ function ResultCard({
               {[...item.sectionPath, pages(item.pageStart, item.pageEnd)].join(" · ")}
               {item.parts > 1 ? ` · Part ${item.part} of ${item.parts}` : ""}
             </p>
-            <p className="mt-1.5 line-clamp-4 text-[13px] text-ink">{item.text}</p>
+            <p className="mt-1.5 line-clamp-4 text-sm text-ink">{item.text}</p>
             <p className="mt-1.5 text-xs text-ink-muted" data-testid="stage-ranks">
               Meaning {rank(item.semantic)} · Words {rank(item.lexical)} · Combined {rank(item.fused)}
               {item.rerank ? ` · Reranked ${rank(item.rerank)}` : ""}
@@ -100,7 +100,7 @@ function ResultCard({
                   onClick={() =>
                     onOpen({ id: provision.provisionId, title: name(provision), page: provision.pageStart, region: provision.region })
                   }
-                  className="text-left text-[13px] text-ink-muted hover:text-ink"
+                  className="text-left text-sm text-ink-muted hover:text-ink"
                 >
                   <span>{relationLabel(link)} </span>
                   <span className="font-medium text-accent underline-offset-2 hover:underline">{name(provision)}</span>
@@ -137,7 +137,7 @@ function Comparison({ result }: { result: PolicySearchResult }) {
   );
   return (
     <Panel className="overflow-x-auto">
-      <table className="w-full text-[13px]">
+      <table className="w-full text-sm">
         <caption className="px-4 pt-3 pb-2 text-left text-xs text-ink-muted">
           Top ten from each stage. Meaning compares embeddings; Words is full-text search. The final list fuses both, adds named clauses
           and terms, then reranks.
@@ -249,7 +249,7 @@ export function RetrievalExplorer({ policyId, versionId, documentId }: { policyI
             </Button>
           </div>
           <fieldset>
-            <legend className="mb-1.5 text-[13px] font-medium">Only these kinds of provision</legend>
+            <legend className="mb-1.5 text-sm font-medium">Only these kinds of provision</legend>
             <div className="flex flex-wrap gap-1.5">
               {TYPES.map((type) => {
                 const on = types.includes(type);
@@ -290,7 +290,7 @@ export function RetrievalExplorer({ policyId, versionId, documentId }: { policyI
       ) : (
         <>
           {result.degraded.length > 0 ? (
-            <div className="mb-4 flex gap-2.5 rounded-control bg-caution-soft px-3 py-2.5 text-[13px] text-caution" role="status">
+            <div className="mb-4 flex gap-2.5 rounded-control bg-caution-soft px-3 py-2.5 text-sm text-caution" role="status">
               <CircleAlert aria-hidden className="mt-0.5 size-4 shrink-0" />
               <div>
                 <p className="font-medium">Partial search</p>
@@ -315,7 +315,7 @@ export function RetrievalExplorer({ policyId, versionId, documentId }: { policyI
                 role="tab"
                 aria-selected={tab === key}
                 onClick={() => setTab(key)}
-                className={`-mb-px border-b-2 px-3 py-2 text-[13px] font-medium ${tab === key ? "border-accent text-ink" : "border-transparent text-ink-muted hover:text-ink"}`}
+                className={`-mb-px border-b-2 px-3 py-2 text-sm font-medium ${tab === key ? "border-accent text-ink" : "border-transparent text-ink-muted hover:text-ink"}`}
               >
                 {label}
               </button>
@@ -350,7 +350,7 @@ export function RetrievalExplorer({ policyId, versionId, documentId }: { policyI
               <SectionTitle>Source</SectionTitle>
               {source ? (
                 <>
-                  <p className="mb-2 text-[13px] font-medium">
+                  <p className="mb-2 text-sm font-medium">
                     {source.title} · Page {source.page}
                   </p>
                   <SourcePage documentId={documentId} page={source.page} region={source.region} label={`${source.title}, page ${source.page}`} />

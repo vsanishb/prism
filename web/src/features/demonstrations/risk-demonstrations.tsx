@@ -41,18 +41,18 @@ function ScenarioCard({ scenario, band, index }: { scenario: DemonstrationScenar
       <Panel className="flex h-full flex-col p-5">
         <div data-testid={`scenario-${scenario.scenario}`} className="flex h-full flex-col">
           <p className="text-xs font-medium text-ink-muted">Scenario {index + 1}</p>
-          <h2 className="mt-0.5 text-[17px] font-semibold tracking-tight">{description.title}</h2>
-          <p className="text-[13px] text-ink-muted">{description.summary}</p>
-          <p className="mt-3 text-[13px]">{description.story}</p>
+          <h2 className="mt-0.5 text-lg font-semibold tracking-tight">{description.title}</h2>
+          <p className="text-sm text-ink-muted">{description.summary}</p>
+          <p className="mt-3 text-sm">{description.story}</p>
 
           <p className="mt-4 mb-1.5 text-xs font-medium tracking-wide text-ink-muted uppercase">Embedded signals</p>
-          <ul className="list-disc space-y-1 pl-5 text-[13px]">
+          <ul className="list-disc space-y-1 pl-5 text-sm">
             {description.signals.map((signal) => (
               <li key={signal}>{signal}</li>
             ))}
           </ul>
           <p className="mt-4 mb-1.5 text-xs font-medium tracking-wide text-ink-muted uppercase">What to expect</p>
-          <p className="text-[13px]">{description.expected}</p>
+          <p className="text-sm">{description.expected}</p>
 
           <div className="mt-auto pt-5">
             {error ? (
@@ -61,7 +61,7 @@ function ScenarioCard({ scenario, band, index }: { scenario: DemonstrationScenar
               </div>
             ) : null}
             <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
-              <div className="text-[13px]">
+              <div className="text-sm">
                 <p className="font-medium">{claim.claimNumber}</p>
                 <p className="text-xs text-ink-muted">{draft ? "Draft, ready to submit" : CLAIM_STATUS_LABELS[claim.status]}</p>
               </div>
@@ -85,13 +85,13 @@ function ScenarioCard({ scenario, band, index }: { scenario: DemonstrationScenar
                   {band ? (
                     <Link
                       href={`/claims/${claim.id}/risk`}
-                      className="inline-flex items-center gap-1.5 text-[13px] font-medium text-accent hover:text-accent-hover"
+                      className="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-hover"
                     >
                       <ShieldAlert aria-hidden className="size-4" />
                       Read risk screening
                     </Link>
                   ) : (
-                    <Link href={`/claims/${claim.id}`} className="text-[13px] font-medium text-accent hover:text-accent-hover">
+                    <Link href={`/claims/${claim.id}`} className="text-sm font-medium text-accent hover:text-accent-hover">
                       Open claim
                     </Link>
                   )}
@@ -131,7 +131,7 @@ export function RiskDemonstrations({ scenarios, bands }: { scenarios: Demonstrat
   return (
     <div className="space-y-6">
       <Panel className="p-5">
-        <h2 className="text-[13px] font-medium">Earlier claims these scenarios are compared with</h2>
+        <h2 className="text-sm font-medium">Earlier claims these scenarios are compared with</h2>
         <p className="mt-0.5 text-xs text-ink-muted">
           Seeded and submitted with the demonstration data, so that duplicate checks have a history to search. They are processed when the
           core service starts.
@@ -143,7 +143,7 @@ export function RiskDemonstrations({ scenarios, bands }: { scenarios: Demonstrat
               <li key={claim.id}>
                 <Link
                   href={`/claims/${claim.id}`}
-                  className="inline-flex items-center gap-1.5 rounded-control border border-line px-2.5 py-1.5 text-[13px] hover:bg-subtle"
+                  className="inline-flex items-center gap-1.5 rounded-control border border-line px-2.5 py-1.5 text-sm hover:bg-subtle"
                   data-testid="earlier-claim"
                 >
                   {done ? (

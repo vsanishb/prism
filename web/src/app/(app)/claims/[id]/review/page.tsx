@@ -31,26 +31,26 @@ export default async function ReviewWorkspacePage({ params }: { params: Promise<
 
   return (
     <>
-      <Link href={`/claims/${id}`} className="mb-4 inline-flex items-center gap-1 text-[13px] text-ink-muted hover:text-ink">
+      <Link href={`/claims/${id}`} className="mb-4 inline-flex items-center gap-1 text-sm text-ink-muted hover:text-ink">
         <ChevronLeft aria-hidden className="size-4" />
         {summary.claimNumber}
       </Link>
       <header className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-[22px] font-semibold tracking-tight">Review {summary.claimNumber}</h1>
+            <h1 className="text-2xl font-semibold tracking-tight">Review {summary.claimNumber}</h1>
             <ClaimStatusBadge status={summary.status} />
           </div>
           <p className="mt-1 text-ink-muted">
             {summary.patientName} · {summary.hospitalName} · {formatMoney(summary.claimedAmount, summary.currency)}
           </p>
-          <p className="mt-2 max-w-2xl text-[13px] font-medium" role="note">
+          <p className="mt-2 max-w-2xl text-sm font-medium" role="note">
             You decide. The analysis and screening are evidence for your decision, not decisions.
           </p>
         </div>
         <Link
           href={`/claims/${id}/evidence`}
-          className="inline-flex h-9 items-center gap-1.5 rounded-control border border-line-strong bg-surface px-3.5 text-[13px] font-medium hover:bg-subtle"
+          className="inline-flex h-9 items-center gap-1.5 rounded-control border border-line-strong bg-surface px-3.5 text-sm font-medium hover:bg-subtle"
         >
           <Route aria-hidden className="size-4" />
           Evidence chain

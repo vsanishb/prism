@@ -21,13 +21,13 @@ export function ScoreOverview({ screening }: { screening: RiskScreening }) {
             <Badge tone={BAND_TONES[screening.band]}>
               <span data-testid="risk-band">{RISK_BAND_LABELS[screening.band]}</span>
             </Badge>
-            <p className="text-[22px] font-semibold tracking-tight tabular-nums">
+            <p className="text-2xl font-semibold tracking-tight tabular-nums">
               <span data-testid="risk-score">{score}</span>
-              <span className="text-[13px] font-normal text-ink-muted"> / {thresholds.maximum}</span>
+              <span className="text-sm font-normal text-ink-muted"> / {thresholds.maximum}</span>
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2 rounded-control bg-subtle px-3 py-2 text-[13px]">
+        <div className="flex items-center gap-2 rounded-control bg-subtle px-3 py-2 text-sm">
           <Route aria-hidden className="size-4 text-ink-muted" />
           <span>
             Review route: <span className="font-medium" data-testid="review-route">{REVIEW_ROUTE_LABELS[screening.route]}</span>
@@ -52,7 +52,7 @@ export function ScoreOverview({ screening }: { screening: RiskScreening }) {
         Low below {thresholds.mediumFrom} · Medium {thresholds.mediumFrom} to {thresholds.highFrom - 1} · High {thresholds.highFrom} and above
       </p>
 
-      <p className="mt-4 text-[13px]">
+      <p className="mt-4 text-sm">
         Rules alone give <span className="font-medium tabular-nums">{screening.rulesOnlyScore}</span> ({RISK_BAND_LABELS[screening.rulesOnlyBand].toLowerCase()}).{" "}
         {statistical > 0 ? (
           <>

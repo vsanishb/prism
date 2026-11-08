@@ -21,7 +21,7 @@ export default async function PolicyPage({ params }: { params: Promise<{ id: str
   const { policy, versions } = result.data;
   return (
     <>
-      <Link href="/policies" className="mb-4 inline-flex items-center gap-1 text-[13px] text-ink-muted hover:text-ink">
+      <Link href="/policies" className="mb-4 inline-flex items-center gap-1 text-sm text-ink-muted hover:text-ink">
         <ChevronLeft aria-hidden className="size-4" />
         Policies
       </Link>

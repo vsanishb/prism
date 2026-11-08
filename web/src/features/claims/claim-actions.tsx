@@ -48,7 +48,7 @@ export function ClaimActions({ claim }: { claim: ClaimDetail }) {
       {actions.includes("EDIT") ? (
         <Link
           href={`/claims/${claim.summary.id}/edit`}
-          className="inline-flex h-9 items-center rounded-control border border-line-strong bg-surface px-3.5 text-[13px] font-medium transition-colors hover:bg-subtle"
+          className="inline-flex h-9 items-center rounded-control border border-line-strong bg-surface px-3.5 text-sm font-medium transition-colors hover:bg-subtle"
         >
           Edit
         </Link>

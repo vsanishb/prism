@@ -27,7 +27,7 @@ function Step({ label, status, detail }: { label: string; status: StageStatus; d
     <li className="flex items-start gap-3 px-5 py-3">
       <Icon aria-hidden className={`mt-0.5 size-4 shrink-0 ${tone}`} />
       <div className="min-w-0 flex-1">
-        <p className="text-[13px] font-medium break-words">{label}</p>
+        <p className="text-sm font-medium break-words">{label}</p>
         {detail ? <p className="mt-0.5 text-xs text-ink-muted">{detail}</p> : null}
       </div>
       <span className="shrink-0 text-xs text-ink-muted">{statusLabel}</span>
@@ -128,7 +128,7 @@ export function ProcessingPanel({
       <Panel>
         {waiting && missing.length > 0 ? (
           <div className="border-b border-line p-5">
-            <div role="status" className="rounded-control bg-caution-soft px-3 py-2.5 text-[13px]">
+            <div role="status" className="rounded-control bg-caution-soft px-3 py-2.5 text-sm">
               <p className="font-medium text-caution">Waiting for documents</p>
               <p className="mt-0.5 text-ink-muted">
                 Add{" "}
@@ -167,14 +167,14 @@ export function ProcessingPanel({
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line px-5 py-3.5">
             {facts?.sequence ? (
               <div className="flex flex-wrap gap-x-5 gap-y-2">
-                <Link href={`/claims/${claimId}/facts`} className="inline-flex items-center gap-1.5 text-[13px] font-medium text-accent hover:text-accent-hover">
+                <Link href={`/claims/${claimId}/facts`} className="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-hover">
                   <FileSearch aria-hidden className="size-4" />
                   Review extracted facts
                 </Link>
                 {analyzed ? (
                   <Link
                     href={`/claims/${claimId}/assessment`}
-                    className="inline-flex items-center gap-1.5 text-[13px] font-medium text-accent hover:text-accent-hover"
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-hover"
                   >
                     <Scale aria-hidden className="size-4" />
                     Read policy analysis
@@ -183,7 +183,7 @@ export function ProcessingPanel({
                 {screened ? (
                   <Link
                     href={`/claims/${claimId}/risk`}
-                    className="inline-flex items-center gap-1.5 text-[13px] font-medium text-accent hover:text-accent-hover"
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-hover"
                   >
                     <ShieldAlert aria-hidden className="size-4" />
                     Read risk screening

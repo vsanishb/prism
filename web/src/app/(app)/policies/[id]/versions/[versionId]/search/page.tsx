@@ -29,12 +29,12 @@ export default async function PolicySearchPage({ params }: { params: Promise<{ i
 
   return (
     <>
-      <Link href={versionPath} className="mb-4 inline-flex items-center gap-1 text-[13px] text-ink-muted hover:text-ink">
+      <Link href={versionPath} className="mb-4 inline-flex items-center gap-1 text-sm text-ink-muted hover:text-ink">
         <ChevronLeft aria-hidden className="size-4" />
         {policy.data.policy.policyNumber} · Version {knowledge.data.versionNumber}
       </Link>
       <header className="mb-8">
-        <h1 className="text-[22px] font-semibold tracking-tight">Search policy wording</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Search policy wording</h1>
         <p className="mt-1 max-w-2xl text-ink-muted">
           {policy.data.policy.productName}, version {knowledge.data.versionNumber}. Results are passages of the published wording, found
           by meaning and by words, and linked to the exceptions and definitions they depend on. The wording remains the authority.

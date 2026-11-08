@@ -19,11 +19,11 @@ function DetectorCard({ result }: { result: RiskDetectorResult }) {
             {result.signalId ? <span className="mr-1.5 text-accent">{result.signalId}</span> : null}
             {labels.name}
           </p>
-          <p className="mt-0.5 text-[13px] font-medium">{labels.question}</p>
+          <p className="mt-0.5 text-sm font-medium">{labels.question}</p>
         </div>
         <Badge tone={result.flagged ? "caution" : "positive"}>{result.flagged ? "Statistically unusual" : "Within the normal range"}</Badge>
       </div>
-      <p className="mt-2 text-[13px]">{percentileText(Number(result.percentile))}.</p>
+      <p className="mt-2 text-sm">{percentileText(Number(result.percentile))}.</p>
       <p className="mt-1 text-xs text-ink-muted">
         {result.flagged
           ? `Beyond this detector's threshold, so it adds ${result.points} points.`
@@ -54,7 +54,7 @@ export function AnomalyResults({ screening, currency }: { screening: RiskScreeni
 
       <Panel>
         <div className="flex items-center justify-between gap-3 px-5 pt-4">
-          <h3 className="flex items-center gap-1.5 text-[13px] font-medium">
+          <h3 className="flex items-center gap-1.5 text-sm font-medium">
             <Activity aria-hidden className="size-4 text-ink-muted" />
             How this claim compares with the baseline
           </h3>
@@ -68,14 +68,14 @@ export function AnomalyResults({ screening, currency }: { screening: RiskScreeni
             return (
               <li key={feature.name} className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 px-5 py-2.5" data-testid="risk-feature">
                 <div className="min-w-0">
-                  <p className="text-[13px]">{RISK_FEATURE_LABELS[feature.name] ?? feature.name}</p>
+                  <p className="text-sm">{RISK_FEATURE_LABELS[feature.name] ?? feature.name}</p>
                   <p className="text-xs text-ink-muted tabular-nums">
                     Baseline median {formatFeature(feature.name, feature.baselineMedian, currency)}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="text-right">
-                    <p className="text-[13px] font-medium whitespace-nowrap tabular-nums">
+                    <p className="text-sm font-medium whitespace-nowrap tabular-nums">
                       {formatFeature(feature.name, feature.value, currency)}
                     </p>
                     <p className={`text-xs whitespace-nowrap tabular-nums ${outlier ? "font-medium text-caution" : "text-ink-muted"}`}>
@@ -100,11 +100,11 @@ export function AnomalyResults({ screening, currency }: { screening: RiskScreeni
       </Panel>
 
       <details className="group rounded-panel border border-line bg-surface" data-testid="technical-details">
-        <summary className="flex cursor-pointer list-none items-center gap-2 px-5 py-3.5 text-[13px] font-medium">
+        <summary className="flex cursor-pointer list-none items-center gap-2 px-5 py-3.5 text-sm font-medium">
           <FlaskConical aria-hidden className="size-4 text-ink-muted" />
           Technical details, for demonstration
         </summary>
-        <div className="space-y-3 border-t border-line px-5 py-4 text-[13px]">
+        <div className="space-y-3 border-t border-line px-5 py-4 text-sm">
           <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
             {screening.detectors.map((result) => (
               <div key={result.detector} className="contents">

@@ -99,7 +99,7 @@ export function SetPasswordForm({ expectedPurpose }: { expectedPurpose: TokenDet
         <Notice tone="critical" title="This link cannot be used">
           {stage.message}
         </Notice>
-        <Link href="/sign-in" className="block text-center text-[13px] font-medium text-accent">
+        <Link href="/sign-in" className="block text-center text-sm font-medium text-accent">
           Go to sign in
         </Link>
       </div>
@@ -112,7 +112,7 @@ export function SetPasswordForm({ expectedPurpose }: { expectedPurpose: TokenDet
         <Notice tone="positive" title={stage.purpose === "INVITATION" ? "Your account is ready" : "Your password has been changed"}>
           You can now sign in.
         </Notice>
-        <Link href="/sign-in" className="block text-center text-[13px] font-medium text-accent">
+        <Link href="/sign-in" className="block text-center text-sm font-medium text-accent">
           Go to sign in
         </Link>
       </div>
@@ -122,9 +122,9 @@ export function SetPasswordForm({ expectedPurpose }: { expectedPurpose: TokenDet
   const invitation = stage.details.purpose === "INVITATION";
   return (
     <form onSubmit={submit} className="space-y-4">
-      <div className="mb-6">
-        <h1 className="text-lg font-semibold tracking-tight">{invitation ? "Set up your account" : "Choose a new password"}</h1>
-        <p className="mt-0.5 text-[13px] text-ink-muted">{stage.details.email}</p>
+      <div className="mb-8">
+        <h1 className="text-[1.75rem] leading-tight font-semibold tracking-tight">{invitation ? "Set up your account" : "Choose a new password"}</h1>
+        <p className="mt-1.5 text-ink-muted">{stage.details.email}</p>
       </div>
       {error ? <Notice tone="critical" title={error} /> : null}
       {invitation ? (

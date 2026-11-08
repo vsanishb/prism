@@ -22,14 +22,14 @@ export function DocumentViewer({ document, backHref }: { document: DocumentRecor
 
   return (
     <>
-      <Link href={backHref} className="mb-4 inline-flex items-center gap-1 text-[13px] text-ink-muted hover:text-ink">
+      <Link href={backHref} className="mb-4 inline-flex items-center gap-1 text-sm text-ink-muted hover:text-ink">
         <ChevronLeft aria-hidden className="size-4" />
         Back
       </Link>
       <header className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <h1 className="truncate text-lg font-semibold tracking-tight">{document.originalFilename}</h1>
-          <p className="mt-0.5 text-[13px] text-ink-muted">
+          <p className="mt-0.5 text-sm text-ink-muted">
             {DOCUMENT_TYPE_LABELS[document.documentType]} · {formatBytes(document.sizeBytes)} · Uploaded {formatDateTime(document.uploadedAt)}
           </p>
         </div>
@@ -42,7 +42,7 @@ export function DocumentViewer({ document, backHref }: { document: DocumentRecor
             <button type="button" aria-label="Previous page" disabled={page <= 1} onClick={() => setPage(page - 1)} className={CONTROL}>
               <ChevronLeft aria-hidden className="size-4" />
             </button>
-            <span className="min-w-20 text-center text-[13px] tabular-nums">
+            <span className="min-w-20 text-center text-sm tabular-nums">
               Page {page} of {document.pageCount}
             </span>
             <button

@@ -21,7 +21,7 @@ A reviewer must reconcile bills, discharge summaries, prescriptions, reports, an
 | Policy intelligence | Turns policies into validated, structure-aware knowledge |
 | Hybrid retrieval | Semantic, lexical, and metadata search with reranking |
 | Policy Agent | Evidence-based analysis of a claim against its policy |
-| Fraud and risk screening | Explainable anomaly and risk indicators |
+| Fraud and risk screening | Explainable rule indicators and statistical anomalies (Isolation Forest, LOF), routing review |
 | Workflow orchestration | Durable, long-running processing with Temporal |
 | Human review | Full evidence for reviewers, who hold final authority |
 | Audit and traceability | An evidence chain from source document to outcome |
@@ -40,7 +40,7 @@ Details: [architecture.md](architecture.md).
 
 ## Technology
 
-Java and Spring Boot; Python and FastAPI; Next.js; local PostgreSQL 18 with pgvector; Temporal; OpenRouter. Pinned versions: [decisions.md](decisions.md#version-baseline).
+Java and Spring Boot; Python and FastAPI, with scikit-learn for anomaly detection; Next.js; local PostgreSQL 18 with pgvector; Temporal; OpenRouter. Pinned versions: [decisions.md](decisions.md#version-baseline).
 
 ## Product principles
 
@@ -74,6 +74,10 @@ Java and Spring Boot; Python and FastAPI; Next.js; local PostgreSQL 18 with pgve
 | Policy assessment | The Policy Agent's evidence-backed analysis. Not a decision |
 | Risk indicator | An explainable signal that a claim needs attention |
 | Fraud indicator | A signal that may warrant investigation. Not a finding of fraud |
+| Data inconsistency | Documents, or documents and entered details, disagree |
+| Statistical anomaly | Unusual compared with a baseline of claims. Never a measure of fraud |
+| Risk band | `LOW`, `MEDIUM`, or `HIGH`: sets how closely a claim is reviewed, never its outcome |
+| Confirmed fraud | Recorded only by an investigator, after investigation |
 | Authorized outcome | The final decision recorded by an authorized human |
 | Evidence chain | The links from source document to extraction, evidence, assessment, review, and outcome |
 | Sublimit | A cap on a specific benefit within the overall sum insured |

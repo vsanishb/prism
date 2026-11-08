@@ -6,7 +6,7 @@ The factual record of project state. Update after meaningful work. Newest entrie
 
 ## Current state
 
-**Phase:** M6 complete. M7 is next. M1's CI workflow has still never run.
+**Phase:** M7 complete. M8 is next. M1's CI workflow has still never run.
 **Runs on:** local PostgreSQL 18.3, the only database ([D-074](decisions.md)).
 
 | Capability | Status | Milestone |
@@ -24,7 +24,7 @@ The factual record of project state. Update after meaningful work. Newest entrie
 | Policy intelligence | Tested, on synthetic policies only | M4 |
 | Hybrid retrieval | Tested, on synthetic policies only | M5 |
 | Policy Agent | Tested, on synthetic claims only | M6 |
-| Fraud and risk | Planned | M7 |
+| Fraud and risk screening | Tested, on synthetic claims only | M7 |
 | Human review | Planned | M8 |
 | Production readiness | Planned | M9 |
 
@@ -36,6 +36,32 @@ The factual record of project state. Update after meaningful work. Newest entrie
 | Confirm the OpenRouter account is set to "ZDR only". Prism enforces ZDR per request regardless | User | Before real use |
 
 ## Log
+
+### 2026-11-08: M7 Fraud and risk intelligence
+
+**Implemented:** the `RISK_SCREENING` stage after policy analysis. In core: a pure `risk` module with 22 versioned rules in five categories, nine features, and capped scoring with versioned weights; cross-claim matching in SQL; insert-only storage; audit; and the risk screen. In the AI service: Isolation Forest and LOF fitted at startup on a seeded synthetic baseline and checked against a manifest, a held-out evaluation, and a checked summary on DeepSeek. Three seeded demonstrations with their page ([risk](modules/risk.md), [D-082](decisions.md) to [D-090](decisions.md)).
+
+**Test results on the final code:**
+
+| Suite | Result |
+|---|---|
+| Core (JUnit, real PostgreSQL, Temporal test server) | 433 passed, including 42 rule, scoring, and feature tests, 9 integration tests, and replay of a pre-M6 history |
+| AI (pytest) | 284 passed. `ruff` and `mypy --strict` clean |
+| Web | ESLint and `tsc` clean. 12 unit tests, unchanged |
+| End-to-end, production build, real Temporal, AI service, and detectors, stand-in model provider | 58 passed, covering M1 to M7 |
+| Detector evaluation, held-out synthetic data | LOF: 1.1% false positives, 93.3% recall. Isolation Forest: 0.9%, 47.6%. Either: 1.8%, 94.8% |
+| Summary, real model, 10 runs | 10 of 10 passed the checks, 5 after one repair. $0.006 |
+
+**Defects found by testing and fixed:**
+- The risk stage could not reach a rules helper across module boundaries. Found by ArchUnit; invoice numbers are now normalized in SQL.
+- The baseline comparison overflowed its column at desktop width, and a capped score said the detectors "added nothing". Found by the visual review.
+
+**Screens reviewed** at desktop and phone width: the demonstrations page and the risk screen for all three scenarios.
+
+**Not verified:**
+- Detection of anything on real claims. The detectors learned a synthetic baseline, and are evaluated on synthetic anomalies.
+- Real-model extraction of the demonstration documents. The end-to-end runs use the stand-in; a reset on your machine uses DeepSeek.
+- Everything listed under earlier milestones, including CI.
 
 ### 2026-11-08: M6 Policy Agent
 

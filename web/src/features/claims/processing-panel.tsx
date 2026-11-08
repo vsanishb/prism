@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleAlert, CircleCheck, CircleDashed, FileSearch, LoaderCircle, RotateCw, Scale, TriangleAlert } from "lucide-react";
+import { CircleAlert, CircleCheck, CircleDashed, FileSearch, LoaderCircle, RotateCw, Scale, ShieldAlert, TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Notice } from "@/components/ui/feedback";
 import { Panel, SectionTitle } from "@/components/ui/layout";
 import { apiRequest, errorMessage } from "@/lib/client-api";
-import { DOCUMENT_TYPE_LABELS, PROCESSING_FAILURE_MESSAGES, STAGE_LABELS } from "@/lib/labels";
-import type { ClaimFacts, DocumentRecord, ProcessingView, StageStatus, StageView } from "@/lib/types";
+import { DOCUMENT_TYPE_LABELS, PROCESSING_FAILURE_MESSAGES, REVIEW_ROUTE_LABELS, RISK_BAND_LABELS, STAGE_LABELS } from "@/lib/labels";
+import type { ClaimFacts, DocumentRecord, ProcessingView, RiskBand, StageStatus, StageView } from "@/lib/types";
 
 const POLL_MILLIS = 2500;
 
@@ -37,6 +37,17 @@ function Step({ label, status, detail }: { label: string; status: StageStatus; d
 
 function stageStatus(stages: StageView[], stage: StageView["stage"]): StageView | undefined {
   return stages.find((candidate) => candidate.stage === stage);
+}
+
+/** A screened claim's band is the stage's detail. It changes how closely the claim is reviewed, nothing more. */
+function riskDetail(stage: StageView | undefined): string | undefined {
+  if (stage?.status === "COMPLETED" || stage?.status === "REQUIRES_REVIEW") {
+    const band = stage.detailCode as RiskBand | null;
+    return band && band in RISK_BAND_LABELS
+      ? `${RISK_BAND_LABELS[band]}. ${REVIEW_ROUTE_LABELS[band === "HIGH" ? "SENIOR_REVIEW" : "STANDARD_REVIEW"]}.`
+      : undefined;
+  }
+  return failureDetail(stage);
 }
 
 function failureDetail(stage: StageView | undefined): string | undefined {
@@ -106,6 +117,8 @@ export function ProcessingPanel({
   const validation = stageStatus(view.stages, "VALIDATION");
   const analysis = stageStatus(view.stages, "POLICY_ANALYSIS");
   const analyzed = analysis?.status === "COMPLETED" || analysis?.status === "REQUIRES_REVIEW";
+  const risk = stageStatus(view.stages, "RISK_SCREENING");
+  const screened = risk?.status === "COMPLETED" || risk?.status === "REQUIRES_REVIEW";
   const missing = (facts?.findings ?? []).filter((finding) => finding.code === "MISSING_REQUIRED_DOCUMENT");
   const waiting = view.claimStatus === "AWAITING_INFORMATION";
 
@@ -143,6 +156,7 @@ export function ProcessingPanel({
           <Step label={STAGE_LABELS.CONSOLIDATION} status={consolidation?.status ?? "NOT_STARTED"} detail={failureDetail(consolidation)} />
           <Step label={STAGE_LABELS.VALIDATION} status={validation?.status ?? "NOT_STARTED"} />
           <Step label={STAGE_LABELS.POLICY_ANALYSIS} status={analysis?.status ?? "NOT_STARTED"} detail={failureDetail(analysis)} />
+          <Step label={STAGE_LABELS.RISK_SCREENING} status={risk?.status ?? "NOT_STARTED"} detail={riskDetail(risk)} />
         </ol>
         {error ? (
           <div className="border-t border-line p-5">
@@ -164,6 +178,15 @@ export function ProcessingPanel({
                   >
                     <Scale aria-hidden className="size-4" />
                     Read policy analysis
+                  </Link>
+                ) : null}
+                {screened ? (
+                  <Link
+                    href={`/claims/${claimId}/risk`}
+                    className="inline-flex items-center gap-1.5 text-[13px] font-medium text-accent hover:text-accent-hover"
+                  >
+                    <ShieldAlert aria-hidden className="size-4" />
+                    Read risk screening
                   </Link>
                 ) : null}
               </div>

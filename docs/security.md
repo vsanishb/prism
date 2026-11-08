@@ -131,6 +131,7 @@ Queries are parameterized. The database runs locally on PostgreSQL 18 ([D-074](d
 - Output is schema-validated, and citations are checked against retrieved evidence.
 - Injection fixtures are part of the AI test suite, and suspected injection raises a document anomaly indicator.
 - Model output is treated as untrusted when rendered in the UI.
+- The risk summary is checked by code before it is shown: cited signals must exist, numbers must come from the signals, and accusations or decisions are refused. It is stored apart from the screening and cannot change it ([D-086](decisions.md)).
 
 ## Audit logging
 
@@ -147,6 +148,8 @@ Application logs are separate, and contain IDs but no document content, personal
 Claims contain personal and health data.
 
 - **Minimization:** only needed content goes to the AI service and models. The Policy Agent receives only de-identified facts: dates, amounts, diagnosis, procedure, tests, medicines, and bill lines, never names, hospitals, doctors, or policy numbers. The AI service refuses any other fact, and its queries are built from these ([D-079](decisions.md)). Search queries travel in request bodies, never URLs, and are not logged. Embedding and rerank calls follow the same zero-retention rules as every other model call ([D-077](decisions.md)).
+- **Risk screening:** rules and cross-claim matching run in core, on core's own data. The detectors receive nine numbers, and the summary receives de-identified signal text. A match with another claim shows only that claim's number and what matched, and opening it applies that claim's access rules. Rules use no protected characteristics and treat no person or provider as suspicious by identity ([D-082](decisions.md)).
+- **Demonstrations:** the demonstrations endpoint returns 404 outside the local environment ([D-088](decisions.md)).
 - **Providers:** ZDR routing is mandatory ([D-027](decisions.md)).
 - **Temporal:** IDs only ([D-011](decisions.md)).
 - **Access:** viewing documents is permission-checked and audited.

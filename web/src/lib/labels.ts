@@ -1,4 +1,10 @@
 import type {
+  AnomalyDetector,
+  IndicatorKind,
+  ReviewRoute,
+  RiskBand,
+  RiskCategory,
+  RiskSeverity,
   ClaimStatus,
   ClaimType,
   DocumentReference,
@@ -67,6 +73,8 @@ const ACTION_LABELS: Record<string, string> = {
   POLICY_SEARCH_INDEX_RETRY_REQUESTED: "Policy indexing retried",
   CLAIM_SENT_FOR_POLICY_ANALYSIS: "Claim sent for policy analysis",
   CLAIM_POLICY_ANALYZED: "Claim policy analyzed",
+  CLAIM_RISK_SCREENED: "Claim screened for risk",
+  CLAIM_SENT_FOR_RISK_SUMMARY: "Claim risk signals sent for an AI summary",
   CLAIM_CREATED: "Claim created",
   CLAIM_UPDATED: "Claim edited",
   CLAIM_SUBMITTED: "Claim submitted",
@@ -133,6 +141,7 @@ export const STAGE_LABELS: Record<StageName, string> = {
   CONSOLIDATION: "Combining facts across documents",
   VALIDATION: "Checking dates, totals, and required documents",
   POLICY_ANALYSIS: "Reading the policy against the facts",
+  RISK_SCREENING: "Screening for risk signals",
 };
 
 export const PROCESSING_FAILURE_MESSAGES: Record<string, string> = {
@@ -144,6 +153,8 @@ export const PROCESSING_FAILURE_MESSAGES: Record<string, string> = {
   policy_not_published: "The policy version for this claim is not published yet. Publish it, then retry.",
   policy_not_searchable: "The policy version for this claim is not indexed for search yet. Retry once it is searchable.",
   index_not_found: "The policy version for this claim is not indexed for search yet. Retry once it is searchable.",
+  anomaly_result_mismatch: "Anomaly detection returned a result that does not fit this claim. Retry, and ask an administrator if it keeps failing.",
+  no_consolidated_facts: "There are no combined facts to work from yet. Retry once the documents are read.",
   default: "This step did not finish. Retry, and ask an administrator if it keeps failing.",
 };
 
@@ -391,3 +402,75 @@ export const FACT_NAME_LABELS: Record<string, string> = {
   medicines: "Medicines",
 };
 
+// --- Risk screening (M7). The words matter: these are signals for review, never findings of fraud. ---
+
+export const RISK_BAND_LABELS: Record<RiskBand, string> = {
+  LOW: "Low risk",
+  MEDIUM: "Medium risk",
+  HIGH: "High risk",
+};
+
+export const REVIEW_ROUTE_LABELS: Record<ReviewRoute, string> = {
+  STANDARD_REVIEW: "Standard review",
+  SENIOR_REVIEW: "Senior review or investigation",
+};
+
+export const RISK_CATEGORY_LABELS: Record<RiskCategory, string> = {
+  CONSISTENCY: "Consistency",
+  FINANCIAL: "Financial",
+  DUPLICATE: "Duplicates and other claims",
+  DOCUMENT: "Documents",
+  MISSING_INFORMATION: "Missing information",
+  STATISTICAL: "Statistical anomalies",
+};
+
+export const INDICATOR_KIND_LABELS: Record<IndicatorKind, string> = {
+  DATA_INCONSISTENCY: "Data inconsistency",
+  RISK_INDICATOR: "Risk indicator",
+  FRAUD_INDICATOR: "Fraud indicator",
+};
+
+export const INDICATOR_KIND_DESCRIPTIONS: Record<IndicatorKind, string> = {
+  DATA_INCONSISTENCY: "Documents, or documents and the entered details, disagree.",
+  RISK_INDICATOR: "A pattern that needs a closer look.",
+  FRAUD_INDICATOR: "A pattern that may warrant investigation. It is not a finding of fraud.",
+};
+
+export const RISK_SEVERITY_LABELS: Record<RiskSeverity, string> = {
+  LOW: "Low",
+  MEDIUM: "Medium",
+  HIGH: "High",
+};
+
+export const DETECTOR_LABELS: Record<AnomalyDetector, { name: string; question: string; method: string }> = {
+  ISOLATION_FOREST: {
+    name: "Isolation Forest",
+    question: "Is this claim unusual compared with all baseline claims?",
+    method: "Isolates claims with random splits. Unusual claims are isolated in fewer splits.",
+  },
+  LOCAL_OUTLIER_FACTOR: {
+    name: "Local Outlier Factor",
+    question: "Is this claim unusual compared with similar claims?",
+    method: "Compares how densely packed this claim's nearest baseline claims are with how densely packed theirs are.",
+  },
+};
+
+export const RISK_FEATURE_LABELS: Record<string, string> = {
+  claimedAmount: "Claimed amount",
+  sumInsuredRatio: "Share of the sum insured",
+  lengthOfStayDays: "Length of stay (nights)",
+  amountPerDay: "Amount per day of stay",
+  lineItemCount: "Bill line items",
+  largestItemShare: "Largest line item's share of the bills",
+  billDeviation: "Claimed amount compared with the bills",
+  priorClaims12m: "Patient's earlier claims in the past year",
+  daysSinceCoverStart: "Days from cover start to admission",
+};
+
+export const RISK_SUMMARY_PROBLEMS: Record<string, string> = {
+  model_output_invalid: "The summary the model wrote did not pass Prism's checks, so it is not shown.",
+  model_unavailable: "The AI model was unavailable.",
+  ai_service_unavailable: "The AI service could not be reached.",
+  summary_rejected: "The summary did not pass Prism's checks, so it is not shown.",
+  default: "No summary could be written.",
+};

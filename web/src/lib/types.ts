@@ -199,7 +199,7 @@ export interface TimelineEntry {
   actorName: string | null;
 }
 
-export type StageName = "DOCUMENT_EXTRACTION" | "CONSOLIDATION" | "VALIDATION" | "POLICY_ANALYSIS";
+export type StageName = "DOCUMENT_EXTRACTION" | "CONSOLIDATION" | "VALIDATION" | "POLICY_ANALYSIS" | "RISK_SCREENING";
 export type StageStatus = "NOT_STARTED" | "PROCESSING" | "COMPLETED" | "REQUIRES_REVIEW" | "FAILED";
 
 export interface StageView {
@@ -499,4 +499,110 @@ export interface PolicyAssessment {
   degradedSearches: number;
   pipelineVersion: string;
   findings: AssessmentFinding[];
+}
+
+// --- Risk screening (M7). Signals for review: never a finding of fraud. ---
+
+export type RiskBand = "LOW" | "MEDIUM" | "HIGH";
+export type ReviewRoute = "STANDARD_REVIEW" | "SENIOR_REVIEW";
+export type RiskCategory = "CONSISTENCY" | "FINANCIAL" | "DUPLICATE" | "DOCUMENT" | "MISSING_INFORMATION" | "STATISTICAL";
+export type IndicatorKind = "DATA_INCONSISTENCY" | "RISK_INDICATOR" | "FRAUD_INDICATOR";
+export type RiskSeverity = "LOW" | "MEDIUM" | "HIGH";
+export type AnomalyDetector = "ISOLATION_FOREST" | "LOCAL_OUTLIER_FACTOR";
+
+export interface RiskEvidence {
+  label: string;
+  detail: string | null;
+  documentId: string | null;
+  page: number | null;
+  region: number[] | null;
+  factId: string | null;
+  lineItemId: string | null;
+  matchedClaim: { id: string; claimNumber: string } | null;
+}
+
+export interface RiskIndicator {
+  position: number;
+  signalId: string | null;
+  ruleId: string;
+  ruleVersion: number;
+  category: Exclude<RiskCategory, "STATISTICAL">;
+  kind: IndicatorKind;
+  severity: RiskSeverity;
+  points: number;
+  title: string;
+  explanation: string;
+  evidence: RiskEvidence[];
+}
+
+export interface RiskDetectorResult {
+  detector: AnomalyDetector;
+  signalId: string | null;
+  score: number;
+  threshold: number;
+  percentile: number;
+  flagged: boolean;
+  points: number;
+}
+
+export interface RiskFeature {
+  name: string;
+  value: number;
+  imputed: boolean;
+  baselineMedian: number;
+  baselinePercentile: number;
+}
+
+export interface RiskRule {
+  id: string;
+  version: number;
+  category: Exclude<RiskCategory, "STATISTICAL">;
+  kind: IndicatorKind;
+  severity: RiskSeverity;
+  title: string;
+  checks: string;
+  triggered: boolean;
+}
+
+export interface RiskSummary {
+  status: "AVAILABLE" | "UNAVAILABLE" | "NOT_NEEDED";
+  text: string | null;
+  cited: string[];
+  signals: Record<string, string>;
+  problem: string | null;
+  promptVersion: string | null;
+}
+
+export interface RiskScreening {
+  id: string;
+  createdAt: string;
+  current: boolean;
+  score: number;
+  band: RiskBand;
+  route: ReviewRoute;
+  rulesOnlyScore: number;
+  rulesOnlyBand: RiskBand;
+  thresholds: { mediumFrom: number; highFrom: number; maximum: number };
+  versions: { ruleset: string; scoring: string; features: string; model: string; fingerprint: string; baselineSize: number };
+  categories: { category: RiskCategory; points: number; cap: number; contribution: number }[];
+  indicators: RiskIndicator[];
+  detectors: RiskDetectorResult[];
+  features: RiskFeature[];
+  rules: RiskRule[];
+  summary: RiskSummary | null;
+}
+
+export type DemonstrationScenarioKey = "SEVERE" | "CLEAN" | "DISGUISED";
+
+export interface DemonstrationClaim {
+  id: string;
+  claimNumber: string;
+  status: ClaimStatus;
+}
+
+export interface DemonstrationScenario {
+  scenario: DemonstrationScenarioKey;
+  claim: DemonstrationClaim;
+  earlierClaims: DemonstrationClaim[];
+  ready: boolean;
 }

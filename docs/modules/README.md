@@ -16,5 +16,6 @@ Describes modules **as built**. For intended design, see [plans](../plans/README
 | [Policy knowledge](policy-knowledge.md) | Policy ingestion, assembly, validation, review, and publication |
 | [Retrieval](retrieval.md) | Search index, hybrid search, and the retrieval explorer |
 | [Policy Agent](policy-agent.md) | Issue-by-issue analysis of a claim against its policy, with checked citations and calculations |
+| [Risk screening](risk.md) | Rules, Isolation Forest and LOF, scoring, routing, the checked AI summary, and the demonstrations |
 
 When a module is implemented, add `<module>.md` covering its purpose, entry points, key types, data, failure behavior, and how to test it.

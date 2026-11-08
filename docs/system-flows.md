@@ -133,17 +133,19 @@ An unsupported citation invalidates that finding, which then becomes an unresolv
 
 ```mermaid
 flowchart TD
-    A[Claim facts] --> B[Consistency rules]
-    A --> C[Financial rules]
-    P[Prior-claim matches from core] --> D[Duplicate rules]
-    A --> E[Document anomaly rules]
-    A --> M[Missing information rules]
-    B & C & D & E & M --> F[Indicators with evidence]
-    F --> G[Explainable score and band]
-    G --> H[Review routing]
+    A[Claim facts, documents, policy] --> FE[Feature engineering, in core]
+    P[Matches in other claims, by SQL in core] --> R
+    A --> R[22 rules in core: consistency, financial, duplicate, document, missing information]
+    FE --> IF[Isolation Forest, AI service]
+    FE --> LOF[Local Outlier Factor, AI service]
+    R --> S[Score: capped categories, versioned weights]
+    IF & LOF --> S
+    S --> B[LOW, MEDIUM, or HIGH, stored and audited]
+    B --> H[Review route: standard or senior]
+    B --> X[Optional AI summary of the signals, checked, stored apart]
 ```
 
-Core finds cross-claim matches, because AI has no access to claim history, and passes them in. A high band adds scrutiny and routes to an investigator. It never rejects a claim.
+Core finds cross-claim matches, because AI has no access to claim history, and the detectors receive nine numbers and nothing that identifies anyone. Anomaly detection alone can reach `MEDIUM` at most. The summary is written after the result is stored and cannot change it. A high band routes to senior review or investigation. It never rejects a claim ([D-082](decisions.md) to [D-086](decisions.md)). As built: [risk](modules/risk.md).
 
 ## Human review
 

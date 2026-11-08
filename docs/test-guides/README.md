@@ -12,3 +12,4 @@ All test data is synthetic. It must never be presented as real insurance or medi
 | M4 Policy intelligence | [m4-policy-intelligence.md](m4-policy-intelligence.md) |
 | M5 Hybrid retrieval | [m5-hybrid-retrieval.md](m5-hybrid-retrieval.md) |
 | M6 Policy Agent | [m6-policy-agent.md](m6-policy-agent.md) |
+| M7 Fraud and risk intelligence | [m7-fraud-risk.md](m7-fraud-risk.md) |

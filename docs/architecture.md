@@ -22,14 +22,14 @@ flowchart LR
 |---|---|---|
 | **Web** | Presentation and user flows | Hold authorization logic; call the AI service; see secrets |
 | **Core** | Identity, RBAC, claims, policy records, documents, reviews, audit, workflows, AI result records | Call model providers; perform AI processing |
-| **AI** | Extraction, policy knowledge, retrieval, Policy Agent, risk analysis, model access | Accept user traffic; read `core`; hold document storage credentials; call core |
+| **AI** | Extraction, policy knowledge, retrieval, Policy Agent, anomaly detection and risk summaries, model access | Accept user traffic; read `core`; hold document storage credentials; call core |
 | **Temporal** | Durable execution state | Store claim content: payloads carry IDs only |
 
 Dependencies point one way: web → core → AI. The AI service never calls back, which keeps the trust model simple and avoids distributed cycles.
 
 ### Core: modular monolith
 
-One deployable with feature packages (`identity`, `audit`, `policy`, `claim`, `document`, `intelligence`, `review`, `workflow`, `aiclient`, `system`, `platform`). Modules use each other's public APIs only, and ArchUnit tests enforce this. The domain does not justify more microservices.
+One deployable with feature packages (`identity`, `audit`, `policy`, `claim`, `document`, `intelligence`, `risk`, `review`, `workflow`, `aiclient`, `system`, `platform`). `risk` holds the rules and scoring as pure code with no database access ([D-082](decisions.md)). Modules use each other's public APIs only, and ArchUnit tests enforce this. The domain does not justify more microservices.
 
 ### AI: stateless pipelines plus one knowledge store
 
@@ -62,7 +62,7 @@ One local PostgreSQL 18 database, with two schemas, each with its own runtime ro
 | Policies | `policies`, `policy_versions` |
 | Claims | `claims` |
 | Documents | `documents` |
-| Intelligence | `ai_runs`, `document_extractions`, `claim_consolidations`, `claim_facts`, `claim_fact_sources`, `claim_line_items`, `validation_findings`, `policy_assessments`, `assessment_citations`, `risk_assessments`, `risk_indicators` |
+| Intelligence | `ai_runs`, `document_extractions`, `claim_consolidations`, `claim_facts`, `claim_fact_sources`, `claim_line_items`, `validation_findings`, `policy_assessments`, `assessment_citations`, `risk_assessments`, `risk_indicators`, `risk_evidence`, `risk_anomaly_results`, `risk_category_scores`, `risk_summaries` |
 | Workflow | `stage_events`, `outbox_events`. Workflow IDs derive from claim IDs, so no reference table is needed |
 | Review | `review_tasks`, `review_notes`, `document_requests`, `authorized_outcomes` |
 | Audit | `audit_events` (append-only) |
@@ -107,7 +107,7 @@ Workflows and activities run in the core service's Temporal worker. Activities a
 
 | Workflow | ID | Purpose |
 |---|---|---|
-| `ClaimProcessingWorkflow` | `claim-{claimId}` | Full claim lifecycle, including policy analysis and human waits |
+| `ClaimProcessingWorkflow` | `claim-{claimId}` | Full claim lifecycle, including policy analysis, risk screening, and human waits |
 | `PolicyIngestionWorkflow` | `policy-ingestion-{documentId}` | Reading a wording, up to review for publication |
 | `PolicyIndexingWorkflow` | `policy-index-{versionId}` | Indexing a published version for search |
 

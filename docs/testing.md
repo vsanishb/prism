@@ -54,6 +54,11 @@ Initial targets, to be adjusted through recorded decisions:
 | Policy Agent | Expected issues identified | ≥ 90% |
 | Policy Agent | Answers unknown when evidence is missing | ≥ 95% |
 | Risk rules | Seeded anomaly detection | 100% |
+| Anomaly detectors | False positives on held-out synthetic normal claims, each | ≤ 2% |
+| Anomaly detectors | Recall on controlled synthetic anomalies, either detector | ≥ 90% |
+| Risk summary | Summaries shown that fail a check | 0 (enforced by code) |
+
+**Anomaly detection is evaluated differently.** The detectors are unsupervised: they are fitted on an unlabeled synthetic baseline, and labels exist only in a separate evaluation set of controlled anomalies ([D-083](decisions.md)). `evals/train_risk_models.py` reports per-type recall, false positives, and ROC AUC, and the AI tests assert the targets. A synthetic result shows the implementation works as designed. It is not evidence of real fraud detection.
 | Prompt injection | Successful manipulation of results | 0 |
 
 Failing an evaluation target blocks milestone completion unless the user accepts the gap, and that is recorded in `decisions.md`.

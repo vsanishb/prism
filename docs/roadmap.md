@@ -13,8 +13,8 @@ Each milestone delivers a substantial, testable slice through the frontend. Comp
 | M4 | Policy intelligence | Complete | M3 |
 | M5 | Hybrid retrieval | Complete | M4 |
 | M6 | Policy Agent | Complete | M3, M5 |
-| M7 | Fraud and risk intelligence | **Next** | M3 |
-| M8 | Human review and outcomes | Planned | M6, M7 |
+| M7 | Fraud and risk intelligence | Complete | M3 |
+| M8 | Human review and outcomes | **Next** | M6, M7 |
 | M9 | Production readiness | Planned | M8 |
 
 Every milestone also requires: tests at the levels in [testing.md](testing.md), a visual review of every new screen at desktop and phone width, synthetic test data, a [frontend test guide](test-guides/README.md), updated docs, and meaningful commits.
@@ -179,17 +179,20 @@ Every milestone also requires: tests at the levels in [testing.md](testing.md), 
 **Objective:** explainable screening that never accuses.
 **Plan:** [fraud and risk](plans/fraud-risk.md)
 
-- [ ] Implement the rule engine and versioned ruleset
-- [ ] Implement consistency and financial rules
-- [ ] Implement duplicate and similarity detection across claims
-- [ ] Implement document anomaly rules
-- [ ] Implement scoring, bands, and explanations
-- [ ] Add the risk stage to the workflow
-- [ ] Build the risk panel with indicators linked to evidence
+- [x] Implement the rule engine and versioned ruleset ([D-082](decisions.md))
+- [x] Implement consistency and financial rules
+- [x] Implement duplicate and similarity detection across claims ([D-087](decisions.md))
+- [x] Implement document anomaly rules
+- [x] Implement Isolation Forest and LOF on a synthetic baseline, with a manifest check ([D-083](decisions.md), [D-084](decisions.md))
+- [x] Implement scoring, bands, and routing ([D-085](decisions.md))
+- [x] Implement the checked AI summary ([D-086](decisions.md))
+- [x] Add the risk stage to the workflow
+- [x] Build the risk screen with indicators linked to evidence
+- [x] Seed three demonstration scenarios and their page ([D-088](decisions.md))
 
-**Frontend test flow:** process seeded anomalous claims → see each indicator, its evidence, and contribution to the score → compare with a clean claim.
+**Frontend test flow:** submit the severe, clean, and disguised demonstrations → see each indicator, its evidence, both detectors, and how the score was built → compare the bands. See the [test guide](test-guides/m7-fraud-risk.md).
 
-**Testing:** every rule, with positive and negative cases; seeded anomaly set; language checks confirming no accusation of fraud.
+**Testing:** every rule, with positive and negative cases; deterministic scoring; detectors trained and evaluated on held-out synthetic data; the summary's checks; language checks confirming no accusation of fraud.
 
 **Completion:** seeded anomalies are detected, and every indicator shows its evidence.
 

@@ -37,6 +37,8 @@ Checked against Maven Central, PyPI, npm, nodejs.org, Docker Hub, and vendor doc
 | uv | 0.13.7 | Installed and verified |
 | Apache PDFBox | 3.0.8 | Verified: parsing and rendering in tests and E2E |
 | ReportLab | 5.1.0 | Dev only. BSD licensed. Generates test documents |
+| scikit-learn | 1.9.1 | Runtime since M7: Isolation Forest and LOF. BSD licensed. Windows wheel for Python 3.14 verified (D-089) |
+| NumPy | 2.5.4 | Runtime since M7, with scikit-learn. SciPy 1.18.1 and joblib 1.6.0 come with it |
 
 Versions move only through a new decision entry. Spring Boot 4.2 was at RC2 on the check date and is deliberately not used.
 
@@ -193,7 +195,7 @@ Routes live in configuration. Choices come from the OpenRouter catalog on 2026-1
 Changing the embedding model requires re-embedding each version; chunks record their model.
 
 ### D-028 Rules first for risk
-**Status:** Accepted · **Source:** User (principle) / Dev (design)
+**Status:** Accepted, refined by D-082 to D-086 · **Source:** User (principle) / Dev (design)
 Risk indicators come mainly from deterministic, versioned rules, so they are explainable and testable. Models only propose semantic contradictions, which must cite evidence. No outcome is automated.
 
 ### D-029 Deterministic calculation
@@ -447,3 +449,47 @@ The analysis stage runs before a claim goes to review. If it fails, including be
 On 13 synthetic scenarios, with DeepSeek V4.1 Flash on both agent routes, on 2026-11-07: expected issues identified 10 of 11 (target 90%), unknown when a needed fact was missing or conflicting 4 of 4 (target 95%), manipulation through document text 0 of 1, no scenario failed, $0.34 for the set (about 2.6 cents a claim). Every citation shown resolves to retrieved evidence, as validation guarantees; the model's own citations resolved 197 of 198 times. The miss: the room rent limit was cited for a dengue claim, but not applied as a daily limit.
 The first run found three defects, fixed before this one: a blank follow-up search crashed an analysis; a waiting-period finding claimed evidence while the admission dates conflicted, because the model did not name the date; and a single transient model error failed a whole analysis. Each now has a regression test.
 The set is small and synthetic, and judges statuses and citations, not the quality of the reasoning. Real claims and wordings are the test that matters.
+
+## Milestone 7
+
+### D-082 Risk screening: rules in core, anomaly detection in the AI service
+**Status:** Accepted · **Source:** User (scope) / Dev (placement)
+Rules run in core, in a `risk` module with no database access, fed by `intelligence`, which loads the claim's facts and finds matches in other claims. Core already holds the facts, the documents, the policy, and the claim history. Sending them to the AI service would add a second home for personal data, against D-013, for code that needs no model. Anomaly detection needs Python's ML libraries, so it runs in the AI service, which receives nine numbers and no identity. Core aggregates, stores, and audits. The architecture had placed risk analysis in the AI service. This refines it.
+
+### D-083 Unsupervised anomaly detection: Isolation Forest and Local Outlier Factor
+**Status:** Accepted · **Source:** User (algorithms) / Dev (design)
+There are no labeled fraud outcomes, and there will be few for a long time, so supervised learning has nothing to learn from. Unsupervised detectors model normal claims and measure departure from them, which needs only unlabeled data. They answer "unusual?", never "fraud?" (Bolton and Hand, 2002).
+- **Isolation Forest** (Liu, Ting, and Zhou, 2008 and 2012) isolates points with random splits. Anomalies need fewer splits. It catches claims unusual against the whole population, scales linearly, and needs no distance metric.
+- **Local Outlier Factor** (Breunig et al., 2000) compares a point's local density with its neighbors'. It catches claims that are unusual for their kind, such as a surgical claim with a medical claim's pattern, even when they are ordinary globally.
+The two stay separate, so each can be evaluated and shown on its own. Features are standardized. Isolation Forest has 200 trees. LOF uses 35 neighbors in novelty mode, so that a new claim is scored against the baseline without refitting. Each flags a claim beyond the 99th percentile of its own baseline scores: by construction, about 1 in 100 normal claims is flagged.
+Training data is synthetic because there is no real claim data, and real data is prohibited until the privacy gate (D-034). The generator is seeded and documented, and its distributions are judgment, not measurement. The evaluation's anomaly labels are never seen in training. Results on synthetic data say nothing about real-world detection.
+
+### D-084 Detectors are fitted at service start, and checked against a manifest
+**Status:** Accepted · **Source:** Dev
+Fitting on the 5,000-claim baseline takes about a second. So the AI service fits both detectors at startup from the seeded generator, instead of loading a serialized model. Unpickling executes code, and a pickle ties the model to one library version. The training script writes a committed manifest: generator version, seed, parameters, a fingerprint of the training data, and each detector's threshold. Startup recomputes them and refuses to start on any mismatch, so a change to the generator, the parameters, or a library that alters the model cannot pass unnoticed. Every result records the model version and fingerprint.
+
+### D-085 Risk scoring
+**Status:** Accepted · **Source:** User (approach) / Dev (weights)
+Severity points: low 5, medium 12, high 25. Category caps: consistency 40, financial 40, duplicate 50, document 10, missing information 15, statistical anomalies 20 (10 for each detector that flags). Bands: `LOW` below 20, `MEDIUM` 20 to 44, `HIGH` 45 or more, with the total capped at 100. The statistical cap is below the `HIGH` threshold, so anomaly detection alone can never place a claim in `HIGH`. It can raise a claim that rules already put in `MEDIUM`, and the score breakdown shows when it did. `HIGH` routes to senior review. Weights are judgment, stored as versioned configuration (`risk-scoring-1`), and the result keeps every version it was computed with. The score is not a probability.
+
+### D-086 The AI summary explains, and decides nothing
+**Status:** Accepted · **Source:** User (role) / Dev (checks)
+After the screening is stored, the configured model (DeepSeek V4.1 Flash, no new model) may write a summary of up to 900 characters from the de-identified signals: titles, explanations, and contributions, without names. Code keeps it only if it cites signals that exist, uses only numbers that appear in them, and does not assert fraud, guilt, rejection, or a decision. Otherwise the gateway asks the same model for a repair, with up to two more attempts, and then the summary is recorded as unavailable. It lives in its own table, written after the screening, so it cannot change any score, band, or route. The screening is complete without it.
+
+### D-087 Near-identical bills are found by their line items
+**Status:** Accepted · **Source:** Dev
+The plan named a perceptual page hash, which extraction would have to compute, changing a completed milestone. Instead, a bill is near-identical to another claim's bill when at least four line items were read and 70% of them match on normalized description and amount, at the same hospital. This compares content, survives a re-typed or re-scanned copy, and needs only what extraction already stores. A copy that is wholly re-written is not caught. A perceptual hash can be added later.
+
+### D-088 Demonstration scenarios are seeded synthetic claims
+**Status:** Accepted · **Source:** User (need) / Dev (design)
+The seed adds a synthetic policy, earlier claims (submitted, so they are processed when core starts), and three draft claims, with generated documents. A demonstrations page, available only in the local environment, explains each scenario's embedded signals, and submits its draft through the normal submission. It waits until the earlier claims are processed, because duplicate checks compare against their extracted facts. Nothing is faked: each claim is extracted, consolidated, analyzed, and screened like any other. A scenario runs once per database. A reset restores it.
+
+### D-089 scikit-learn and NumPy
+**Status:** Accepted · **Source:** Dev
+scikit-learn 1.9.1 and NumPy 2.5.4, the current releases, with Windows wheels for Python 3.14, checked on PyPI on 2026-11-08. scikit-learn's implementations of both detectors are reference implementations of the papers. A few lines of NumPy would not be credible replacements.
+
+### D-090 Risk screening evaluation
+**Status:** Accepted · **Source:** Dev (measured)
+On 2026-11-08, on 2,000 held-out synthetic normal claims and 210 controlled synthetic anomalies of 7 types: Isolation Forest 0.9% false positives, 47.6% recall, ROC AUC 0.902; LOF 1.1%, 93.3%, 0.995; either detector 1.8% and 94.8%. Isolation Forest misses inflated claims entirely, because almost every baseline claim asks for exactly its bill. That is a known limit of axis-parallel splits, and is kept visible in a test; rule FIN-03 covers those claims. The three demonstrations give HIGH (100), LOW (0), and HIGH (57, rules alone 37), as designed. The summary on DeepSeek V4.1 Flash passed every check in 10 of 10 runs, 5 after one repair, for $0.006.
+These results describe agreement with a synthetic generator. They are evidence that the implementation works as designed, and no evidence of how it would detect anything in real claims.
+

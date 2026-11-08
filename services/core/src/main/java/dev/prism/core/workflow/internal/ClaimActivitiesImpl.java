@@ -80,6 +80,11 @@ class ClaimActivitiesImpl implements ClaimActivities {
     }
 
     @Override
+    public void recordRiskScreeningFailed(String claimId, String code) {
+        stages.record(UUID.fromString(claimId), Stage.RISK_SCREENING, null, Status.FAILED, code);
+    }
+
+    @Override
     public void recordInformationWaitExpired(String claimId) {
         audit.recordIndependently(AuditEntry.of(
                         "claim:" + claimId, AuditAction.CLAIM_INFORMATION_WAIT_EXPIRED, AuditOutcome.SUCCESS)

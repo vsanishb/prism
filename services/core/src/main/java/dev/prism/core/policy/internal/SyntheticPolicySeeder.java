@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 class SyntheticPolicySeeder implements ApplicationRunner {
 
     private static final String ACTOR = "policy.manager@synthetic.prism.test";
+    private static final String DEMONSTRATION_POLICY = "SYN-RSK-2026-0003";
 
     private final PolicyService policies;
     private final SyntheticActors actors;
@@ -33,6 +34,16 @@ class SyntheticPolicySeeder implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
+        if (!policies.exists(DEMONSTRATION_POLICY)) {
+            // The M7 risk demonstrations' policy (D-088). It must match test-data/claims/risk-demo/manifest.json,
+            // which the demonstration seeder checks. It has no wording: screening does not need one.
+            actors.runAs(ACTOR, () -> {
+                PolicySummary plus = policies.create(
+                        DEMONSTRATION_POLICY, "Family Health Plus (Synthetic)", "Synthetic Policyholder Four");
+                policies.addVersion(
+                        plus.id(), LocalDate.parse("2026-01-01"), LocalDate.parse("2026-12-31"), new BigDecimal("500000.00"));
+            });
+        }
         if (policies.exists("SYN-FFG-2026-0001")) {
             return;
         }

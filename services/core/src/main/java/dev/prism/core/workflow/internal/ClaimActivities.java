@@ -24,5 +24,7 @@ public interface ClaimActivities {
 
     void recordAnalysisFailed(String claimId, String code);
 
+    void recordRiskScreeningFailed(String claimId, String code);
+
     void recordInformationWaitExpired(String claimId);
 }

@@ -1,0 +1,16 @@
+{
+  "version": "risk-scoring-1",
+  "severityPoints": { "LOW": 5, "MEDIUM": 12, "HIGH": 25 },
+  "categoryCaps": {
+    "CONSISTENCY": 40,
+    "FINANCIAL": 40,
+    "DUPLICATE": 50,
+    "DOCUMENT": 10,
+    "MISSING_INFORMATION": 15,
+    "STATISTICAL": 20
+  },
+  "detectorPoints": { "ISOLATION_FOREST": 10, "LOCAL_OUTLIER_FACTOR": 10 },
+  "mediumFrom": 20,
+  "highFrom": 45,
+  "maximum": 100
+}

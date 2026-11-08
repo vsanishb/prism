@@ -23,5 +23,6 @@ public enum AuditDetail {
     CONSOLIDATION_SEQUENCE,
     VALUE_ID,
     PAGES,
-    CHUNK_COUNT
+    CHUNK_COUNT,
+    RISK_BAND
 }

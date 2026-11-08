@@ -28,6 +28,7 @@ public class ClaimProcessingWorkflowImpl implements ClaimProcessingWorkflow {
     private static final int MAX_PARALLEL_DOCUMENTS = 3;
 
     static final String POLICY_ANALYSIS_CHANGE = "policy-analysis";
+    static final String RISK_SCREENING_CHANGE = "risk-screening";
 
     /** State changes must eventually land, however long a database outage lasts. */
     private final ClaimActivities durable = Workflow.newActivityStub(
@@ -77,7 +78,22 @@ public class ClaimProcessingWorkflowImpl implements ClaimProcessingWorkflow {
                             .build())
                     .build());
 
+    /** Model calls are few and short, but it heartbeats like analysis. */
+    private final RiskActivities risk = Workflow.newActivityStub(
+            RiskActivities.class,
+            ActivityOptions.newBuilder()
+                    .setTaskQueue(AI_QUEUE)
+                    .setStartToCloseTimeout(Duration.ofMinutes(5))
+                    .setHeartbeatTimeout(Heartbeats.TIMEOUT)
+                    .setRetryOptions(RetryOptions.newBuilder()
+                            .setInitialInterval(Duration.ofSeconds(5))
+                            .setBackoffCoefficient(3)
+                            .setMaximumAttempts(3)
+                            .build())
+                    .build());
+
     private boolean analysisRetryable;
+    private boolean riskRetryable;
     private boolean documentsChanged;
     private boolean retryRequested;
     private boolean withdrawn;
@@ -118,9 +134,15 @@ public class ClaimProcessingWorkflowImpl implements ClaimProcessingWorkflow {
                 retryRequested = false;
                 analysisRetryable = !analyzePolicy(claimId);
             }
+            // Claims started before M7 replay without this stage. Like analysis, screening assists
+            // review and never holds it: a failure is shown, and a retry runs the cycle again.
+            if (Workflow.getVersion(RISK_SCREENING_CHANGE, Workflow.DEFAULT_VERSION, 1) >= 1) {
+                retryRequested = false;
+                riskRetryable = !screenRisk(claimId);
+            }
             durable.readyForReview(claimId);
             // Review arrives in a later milestone. Until then, new documents reopen processing.
-            Workflow.await(() -> documentsChanged || withdrawn || (analysisRetryable && retryRequested));
+            Workflow.await(() -> documentsChanged || withdrawn || ((analysisRetryable || riskRetryable) && retryRequested));
             if (!withdrawn) {
                 waitExpired = false;
                 durable.begin(claimId);
@@ -156,6 +178,16 @@ public class ClaimProcessingWorkflowImpl implements ClaimProcessingWorkflow {
             return true;
         } catch (ActivityFailure failure) {
             durable.recordAnalysisFailed(claimId, failureCode(failure));
+            return false;
+        }
+    }
+
+    private boolean screenRisk(String claimId) {
+        try {
+            risk.screenRisk(claimId);
+            return true;
+        } catch (ActivityFailure failure) {
+            durable.recordRiskScreeningFailed(claimId, failureCode(failure));
             return false;
         }
     }

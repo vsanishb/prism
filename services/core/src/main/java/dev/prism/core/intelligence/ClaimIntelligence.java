@@ -28,6 +28,17 @@ public interface ClaimIntelligence {
      */
     Analysis analyze(UUID claimId);
 
+    /**
+     * Screens the latest facts for risk: rules, anomaly detection, and a score that routes review. Does
+     * nothing if that consolidation was already screened. It decides nothing about the claim.
+     *
+     * @throws dev.prism.core.aiclient.DocumentExtraction.Failure if anomaly detection could not run
+     */
+    Screening screenRisk(UUID claimId);
+
+    /** @param band LOW, MEDIUM, or HIGH; null if the claim was closed before it could be screened */
+    record Screening(String band) {}
+
     /** @param needsAttention whether any finding is anything other than supported by the wording */
     record Analysis(boolean needsAttention) {}
 

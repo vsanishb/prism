@@ -48,6 +48,7 @@ class ClaimProcessingWorkflowTest {
     private ClaimActivities claims;
     private ExtractionActivities extraction;
     private AnalysisActivities analysis;
+    private RiskActivities risk;
     private ClaimProcessingWorkflow workflow;
     private WorkflowExecution execution;
 
@@ -57,10 +58,11 @@ class ClaimProcessingWorkflowTest {
         claims = mock(ClaimActivities.class, withSettings().withoutAnnotations());
         extraction = mock(ExtractionActivities.class, withSettings().withoutAnnotations());
         analysis = mock(AnalysisActivities.class, withSettings().withoutAnnotations());
+        risk = mock(RiskActivities.class, withSettings().withoutAnnotations());
         environment.newWorker(ClaimProcessingWorkflowImpl.WORKFLOW_QUEUE)
                 .registerWorkflowImplementationTypes(ClaimProcessingWorkflowImpl.class);
         environment.newWorker(ClaimProcessingWorkflowImpl.DATABASE_QUEUE).registerActivitiesImplementations(claims);
-        environment.newWorker(ClaimProcessingWorkflowImpl.AI_QUEUE).registerActivitiesImplementations(extraction, analysis);
+        environment.newWorker(ClaimProcessingWorkflowImpl.AI_QUEUE).registerActivitiesImplementations(extraction, analysis, risk);
         environment.start();
         workflow = environment.getWorkflowClient().newWorkflowStub(
                 ClaimProcessingWorkflow.class,
@@ -97,11 +99,12 @@ class ClaimProcessingWorkflowTest {
         verify(claims, timeout(ASYNC_MILLIS)).readyForReview(CLAIM);
         finish();
 
-        InOrder order = inOrder(claims, extraction, analysis);
+        InOrder order = inOrder(claims, extraction, analysis, risk);
         order.verify(claims).begin(CLAIM);
         order.verify(claims).documentsToExtract(CLAIM);
         order.verify(claims).consolidate(CLAIM);
         order.verify(analysis).analyzePolicy(CLAIM);
+        order.verify(risk).screenRisk(CLAIM);
         order.verify(claims).readyForReview(CLAIM);
         verify(extraction).extract(CLAIM, DOCUMENT_A);
         verify(extraction).extract(CLAIM, DOCUMENT_B);
@@ -230,6 +233,37 @@ class ClaimProcessingWorkflowTest {
         workflow.retryRequested();
         finish();
         verify(analysis, times(1)).analyzePolicy(CLAIM);
+    }
+
+    @Test
+    void aFailedRiskScreeningDoesNotHoldReviewAndARetryRunsItAgain() throws Exception {
+        pending();
+        when(claims.consolidate(CLAIM)).thenReturn(true);
+        doThrow(ApplicationFailure.newNonRetryableFailure("mismatch", "anomaly_result_mismatch"))
+                .doNothing()
+                .when(risk).screenRisk(CLAIM);
+
+        run();
+        verify(claims, timeout(ASYNC_MILLIS)).recordRiskScreeningFailed(CLAIM, "anomaly_result_mismatch");
+        verify(claims, timeout(ASYNC_MILLIS)).readyForReview(CLAIM);
+
+        workflow.retryRequested();
+        verify(claims, timeout(ASYNC_MILLIS).times(2)).readyForReview(CLAIM);
+        finish();
+        verify(risk, times(2)).screenRisk(CLAIM);
+    }
+
+    @Test
+    void aRiskScreeningOutageIsRetriedQuietly() throws Exception {
+        pending();
+        when(claims.consolidate(CLAIM)).thenReturn(true);
+        doThrow(ApplicationFailure.newFailure("down", "ai_service_unavailable")).doNothing().when(risk).screenRisk(CLAIM);
+
+        run();
+        environment.sleep(Duration.ofMinutes(1));
+        verify(claims, timeout(ASYNC_MILLIS)).readyForReview(CLAIM);
+        finish();
+        verify(claims, never()).recordRiskScreeningFailed(any(), any());
     }
 
     @Test

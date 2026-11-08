@@ -42,6 +42,7 @@ class DefaultClaimIntelligence implements ClaimIntelligence {
     private final AuditRecorder audit;
     private final TransactionTemplate transactions;
     private final PolicyAnalysisStep analysis;
+    private final RiskScreeningStep risk;
 
     DefaultClaimIntelligence(
             ClaimDirectory claims,
@@ -50,7 +51,8 @@ class DefaultClaimIntelligence implements ClaimIntelligence {
             IntelligenceStore store,
             AuditRecorder audit,
             TransactionTemplate transactions,
-            PolicyAnalysisStep analysis) {
+            PolicyAnalysisStep analysis,
+            RiskScreeningStep risk) {
         this.claims = claims;
         this.documents = documents;
         this.ai = ai;
@@ -58,6 +60,7 @@ class DefaultClaimIntelligence implements ClaimIntelligence {
         this.audit = audit;
         this.transactions = transactions;
         this.analysis = analysis;
+        this.risk = risk;
     }
 
     @Override
@@ -140,6 +143,11 @@ class DefaultClaimIntelligence implements ClaimIntelligence {
     @Override
     public Analysis analyze(UUID claimId) {
         return analysis.analyze(claimId);
+    }
+
+    @Override
+    public Screening screenRisk(UUID claimId) {
+        return risk.screen(claimId);
     }
 
     private List<DocumentView> activeDocuments(UUID claimId) {

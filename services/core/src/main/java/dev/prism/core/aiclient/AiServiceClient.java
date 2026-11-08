@@ -44,6 +44,21 @@ public interface AiServiceClient {
      */
     PolicyAnalysis.Result analyzeClaim(PolicyAnalysis.Request request);
 
+    /**
+     * Scores a claim's features with both anomaly detectors. A measure of how unusual, never of fraud.
+     *
+     * @throws DocumentExtraction.Failure with a stable code, and whether a retry could help
+     */
+    RiskScreening.AnomalyResult scoreRiskAnomaly(RiskScreening.AnomalyRequest request);
+
+    /**
+     * Summarizes a stored screening's signals. Reports an unavailable summary in its result, and
+     * throws only when the AI service itself cannot be reached.
+     *
+     * @throws DocumentExtraction.Failure with a stable code, and whether a retry could help
+     */
+    RiskScreening.SummaryResult summarizeRisk(RiskScreening.SummaryRequest request);
+
     record PingResult(boolean reachable, boolean authenticated, boolean knowledgeDatabaseConnected, String detail) {}
 
     record ProbeResult(boolean reachable, boolean rejected, int statusCode) {}

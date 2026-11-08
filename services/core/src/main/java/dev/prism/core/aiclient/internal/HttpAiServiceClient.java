@@ -7,6 +7,7 @@ import dev.prism.core.aiclient.DocumentExtraction.ModelRun;
 import dev.prism.core.aiclient.PolicyAnalysis;
 import dev.prism.core.aiclient.PolicyExtraction;
 import dev.prism.core.aiclient.PolicySearch;
+import dev.prism.core.aiclient.RiskScreening;
 import dev.prism.core.platform.config.PrismProperties;
 import java.net.http.HttpClient;
 import java.time.Duration;
@@ -29,6 +30,8 @@ class HttpAiServiceClient implements AiServiceClient {
     private static final String INDEX_PATH = "/internal/v1/policies/index";
     private static final String SEARCH_PATH = "/internal/v1/policies/search";
     private static final String ANALYZE_PATH = "/internal/v1/claims/analyze";
+    private static final String RISK_ANOMALY_PATH = "/internal/v1/claims/risk/anomaly";
+    private static final String RISK_SUMMARY_PATH = "/internal/v1/claims/risk/summary";
 
     private final RestClient signed;
     private final RestClient unsigned;
@@ -92,6 +95,16 @@ class HttpAiServiceClient implements AiServiceClient {
     @Override
     public PolicyAnalysis.Result analyzeClaim(PolicyAnalysis.Request request) {
         return post(analysis, ANALYZE_PATH, request, PolicyAnalysis.Result.class);
+    }
+
+    @Override
+    public RiskScreening.AnomalyResult scoreRiskAnomaly(RiskScreening.AnomalyRequest request) {
+        return post(search, RISK_ANOMALY_PATH, request, RiskScreening.AnomalyResult.class);
+    }
+
+    @Override
+    public RiskScreening.SummaryResult summarizeRisk(RiskScreening.SummaryRequest request) {
+        return post(extraction, RISK_SUMMARY_PATH, request, RiskScreening.SummaryResult.class);
     }
 
     private <T> T post(String path, Object request, Class<T> resultType) {

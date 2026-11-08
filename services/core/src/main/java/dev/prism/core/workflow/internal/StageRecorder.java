@@ -12,7 +12,8 @@ class StageRecorder {
         DOCUMENT_EXTRACTION,
         CONSOLIDATION,
         VALIDATION,
-        POLICY_ANALYSIS
+        POLICY_ANALYSIS,
+        RISK_SCREENING
     }
 
     enum Status {

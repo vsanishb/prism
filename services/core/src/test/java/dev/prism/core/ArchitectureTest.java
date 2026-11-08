@@ -37,7 +37,7 @@ class ArchitectureTest {
             .should().dependOnClassesThat()
             .resideInAnyPackage(
                     "..identity..", "..audit..", "..aiclient..", "..system..", "..policy..", "..claim..", "..document..",
-                    "..intelligence..", "..workflow..", "..policyknowledge..", "..retrieval..");
+                    "..intelligence..", "..workflow..", "..policyknowledge..", "..retrieval..", "..risk..");
 
     /** Status flows one way, so that claims know nothing of how they are processed. */
     @ArchTest
@@ -64,6 +64,18 @@ class ArchitectureTest {
             .that().resideOutsideOfPackage("..workflow..")
             .should().dependOnClassesThat()
             .resideInAPackage("io.temporal..");
+
+    /**
+     * Rules and scoring are pure functions of their input (D-082): no database, no other claims'
+     * modules, no AI service, and no workflow. Core loads what they read.
+     */
+    @ArchTest
+    static final ArchRule riskRulesArePure = noClasses()
+            .that().resideInAPackage("..risk..")
+            .should().dependOnClassesThat()
+            .resideInAnyPackage(
+                    "..intelligence..", "..workflow..", "..aiclient..", "..claim..", "..policy..", "..document..",
+                    "org.springframework.jdbc..", "io.temporal..");
 
     private static String moduleOf(String packageName) {
         if (!packageName.startsWith(ROOT)) {

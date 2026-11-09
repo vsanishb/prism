@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import org.springframework.boot.ApplicationArguments;
@@ -31,7 +32,7 @@ import org.springframework.util.StringUtils;
 @Order(10)
 class SyntheticUserSeeder implements ApplicationRunner {
 
-    private static final List<Seed> SEEDS = List.of(
+    static final List<Seed> SEEDS = List.of(
             new Seed("admin", "Karan Malhotra", Role.ADMIN),
             new Seed("policy.manager", "Priya Sharma", Role.POLICY_MANAGER),
             // A second manager, because the person who uploads a wording may not publish it.
@@ -40,7 +41,10 @@ class SyntheticUserSeeder implements ApplicationRunner {
             new Seed("reviewer", "Rahul Verma", Role.REVIEWER),
             new Seed("senior.reviewer", "Shalini Iyer", Role.SENIOR_REVIEWER),
             new Seed("investigator", "Farah Qureshi", Role.FRAUD_INVESTIGATOR),
-            new Seed("auditor", "Mohan Pillai", Role.AUDITOR));
+            new Seed("auditor", "Mohan Pillai", Role.AUDITOR),
+            // Every role, so every permission (D-101). Separation of duties still applies to it, as to
+            // anyone: it cannot review a claim it created, or publish a wording it uploaded.
+            new Seed("superuser", "Siddharth Rao", "SUPERUSER", EnumSet.allOf(Role.class)));
 
     private final UserRepository users;
     private final PasswordEncoder encoder;
@@ -83,7 +87,7 @@ class SyntheticUserSeeder implements ApplicationRunner {
             String email = seed.localPart() + "@prism.local";
             String password = randomPassword();
             transactions.executeWithoutResult(status -> upsert(seed, email, password));
-            sheet.append("| %s | %s | `%s` |%n".formatted(seed.role(), email, password));
+            sheet.append("| %s | %s | `%s` |%n".formatted(seed.label(), email, password));
         }
         Path path = Path.of(file);
         Files.createDirectories(path.toAbsolutePath().getParent());
@@ -93,7 +97,7 @@ class SyntheticUserSeeder implements ApplicationRunner {
     private void upsert(Seed seed, String email, String password) {
         String hash = encoder.encode(password);
         users.findByEmail(email).ifPresentOrElse(existing -> existing.changePassword(hash), () -> {
-            UserEntity created = users.save(new UserEntity(email, seed.fullName(), hash, Set.of(seed.role())));
+            UserEntity created = users.save(new UserEntity(email, seed.fullName(), hash, seed.roles()));
             audit.record(AuditEntry.of(
                             AuditEntry.IDENTITY_STREAM, AuditAction.SYNTHETIC_USER_SEEDED, AuditOutcome.SUCCESS)
                     .target("USER", created.id()));
@@ -106,5 +110,11 @@ class SyntheticUserSeeder implements ApplicationRunner {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
-    private record Seed(String localPart, String fullName, Role role) {}
+    /** @param label what the credentials sheet shows in its Role column */
+    record Seed(String localPart, String fullName, String label, Set<Role> roles) {
+
+        Seed(String localPart, String fullName, Role role) {
+            this(localPart, fullName, role.name(), Set.of(role));
+        }
+    }
 }

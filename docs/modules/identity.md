@@ -17,7 +17,7 @@ Staff accounts, sign-in, sessions, roles, and permissions. Package: `dev.prism.c
 | `SessionRevoker` | Ends a user's sessions on role, status, or password change |
 | `PasswordPolicy` | Length and blocklist rules |
 | `FirstAdministratorBootstrap` | Writes a one-time invitation to a file on an empty system |
-| `SyntheticUserSeeder` | Local accounts, in the `seed` profile only |
+| `SyntheticUserSeeder` | Local accounts, in the `seed` profile only: one per role, and `superuser`, which holds every role ([D-101](../decisions.md)) |
 
 ## Endpoints
 

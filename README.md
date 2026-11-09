@@ -216,6 +216,7 @@ The synthetic accounts and their passwords are in `.data/synthetic-users.md`, wh
 | `policy.manager`, `policy.approver` | Review a policy wording's extracted values and publish it |
 | `auditor` | Read the audit trail and any claim's evidence chain |
 | `admin` | Manage users and roles |
+| `superuser` | Every role at once: every page, queue, and action. Separation of duties still applies, so it cannot review a claim it created or publish a wording it uploaded |
 
 The [test guides](docs/test-guides/README.md) walk through each milestone's flows step by step, with the expected result at every step.
 

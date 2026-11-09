@@ -37,6 +37,10 @@ The factual record of project state. Update after meaningful work. Newest entrie
 
 ## Log
 
+### 2026-11-09: Superuser
+
+- `superuser@prism.local` holds every role, so every permission ([D-101](decisions.md)). Separation of duties still applies to it. Added to the local database by re-running the seeders, which also rotated every staff password. Tests: `StartupAccountsTest` checks it holds all 12 permissions; identity and access tests pass.
+
 ### 2026-11-09: Realistic names for the presentation
 
 - No synthetic or fictional label remains in the running system, the test documents, or `demo/` ([D-100](decisions.md)). All 121 PDFs and the database were searched; the database holds only the internal audit action code, and two risk summaries noted below.

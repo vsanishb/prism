@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import dev.prism.core.audit.AuditRecorder;
+import dev.prism.core.identity.Permission;
 import dev.prism.core.identity.internal.AccountTokenService.IssuedLink;
 import dev.prism.core.platform.config.PrismProperties;
 import java.net.URI;
@@ -16,7 +17,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -77,6 +80,19 @@ class StartupAccountsTest {
                 .run(null);
 
         verify(tokens, never()).inviteFirstAdministrator(anyString());
+    }
+
+    @Test
+    void theSeededSuperuserHoldsEveryPermission() {
+        SyntheticUserSeeder.Seed superuser = SyntheticUserSeeder.SEEDS.stream()
+                .filter(seed -> seed.localPart().equals("superuser"))
+                .findFirst()
+                .orElseThrow();
+        Set<Permission> granted = superuser.roles().stream()
+                .flatMap(role -> role.permissions().stream())
+                .collect(Collectors.toSet());
+        assertThat(granted).containsExactlyInAnyOrder(Permission.values());
+        assertThat(superuser.label()).isEqualTo("SUPERUSER");
     }
 
     @Test

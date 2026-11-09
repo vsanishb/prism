@@ -27,6 +27,9 @@ class Route(BaseModel):
     escalation: str = Field(min_length=3)
     claim_data: bool
     max_tokens: int = Field(gt=0, le=32000)
+    # Sent on every request, so the provider's default never decides it. Reasoning tokens count
+    # against max_tokens: left on, a model can spend the whole budget thinking and return nothing.
+    reasoning: bool
 
     def models(self) -> tuple[str, ...]:
         return (self.primary, self.escalation)

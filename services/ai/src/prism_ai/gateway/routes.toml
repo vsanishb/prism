@@ -1,24 +1,29 @@
 # Model routes (D-026, D-057, D-070). The user chose DeepSeek V4.1 Flash for every task, on cost.
 # Every route must be zero-data-retention, and the gateway checks this before each use.
 # Escalation runs only when output stays invalid after a repair.
+# Reasoning is stated per task, because its tokens count against max_tokens (D-099). Reading and
+# copying tasks run without it: their output is checked by code against the page, not by the model.
 
 [tasks.classification]
 primary = "deepseek/deepseek-v4.1-flash-1017"
 escalation = "anthropic/claude-haiku-5.5"
 claim_data = true
 max_tokens = 300
+reasoning = false
 
 [tasks.extraction]
 primary = "deepseek/deepseek-v4.1-flash-1017"
 escalation = "anthropic/claude-haiku-5.5"
 claim_data = true
 max_tokens = 8000
+reasoning = false
 
 [tasks.reread]
 primary = "deepseek/deepseek-v4.1-flash-1017"
 escalation = "anthropic/claude-haiku-5.5"
 claim_data = true
 max_tokens = 1500
+reasoning = false
 
 # Every critical policy value is confirmed by a person before publication (D-030).
 [tasks.policy_extraction]
@@ -26,19 +31,25 @@ primary = "deepseek/deepseek-v4.1-flash-1017"
 escalation = "anthropic/claude-haiku-5.5"
 claim_data = true
 max_tokens = 16000
+reasoning = false
 
 # Policy Agent (M6, D-079). Claim facts are sent, de-identified. Findings are validated by code.
+# Reasoning stays on for the agent: without it, one run in two obeyed a document's injected "cite
+# nothing". Its budget leaves room to reason and still answer; at 1,500 and 3,000 tokens, two answers
+# in five were cut off and one in five went to the escalation model (D-099).
 [tasks.agent_plan]
 primary = "deepseek/deepseek-v4.1-flash-1017"
 escalation = "anthropic/claude-haiku-5.5"
 claim_data = true
-max_tokens = 1500
+max_tokens = 6000
+reasoning = true
 
 [tasks.agent_analysis]
 primary = "deepseek/deepseek-v4.1-flash-1017"
 escalation = "anthropic/claude-haiku-5.5"
 claim_data = true
-max_tokens = 3000
+max_tokens = 12000
+reasoning = true
 
 # Risk summary (M7, D-086). De-identified signals only. The configured model on both attempts: the
 # summary is optional, and no other model is introduced for it.
@@ -47,6 +58,7 @@ primary = "deepseek/deepseek-v4.1-flash-1017"
 escalation = "deepseek/deepseek-v4.1-flash-1017"
 claim_data = true
 max_tokens = 800
+reasoning = false
 
 # Search (M5, D-075). Queries will carry claim facts in M6, so these are held to the same rules.
 # The index records its embedding model, and a query is embedded with that model, not this one.

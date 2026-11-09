@@ -55,7 +55,9 @@ def test_claim_data_requests_demand_zero_data_retention() -> None:
 
 def test_a_route_not_cleared_for_claim_data_is_refused_before_any_call() -> None:
     tasks = dict(ROUTES.tasks)
-    tasks[Task.EXTRACTION] = Route(primary="a/b", escalation="a/b", claim_data=False, max_tokens=10)
+    tasks[Task.EXTRACTION] = Route(
+        primary="a/b", escalation="a/b", claim_data=False, max_tokens=10, reasoning=False
+    )
     provider = ScriptedProvider([completion(GOOD)])
 
     async def call() -> None:
@@ -194,6 +196,25 @@ def test_output_cut_off_at_the_token_limit_is_invalid_even_if_it_parses() -> Non
     runs: list[ModelRun] = []
     complete(provider, runs)
     assert runs[0].outcome == RunOutcome.INVALID_OUTPUT
+
+
+def test_reasoning_is_stated_on_every_request() -> None:
+    provider = ScriptedProvider([completion(GOOD)])
+    complete(provider)
+    assert provider.bodies[0]["reasoning"] == {"enabled": ROUTE.reasoning}
+
+
+def test_copying_tasks_run_without_reasoning() -> None:
+    # Reasoning tokens count against max_tokens. With it on, DeepSeek V4.1 Flash spent a policy
+    # batch's whole 16,000-token budget thinking and returned no answer, on every attempt.
+    copying = (Task.CLASSIFICATION, Task.EXTRACTION, Task.REREAD, Task.POLICY_EXTRACTION)
+    assert not any(ROUTES.route(task).reasoning for task in copying)
+
+
+def test_the_policy_agent_reasons() -> None:
+    # Without reasoning, the agent obeyed a document's injected "cite nothing" in one run of two.
+    assert ROUTES.route(Task.AGENT_PLAN).reasoning
+    assert ROUTES.route(Task.AGENT_ANALYSIS).reasoning
 
 
 def test_usage_is_recorded_for_each_attempt() -> None:

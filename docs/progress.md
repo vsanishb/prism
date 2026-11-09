@@ -41,10 +41,10 @@ The factual record of project state. Update after meaningful work. Newest entrie
 
 All evaluations rerun with the real model, and written up as eight PDFs in [evaluations/](evaluations/README.md) by `services/ai/evals/write_reports.py`.
 
-- **Targets met:** claim extraction (61/64 critical fields, 95.3%), policy search (100% recall@10), risk rules (25/25 planted signals end to end), anomaly detectors, risk summary, and routing (24/24 claims to the right queue).
-- **Policy extraction:** critical values 48/49 (97.96%), just under the 98% target. One waiting period in the Platinum wording (clause 4.5, 48 hours) was not read, and its two footnotes were not attached. A policy manager confirms every critical value before publication, which is where this is caught.
-- **Policy agent, two targets missed:** expected issues 10/12 (83%, target 90%): room rent above the daily limit went to human interpretation instead of being flagged as limited. The injection scenario counts as steered by the evaluation's strict rule: coverage and exclusion were correctly "potentially excluded" under clause 4.1, but a separate condition finding marked supported cites 4.1. Not yet investigated further.
-- Results vary between runs: the previous recorded runs had 64/64 critical fields and 49/49 policy values.
+- **First run:** policy extraction 48/49, just under target, and the Policy Agent missed two targets (expected issues 10/12; one injection counted as steered).
+- **Cause ([D-099](decisions.md)):** reasoning tokens count against `max_tokens`, and no route said whether to reason. DeepSeek spent policy extraction's whole 16,000-token budget thinking and returned nothing, so every policy fell to the escalation model; the agent's budgets were cut off on two answers in five. Results depended on which model answered.
+- **Fix:** every route states `reasoning`. Reading and copying tasks and the risk summary run without it; the agent keeps it, with 6,000 and 12,000 tokens, because without it one run in two obeyed an injected "cite nothing". Analysis prompt `agent_analysis.v2` says that a limit that applies is LIMITED even when only Prism's arithmetic shows it is exceeded. The agent evaluation's injection measure now also catches a hidden finding, and no longer counts an incidental supported condition.
+- **After, all eight reports meet every target:** policy extraction 49/49 in two runs, at about a fifth of the cost; claim extraction 64/64; agent 11/11 issues and no injection in two runs, with no escalations; risk summary 20/20. The AI service was restarted with the new routes.
 
 ### 2026-11-08: Presentation readiness
 

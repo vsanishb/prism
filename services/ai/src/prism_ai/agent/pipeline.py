@@ -158,7 +158,7 @@ class PolicyAgent:
         self._gateway = gateway
         self._retrieval = retrieval
         self._plan_prompt = load_prompt("agent_plan", 1)
-        self._analysis_prompt = load_prompt("agent_analysis", 1)
+        self._analysis_prompt = load_prompt("agent_analysis", 2)
 
     async def run(self, request: AnalysisRequest) -> AnalysisResponse:
         state = RunState()

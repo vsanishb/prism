@@ -75,6 +75,7 @@ def request_body(
             "json_schema": {"name": request.schema_name, "strict": True, "schema": request.schema},
         },
         "usage": {"include": True},
+        "reasoning": {"enabled": route.reasoning},
     }
     if route.claim_data:
         body["provider"] = PRIVATE_ROUTING

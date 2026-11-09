@@ -28,7 +28,7 @@ The cover start is the start of the earliest version reached through consecutive
 | Analyze | A model returns a finding, or asks for up to 3 more searches. Three rounds per issue, and 30 model calls per claim |
 | Retry | Each model call gets one retry. An issue that still fails is shown as not analyzed, and the rest stand |
 
-Prompts: `agent_plan.v1`, `agent_analysis.v1`. Document and policy text is fenced as data, with angle brackets neutralized.
+Prompts: `agent_plan.v1`, `agent_analysis.v2` (v2 says a limit that applies is LIMITED even when only arithmetic shows it is exceeded, [D-099](../decisions.md)). Document and policy text is fenced as data, with angle brackets neutralized.
 
 ## Validation
 

@@ -32,7 +32,7 @@ describe("formatBytes", () => {
 
 describe("initials", () => {
   it("uses the first and last names", () => {
-    expect(initials("Synthetic Senior Reviewer")).toBe("SR");
+    expect(initials("Shalini Iyer")).toBe("SR");
   });
 
   it("handles a single name", () => {

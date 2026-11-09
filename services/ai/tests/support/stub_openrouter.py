@@ -30,8 +30,8 @@ DELAY_SECONDS = float(os.environ.get("PRISM_STUB_DELAY_SECONDS", "0"))
 app = FastAPI()
 fail_next = True
 
-HOSPITAL = "Synthetic Care Hospital, Pune (Fictional)"
-PATIENT = "Synthetic Patient Asha"
+HOSPITAL = "Vrinda Care Hospital, Pune"
+PATIENT = "Asha Kulkarni"
 
 
 def stated(value: str, quote: str, page: int = 1) -> dict[str, Any]:
@@ -53,8 +53,8 @@ def item(description: str, quantity: str, rate: str, amount: str) -> dict[str, A
 
 
 CLAIM_FORM = {
-    "policy_number": stated("SYN-FFG-2026-0001", "Policy number SYN-FFG-2026-0001"),
-    "claimant_name": stated("Synthetic Policyholder One", "Claimant Synthetic Policyholder One"),
+    "policy_number": stated("NGI-FFG-2026-0001", "Policy number NGI-FFG-2026-0001"),
+    "claimant_name": stated("Rajesh Iyer", "Claimant Rajesh Iyer"),
     "patient_name": stated(PATIENT, f"Patient {PATIENT}"),
     "hospital_name": stated(HOSPITAL, f"Hospital {HOSPITAL}"),
     "admission_date": stated("14/03/2026", "Admission date 14/03/2026"),
@@ -82,7 +82,7 @@ def discharge(admission: str, procedure_date: str) -> dict[str, Any]:
         "admission_date": stated(admission, f"Admission {admission}"),
         "discharge_date": stated("17/03/2026", "Discharge 17/03/2026"),
         "treating_doctor": stated(
-            "Dr Synthetic Consultant (Fictional)", "Dr Synthetic Consultant (Fictional)"
+            "Dr Anand Kulkarni", "Dr Anand Kulkarni"
         ),
         "diagnosis": stated("Acute appendicitis", "Diagnosis Acute appendicitis"),
         "procedure": stated(
@@ -147,7 +147,7 @@ SCAN_FIELDS: dict[str, Any] = {
     "patient_name": stated(PATIENT, f"Patient: {PATIENT}"),
     "document_date": stated("17/03/2026", "Date: 17/03/2026"),
     "medicines": stated(
-        "Tab Synthetic-500, twice daily for 5 days", "Tab Synthetic-500, twice daily for 5 days"
+        "Tab Pantoprazole 40 mg, twice daily for 5 days", "Tab Pantoprazole 40 mg, twice daily for 5 days"
     ),
 }
 

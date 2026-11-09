@@ -30,7 +30,7 @@ async function publishFreshVersion(browser: Browser): Promise<string> {
   await signIn(approver, accountByEmail("policy.approver"));
   await approver.goto(versionUrl);
   await approver.getByRole("button", { name: "Publish" }).click();
-  await expect(approver.getByText(/Published by Synthetic Policy Approver/)).toBeVisible();
+  await expect(approver.getByText(/Published by Deepak Menon/)).toBeVisible();
   await approverContext.close();
   return versionUrl;
 }

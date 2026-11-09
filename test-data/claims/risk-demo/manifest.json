@@ -1,9 +1,9 @@
 {
-  "note": "Synthetic demonstration data for Prism M7. Fictional people, hospitals, and policy.",
+  "note": "Risk demonstration claims for Prism (M7).",
   "policy": {
-    "policyNumber": "SYN-RSK-2026-0003",
-    "product": "Family Health Plus (Synthetic)",
-    "policyholder": "Synthetic Policyholder Four",
+    "policyNumber": "NGI-RSK-2026-0003",
+    "product": "Family Health Plus",
+    "policyholder": "Sunita Rao",
     "effectiveFrom": "2026-01-01",
     "effectiveTo": "2026-12-31",
     "sumInsured": "500000.00"
@@ -13,9 +13,9 @@
       "scenario": "SEVERE",
       "role": "EARLIER",
       "position": 1,
-      "claimant": "Synthetic Policyholder Four",
-      "patient": "Synthetic Patient Meenal",
-      "hospital": "Synthetic Lotus Hospital, Nagpur (Fictional)",
+      "claimant": "Sunita Rao",
+      "patient": "Meenal Deshpande",
+      "hospital": "Kamalini Hospital, Nagpur",
       "admissionDate": "2026-07-01",
       "dischargeDate": "2026-07-05",
       "claimedAmount": "112600.00",
@@ -38,9 +38,9 @@
       "scenario": "DISGUISED",
       "role": "EARLIER",
       "position": 1,
-      "claimant": "Synthetic Policyholder Four",
-      "patient": "Synthetic Patient Vikram",
-      "hospital": "Synthetic Riverside Hospital, Kochi (Fictional)",
+      "claimant": "Sunita Rao",
+      "patient": "Vikram Nair",
+      "hospital": "Nilaya Riverside Hospital, Kochi",
       "admissionDate": "2026-04-12",
       "dischargeDate": "2026-04-15",
       "claimedAmount": "46800.00",
@@ -63,9 +63,9 @@
       "scenario": "DISGUISED",
       "role": "EARLIER",
       "position": 2,
-      "claimant": "Synthetic Policyholder Four",
-      "patient": "Synthetic Patient Vikram",
-      "hospital": "Synthetic Riverside Hospital, Kochi (Fictional)",
+      "claimant": "Sunita Rao",
+      "patient": "Vikram Nair",
+      "hospital": "Nilaya Riverside Hospital, Kochi",
       "admissionDate": "2026-08-28",
       "dischargeDate": "2026-08-31",
       "claimedAmount": "384500.00",
@@ -88,9 +88,9 @@
       "scenario": "SEVERE",
       "role": "SCENARIO",
       "position": 1,
-      "claimant": "Synthetic Policyholder Four",
-      "patient": "Synthetic Patient Farhan",
-      "hospital": "Synthetic Lotus Hospital, Nagpur (Fictional)",
+      "claimant": "Sunita Rao",
+      "patient": "Farhan Shaikh",
+      "hospital": "Kamalini Hospital, Nagpur",
       "admissionDate": "2026-08-10",
       "dischargeDate": "2026-08-11",
       "claimedAmount": "740000.00",
@@ -117,9 +117,9 @@
       "scenario": "CLEAN",
       "role": "SCENARIO",
       "position": 1,
-      "claimant": "Synthetic Policyholder Four",
-      "patient": "Synthetic Patient Nisha",
-      "hospital": "Synthetic Greenfield Hospital, Jaipur (Fictional)",
+      "claimant": "Sunita Rao",
+      "patient": "Nisha Agarwal",
+      "hospital": "Aravalli Greenfield Hospital, Jaipur",
       "admissionDate": "2026-07-07",
       "dischargeDate": "2026-07-10",
       "claimedAmount": "98400.00",
@@ -142,9 +142,9 @@
       "scenario": "DISGUISED",
       "role": "SCENARIO",
       "position": 1,
-      "claimant": "Synthetic Policyholder Four",
-      "patient": "Synthetic Patient Vikram",
-      "hospital": "Synthetic Riverside Hospital, Kochi (Fictional)",
+      "claimant": "Sunita Rao",
+      "patient": "Vikram Nair",
+      "hospital": "Nilaya Riverside Hospital, Kochi",
       "admissionDate": "2026-09-18",
       "dischargeDate": "2026-09-20",
       "claimedAmount": "392000.00",
@@ -170,20 +170,20 @@
       "type": "CLAIM_FORM",
       "fields": {
         "policy_number": {
-          "value": "SYN-RSK-2026-0003",
-          "quote": "SYN-RSK-2026-0003"
+          "value": "NGI-RSK-2026-0003",
+          "quote": "NGI-RSK-2026-0003"
         },
         "claimant_name": {
-          "value": "Synthetic Policyholder Four",
-          "quote": "Synthetic Policyholder Four"
+          "value": "Sunita Rao",
+          "quote": "Sunita Rao"
         },
         "patient_name": {
-          "value": "Synthetic Patient Meenal",
-          "quote": "Synthetic Patient Meenal"
+          "value": "Meenal Deshpande",
+          "quote": "Meenal Deshpande"
         },
         "hospital_name": {
-          "value": "Synthetic Lotus Hospital, Nagpur (Fictional)",
-          "quote": "Synthetic Lotus Hospital, Nagpur (Fictional)"
+          "value": "Kamalini Hospital, Nagpur",
+          "quote": "Kamalini Hospital, Nagpur"
         },
         "admission_date": {
           "value": "01/07/2026",
@@ -213,12 +213,12 @@
           "quote": "05/07/2026"
         },
         "patient_name": {
-          "value": "Synthetic Patient Meenal",
-          "quote": "Synthetic Patient Meenal"
+          "value": "Meenal Deshpande",
+          "quote": "Meenal Deshpande"
         },
         "hospital_name": {
-          "value": "Synthetic Lotus Hospital, Nagpur (Fictional)",
-          "quote": "Synthetic Lotus Hospital, Nagpur (Fictional)"
+          "value": "Kamalini Hospital, Nagpur",
+          "quote": "Kamalini Hospital, Nagpur"
         },
         "admission_date": {
           "value": "01/07/2026",
@@ -290,12 +290,12 @@
       "type": "DISCHARGE_SUMMARY",
       "fields": {
         "patient_name": {
-          "value": "Synthetic Patient Meenal",
-          "quote": "Synthetic Patient Meenal"
+          "value": "Meenal Deshpande",
+          "quote": "Meenal Deshpande"
         },
         "hospital_name": {
-          "value": "Synthetic Lotus Hospital, Nagpur (Fictional)",
-          "quote": "Synthetic Lotus Hospital, Nagpur (Fictional)"
+          "value": "Kamalini Hospital, Nagpur",
+          "quote": "Kamalini Hospital, Nagpur"
         },
         "admission_date": {
           "value": "01/07/2026",
@@ -306,8 +306,8 @@
           "quote": "05/07/2026"
         },
         "treating_doctor": {
-          "value": "Dr Synthetic Physician (Fictional)",
-          "quote": "Dr Synthetic Physician (Fictional)"
+          "value": "Dr Kavita Joshi",
+          "quote": "Dr Kavita Joshi"
         },
         "diagnosis": {
           "value": "Dengue fever with thrombocytopenia",
@@ -325,20 +325,20 @@
       "type": "CLAIM_FORM",
       "fields": {
         "policy_number": {
-          "value": "SYN-RSK-2026-0003",
-          "quote": "SYN-RSK-2026-0003"
+          "value": "NGI-RSK-2026-0003",
+          "quote": "NGI-RSK-2026-0003"
         },
         "claimant_name": {
-          "value": "Synthetic Policyholder Four",
-          "quote": "Synthetic Policyholder Four"
+          "value": "Sunita Rao",
+          "quote": "Sunita Rao"
         },
         "patient_name": {
-          "value": "Synthetic Patient Vikram",
-          "quote": "Synthetic Patient Vikram"
+          "value": "Vikram Nair",
+          "quote": "Vikram Nair"
         },
         "hospital_name": {
-          "value": "Synthetic Riverside Hospital, Kochi (Fictional)",
-          "quote": "Synthetic Riverside Hospital, Kochi (Fictional)"
+          "value": "Nilaya Riverside Hospital, Kochi",
+          "quote": "Nilaya Riverside Hospital, Kochi"
         },
         "admission_date": {
           "value": "12/04/2026",
@@ -368,12 +368,12 @@
           "quote": "15/04/2026"
         },
         "patient_name": {
-          "value": "Synthetic Patient Vikram",
-          "quote": "Synthetic Patient Vikram"
+          "value": "Vikram Nair",
+          "quote": "Vikram Nair"
         },
         "hospital_name": {
-          "value": "Synthetic Riverside Hospital, Kochi (Fictional)",
-          "quote": "Synthetic Riverside Hospital, Kochi (Fictional)"
+          "value": "Nilaya Riverside Hospital, Kochi",
+          "quote": "Nilaya Riverside Hospital, Kochi"
         },
         "admission_date": {
           "value": "12/04/2026",
@@ -424,12 +424,12 @@
       "type": "DISCHARGE_SUMMARY",
       "fields": {
         "patient_name": {
-          "value": "Synthetic Patient Vikram",
-          "quote": "Synthetic Patient Vikram"
+          "value": "Vikram Nair",
+          "quote": "Vikram Nair"
         },
         "hospital_name": {
-          "value": "Synthetic Riverside Hospital, Kochi (Fictional)",
-          "quote": "Synthetic Riverside Hospital, Kochi (Fictional)"
+          "value": "Nilaya Riverside Hospital, Kochi",
+          "quote": "Nilaya Riverside Hospital, Kochi"
         },
         "admission_date": {
           "value": "12/04/2026",
@@ -440,8 +440,8 @@
           "quote": "15/04/2026"
         },
         "treating_doctor": {
-          "value": "Dr Synthetic Physician (Fictional)",
-          "quote": "Dr Synthetic Physician (Fictional)"
+          "value": "Dr Kavita Joshi",
+          "quote": "Dr Kavita Joshi"
         },
         "diagnosis": {
           "value": "Viral fever",
@@ -459,20 +459,20 @@
       "type": "CLAIM_FORM",
       "fields": {
         "policy_number": {
-          "value": "SYN-RSK-2026-0003",
-          "quote": "SYN-RSK-2026-0003"
+          "value": "NGI-RSK-2026-0003",
+          "quote": "NGI-RSK-2026-0003"
         },
         "claimant_name": {
-          "value": "Synthetic Policyholder Four",
-          "quote": "Synthetic Policyholder Four"
+          "value": "Sunita Rao",
+          "quote": "Sunita Rao"
         },
         "patient_name": {
-          "value": "Synthetic Patient Vikram",
-          "quote": "Synthetic Patient Vikram"
+          "value": "Vikram Nair",
+          "quote": "Vikram Nair"
         },
         "hospital_name": {
-          "value": "Synthetic Riverside Hospital, Kochi (Fictional)",
-          "quote": "Synthetic Riverside Hospital, Kochi (Fictional)"
+          "value": "Nilaya Riverside Hospital, Kochi",
+          "quote": "Nilaya Riverside Hospital, Kochi"
         },
         "admission_date": {
           "value": "28/08/2026",
@@ -502,12 +502,12 @@
           "quote": "31/08/2026"
         },
         "patient_name": {
-          "value": "Synthetic Patient Vikram",
-          "quote": "Synthetic Patient Vikram"
+          "value": "Vikram Nair",
+          "quote": "Vikram Nair"
         },
         "hospital_name": {
-          "value": "Synthetic Riverside Hospital, Kochi (Fictional)",
-          "quote": "Synthetic Riverside Hospital, Kochi (Fictional)"
+          "value": "Nilaya Riverside Hospital, Kochi",
+          "quote": "Nilaya Riverside Hospital, Kochi"
         },
         "admission_date": {
           "value": "28/08/2026",
@@ -579,12 +579,12 @@
       "type": "DISCHARGE_SUMMARY",
       "fields": {
         "patient_name": {
-          "value": "Synthetic Patient Vikram",
-          "quote": "Synthetic Patient Vikram"
+          "value": "Vikram Nair",
+          "quote": "Vikram Nair"
         },
         "hospital_name": {
-          "value": "Synthetic Riverside Hospital, Kochi (Fictional)",
-          "quote": "Synthetic Riverside Hospital, Kochi (Fictional)"
+          "value": "Nilaya Riverside Hospital, Kochi",
+          "quote": "Nilaya Riverside Hospital, Kochi"
         },
         "admission_date": {
           "value": "28/08/2026",
@@ -595,8 +595,8 @@
           "quote": "31/08/2026"
         },
         "treating_doctor": {
-          "value": "Dr Synthetic Physician (Fictional)",
-          "quote": "Dr Synthetic Physician (Fictional)"
+          "value": "Dr Kavita Joshi",
+          "quote": "Dr Kavita Joshi"
         },
         "diagnosis": {
           "value": "Acute calculous cholecystitis",
@@ -614,20 +614,20 @@
       "type": "CLAIM_FORM",
       "fields": {
         "policy_number": {
-          "value": "SYN-RSK-2026-0003",
-          "quote": "SYN-RSK-2026-0003"
+          "value": "NGI-RSK-2026-0003",
+          "quote": "NGI-RSK-2026-0003"
         },
         "claimant_name": {
-          "value": "Synthetic Policyholder Four",
-          "quote": "Synthetic Policyholder Four"
+          "value": "Sunita Rao",
+          "quote": "Sunita Rao"
         },
         "patient_name": {
-          "value": "Synthetic Patient Farhan",
-          "quote": "Synthetic Patient Farhan"
+          "value": "Farhan Shaikh",
+          "quote": "Farhan Shaikh"
         },
         "hospital_name": {
-          "value": "Synthetic Lotus Hospital, Nagpur (Fictional)",
-          "quote": "Synthetic Lotus Hospital, Nagpur (Fictional)"
+          "value": "Kamalini Hospital, Nagpur",
+          "quote": "Kamalini Hospital, Nagpur"
         },
         "admission_date": {
           "value": "10/08/2026",
@@ -657,12 +657,12 @@
           "quote": "06/08/2026"
         },
         "patient_name": {
-          "value": "Synthetic Patient Farhan",
-          "quote": "Synthetic Patient Farhan"
+          "value": "Farhan Shaikh",
+          "quote": "Farhan Shaikh"
         },
         "hospital_name": {
-          "value": "Synthetic Lotus Hospital, Nagpur (Fictional)",
-          "quote": "Synthetic Lotus Hospital, Nagpur (Fictional)"
+          "value": "Kamalini Hospital, Nagpur",
+          "quote": "Kamalini Hospital, Nagpur"
         },
         "admission_date": {
           "value": "10/08/2026",
@@ -727,12 +727,12 @@
       "type": "DISCHARGE_SUMMARY",
       "fields": {
         "patient_name": {
-          "value": "Synthetic Patient Farhan",
-          "quote": "Synthetic Patient Farhan"
+          "value": "Farhan Shaikh",
+          "quote": "Farhan Shaikh"
         },
         "hospital_name": {
-          "value": "Synthetic Lotus Hospital, Nagpur (Fictional)",
-          "quote": "Synthetic Lotus Hospital, Nagpur (Fictional)"
+          "value": "Kamalini Hospital, Nagpur",
+          "quote": "Kamalini Hospital, Nagpur"
         },
         "admission_date": {
           "value": "10/08/2026",
@@ -743,8 +743,8 @@
           "quote": "11/08/2026"
         },
         "treating_doctor": {
-          "value": "Dr Synthetic Physician (Fictional)",
-          "quote": "Dr Synthetic Physician (Fictional)"
+          "value": "Dr Kavita Joshi",
+          "quote": "Dr Kavita Joshi"
         },
         "diagnosis": {
           "value": "Acute gastroenteritis with dehydration",
@@ -762,20 +762,20 @@
       "type": "CLAIM_FORM",
       "fields": {
         "policy_number": {
-          "value": "SYN-RSK-2026-0003",
-          "quote": "SYN-RSK-2026-0003"
+          "value": "NGI-RSK-2026-0003",
+          "quote": "NGI-RSK-2026-0003"
         },
         "claimant_name": {
-          "value": "Synthetic Policyholder Four",
-          "quote": "Synthetic Policyholder Four"
+          "value": "Sunita Rao",
+          "quote": "Sunita Rao"
         },
         "patient_name": {
-          "value": "Synthetic Patient Nisha",
-          "quote": "Synthetic Patient Nisha"
+          "value": "Nisha Agarwal",
+          "quote": "Nisha Agarwal"
         },
         "hospital_name": {
-          "value": "Synthetic Greenfield Hospital, Jaipur (Fictional)",
-          "quote": "Synthetic Greenfield Hospital, Jaipur (Fictional)"
+          "value": "Aravalli Greenfield Hospital, Jaipur",
+          "quote": "Aravalli Greenfield Hospital, Jaipur"
         },
         "admission_date": {
           "value": "07/07/2026",
@@ -805,12 +805,12 @@
           "quote": "10/07/2026"
         },
         "patient_name": {
-          "value": "Synthetic Patient Nisha",
-          "quote": "Synthetic Patient Nisha"
+          "value": "Nisha Agarwal",
+          "quote": "Nisha Agarwal"
         },
         "hospital_name": {
-          "value": "Synthetic Greenfield Hospital, Jaipur (Fictional)",
-          "quote": "Synthetic Greenfield Hospital, Jaipur (Fictional)"
+          "value": "Aravalli Greenfield Hospital, Jaipur",
+          "quote": "Aravalli Greenfield Hospital, Jaipur"
         },
         "admission_date": {
           "value": "07/07/2026",
@@ -882,12 +882,12 @@
       "type": "DISCHARGE_SUMMARY",
       "fields": {
         "patient_name": {
-          "value": "Synthetic Patient Nisha",
-          "quote": "Synthetic Patient Nisha"
+          "value": "Nisha Agarwal",
+          "quote": "Nisha Agarwal"
         },
         "hospital_name": {
-          "value": "Synthetic Greenfield Hospital, Jaipur (Fictional)",
-          "quote": "Synthetic Greenfield Hospital, Jaipur (Fictional)"
+          "value": "Aravalli Greenfield Hospital, Jaipur",
+          "quote": "Aravalli Greenfield Hospital, Jaipur"
         },
         "admission_date": {
           "value": "07/07/2026",
@@ -898,8 +898,8 @@
           "quote": "10/07/2026"
         },
         "treating_doctor": {
-          "value": "Dr Synthetic Physician (Fictional)",
-          "quote": "Dr Synthetic Physician (Fictional)"
+          "value": "Dr Kavita Joshi",
+          "quote": "Dr Kavita Joshi"
         },
         "diagnosis": {
           "value": "Acute appendicitis",
@@ -917,20 +917,20 @@
       "type": "CLAIM_FORM",
       "fields": {
         "policy_number": {
-          "value": "SYN-RSK-2026-0003",
-          "quote": "SYN-RSK-2026-0003"
+          "value": "NGI-RSK-2026-0003",
+          "quote": "NGI-RSK-2026-0003"
         },
         "claimant_name": {
-          "value": "Synthetic Policyholder Four",
-          "quote": "Synthetic Policyholder Four"
+          "value": "Sunita Rao",
+          "quote": "Sunita Rao"
         },
         "patient_name": {
-          "value": "Synthetic Patient Vikram",
-          "quote": "Synthetic Patient Vikram"
+          "value": "Vikram Nair",
+          "quote": "Vikram Nair"
         },
         "hospital_name": {
-          "value": "Synthetic Riverside Hospital, Kochi (Fictional)",
-          "quote": "Synthetic Riverside Hospital, Kochi (Fictional)"
+          "value": "Nilaya Riverside Hospital, Kochi",
+          "quote": "Nilaya Riverside Hospital, Kochi"
         },
         "admission_date": {
           "value": "18/09/2026",
@@ -960,12 +960,12 @@
           "quote": "20/09/2026"
         },
         "patient_name": {
-          "value": "Synthetic Patient Vikram",
-          "quote": "Synthetic Patient Vikram"
+          "value": "Vikram Nair",
+          "quote": "Vikram Nair"
         },
         "hospital_name": {
-          "value": "Synthetic Riverside Hospital, Kochi (Fictional)",
-          "quote": "Synthetic Riverside Hospital, Kochi (Fictional)"
+          "value": "Nilaya Riverside Hospital, Kochi",
+          "quote": "Nilaya Riverside Hospital, Kochi"
         },
         "admission_date": {
           "value": "18/09/2026",
@@ -1037,12 +1037,12 @@
       "type": "DISCHARGE_SUMMARY",
       "fields": {
         "patient_name": {
-          "value": "Synthetic Patient Vikram",
-          "quote": "Synthetic Patient Vikram"
+          "value": "Vikram Nair",
+          "quote": "Vikram Nair"
         },
         "hospital_name": {
-          "value": "Synthetic Riverside Hospital, Kochi (Fictional)",
-          "quote": "Synthetic Riverside Hospital, Kochi (Fictional)"
+          "value": "Nilaya Riverside Hospital, Kochi",
+          "quote": "Nilaya Riverside Hospital, Kochi"
         },
         "admission_date": {
           "value": "18/09/2026",
@@ -1053,8 +1053,8 @@
           "quote": "20/09/2026"
         },
         "treating_doctor": {
-          "value": "Dr Synthetic Physician (Fictional)",
-          "quote": "Dr Synthetic Physician (Fictional)"
+          "value": "Dr Kavita Joshi",
+          "quote": "Dr Kavita Joshi"
         },
         "diagnosis": {
           "value": "Acute calculous cholecystitis",

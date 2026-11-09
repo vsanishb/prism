@@ -21,8 +21,8 @@ async function publishedPolicy(browser: Browser): Promise<void> {
   await page.goto("/policies");
   await page.getByRole("button", { name: "Register policy" }).click();
   await page.getByLabel("Policy number").fill(POLICY);
-  await page.getByLabel("Product").fill("Agent Test Cover (Synthetic)");
-  await page.getByLabel("Policyholder").fill("Synthetic Policyholder Three");
+  await page.getByLabel("Product").fill("Agent Test Cover");
+  await page.getByLabel("Policyholder").fill("Arvind Menon");
   await page.getByRole("button", { name: "Register policy" }).last().click();
   // Registration opens the new policy's page.
   await expect(page.getByRole("heading", { name: POLICY })).toBeVisible();
@@ -59,9 +59,9 @@ async function processedClaim(page: Page, policyLabel: RegExp): Promise<void> {
   const policy = page.getByLabel("Policy", { exact: true });
   const option = (await policy.locator("option").allTextContents()).find((text) => policyLabel.test(text));
   await policy.selectOption({ label: option ?? "" });
-  await page.getByLabel("Claimant").fill("Synthetic Policyholder Three");
-  await page.getByLabel("Patient").fill("Synthetic Patient Asha");
-  await page.getByLabel("Hospital").fill("Synthetic Care Hospital");
+  await page.getByLabel("Claimant").fill("Arvind Menon");
+  await page.getByLabel("Patient").fill("Asha Kulkarni");
+  await page.getByLabel("Hospital").fill("Vrinda Care Hospital");
   await page.getByLabel("Admission date").fill("2026-03-14");
   await page.getByLabel("Discharge date").fill("2026-03-17");
   await page.getByLabel("Claimed amount").fill("106000");
@@ -138,7 +138,7 @@ test("a reviewer reads the analysis, and an administrator cannot", async ({ brow
 test("a claim on an unpublished policy still reaches review, and says why it was not analyzed", async ({ page }) => {
   test.setTimeout(150_000);
   await signIn(page, account("CLAIMS_PROCESSOR"));
-  await processedClaim(page, /SYN-FFG-2026-0001/);
+  await processedClaim(page, /NGI-FFG-2026-0001/);
 
   await expect(page.getByText("The policy version for this claim is not published yet. Publish it, then retry.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Retry" })).toBeVisible();

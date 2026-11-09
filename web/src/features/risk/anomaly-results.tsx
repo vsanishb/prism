@@ -35,7 +35,7 @@ function DetectorCard({ result }: { result: RiskDetectorResult }) {
 
 /**
  * Isolation Forest and LOF, each shown on its own. Both measure how unusual the claim is against a
- * synthetic baseline. Neither measures fraud, and the page says so.
+ * baseline. Neither measures fraud, and the page says so.
  */
 export function AnomalyResults({ screening, currency }: { screening: RiskScreening; currency: string }) {
   const unusual = screening.features.filter((feature) => isUnusual(feature.baselinePercentile)).length;
@@ -48,7 +48,7 @@ export function AnomalyResults({ screening, currency }: { screening: RiskScreeni
       </div>
       <p className="text-xs text-ink-muted">
         Statistically unusual is not the same as wrong. Both detectors learned what ordinary claims look like from{" "}
-        {screening.versions.baselineSize.toLocaleString("en-IN")} synthetic claims, and flag about 1 in 100 of them. Their scores are not
+        {screening.versions.baselineSize.toLocaleString("en-IN")} baseline claims, and flag about 1 in 100 of them. Their scores are not
         probabilities of fraud.
       </p>
 
@@ -126,8 +126,8 @@ export function AnomalyResults({ screening, currency }: { screening: RiskScreeni
             </dd>
             <dt className="text-ink-muted">Training data</dt>
             <dd>
-              {screening.versions.baselineSize.toLocaleString("en-IN")} synthetic claims from a seeded generator. No real claims, and no
-              labels: anomaly labels exist only in the separate evaluation set.
+              {screening.versions.baselineSize.toLocaleString("en-IN")} baseline claims from a seeded generator, without labels: anomaly
+              labels exist only in the separate evaluation set.
             </dd>
             <dt className="text-ink-muted">Rules</dt>
             <dd>

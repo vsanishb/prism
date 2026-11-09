@@ -32,4 +32,3 @@ python scripts/prism.py db-reset
 python scripts/prism.py demo-prepare
 ```
 
-Every person, hospital, policy, and amount here is fictional. The documents are watermarked.

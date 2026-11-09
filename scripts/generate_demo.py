@@ -15,7 +15,7 @@ Writes three things:
 The manifest records, for each claim, the rules it was built to raise. demo-prepare compares them with
 what Prism raised, and prints any difference.
 
-Everything is fictional and watermarked. These are not real insurance or medical documents.
+Every person, hospital, and policy is invented, with names chosen to avoid real ones.
 """
 
 from __future__ import annotations
@@ -35,21 +35,21 @@ DEMO = ROOT / "demo"
 CORPUS = OUTPUT / "claims" / "demo-corpus"
 POLICIES = OUTPUT / "policies"
 
-GOLD = "SYN-FFG-2026-0001"
-GOLD_HOLDER = "Synthetic Policyholder One"
-DOCTOR = "Dr Synthetic Consultant (Fictional)"
+GOLD = "NGI-FFG-2026-0001"
+GOLD_HOLDER = "Rajesh Iyer"
+DOCTOR = "Dr Anand Kulkarni"
 
-SUNRISE = "Synthetic Sunrise Hospital, Hyderabad (Fictional)"
-MEADOW = "Synthetic Meadow Hospital, Bengaluru (Fictional)"
-HARBOUR = "Synthetic Harbour Hospital, Chennai (Fictional)"
-CEDAR = "Synthetic Cedar Hospital, Lucknow (Fictional)"
-ORCHID = "Synthetic Orchid Hospital, Indore (Fictional)"
-SILVERLINE = "Synthetic Silverline Hospital, Bhopal (Fictional)"
-BANYAN = "Synthetic Banyan Hospital, Ahmedabad (Fictional)"
-MAPLE = "Synthetic Maple Hospital, Kolkata (Fictional)"
-CRESCENT = "Synthetic Crescent Hospital, Visakhapatnam (Fictional)"
-GREENLEAF = "Synthetic Greenleaf Hospital, Mysuru (Fictional)"
-SEAVIEW = "Synthetic Seaview Hospital, Mangaluru (Fictional)"
+SUNRISE = "Udayam Hospital, Hyderabad"
+MEADOW = "Hasiru Hospital, Bengaluru"
+HARBOUR = "Kadaloram Hospital, Chennai"
+CEDAR = "Devdar Hospital, Lucknow"
+ORCHID = "Nirmay Orchid Hospital, Indore"
+SILVERLINE = "Rajatrekha Hospital, Bhopal"
+BANYAN = "Vatvriksh Hospital, Ahmedabad"
+MAPLE = "Shalmali Hospital, Kolkata"
+CRESCENT = "Chandrika Hospital, Visakhapatnam"
+GREENLEAF = "Patravali Hospital, Mysuru"
+SEAVIEW = "Kadal Seaview Hospital, Mangaluru"
 
 
 def printed(value: date) -> str:
@@ -173,7 +173,7 @@ KIRAN_ITEMS = items(
     ("Pharmacy and consumables", 1, 17_650),
     ("Physiotherapy sessions", 4, 1_350),
 )
-KIRAN_BILL = bill_for("Synthetic Patient Kiran", CRESCENT, "CR-2026-40712", D(2026, 8, 4), D(2026, 8, 8), KIRAN_ITEMS)
+KIRAN_BILL = bill_for("Kiran Patil", CRESCENT, "CR-2026-40712", D(2026, 8, 4), D(2026, 8, 8), KIRAN_ITEMS)
 
 RAGHAV_SURGERY = items(
     ("Room rent (single private)", 3, 8_200),
@@ -185,7 +185,7 @@ RAGHAV_SURGERY = items(
     ("Laboratory and imaging", 1, 11_350),
 )
 
-KAVYA_BILL = bill_for("Synthetic Patient Kavya", SUNRISE, "SR-2026-21877", D(2026, 5, 11), D(2026, 5, 14), items(
+KAVYA_BILL = bill_for("Kavya Reddy", SUNRISE, "SR-2026-21877", D(2026, 5, 11), D(2026, 5, 14), items(
     ("Room rent (single private)", 3, 5_800),
     ("Surgeon fee: laparoscopic appendectomy", 1, 44_500),
     ("Anaesthetist fee", 1, 11_800),
@@ -206,7 +206,7 @@ GOPAL_ITEMS = items(
     ("Nursing charges", 6, 1_150),
 )
 
-IMRAN_BILL = bill_for("Synthetic Patient Imran", CEDAR, "CD-2026-08814", D(2026, 8, 3), D(2026, 8, 7), items(
+IMRAN_BILL = bill_for("Imran Siddiqui", CEDAR, "CD-2026-08814", D(2026, 8, 3), D(2026, 8, 7), items(
     ("Room rent (twin sharing)", 4, 3_900),
     ("Consultation fees", 1, 7_800),
     ("Platelet transfusion", 2, 9_100),
@@ -215,7 +215,7 @@ IMRAN_BILL = bill_for("Synthetic Patient Imran", CEDAR, "CD-2026-08814", D(2026,
     ("Nursing charges", 4, 700),
 ))
 
-ROHAN_BILL = bill_for("Synthetic Patient Rohan", MEADOW, "MW-2026-15520", D(2026, 6, 2), D(2026, 6, 5), items(
+ROHAN_BILL = bill_for("Rohan Mehta", MEADOW, "MW-2026-15520", D(2026, 6, 2), D(2026, 6, 5), items(
     ("Room rent (single private)", 3, 6_100),
     ("Surgeon fee: open reduction and internal fixation", 1, 58_000),
     ("Anaesthetist fee", 1, 14_600),
@@ -228,68 +228,68 @@ ROHAN_BILL = bill_for("Synthetic Patient Rohan", MEADOW, "MW-2026-15520", D(2026
 
 CORPUS_CLAIMS: tuple[Claim, ...] = (
     # Wave 1: claims that later claims are compared with.
-    Claim("C01", "01-clean-appendectomy", "Clean claim, approved", "Synthetic Patient Kavya", SUNRISE,
+    Claim("C01", "01-clean-appendectomy", "Clean claim, approved", "Kavya Reddy", SUNRISE,
           D(2026, 5, 11), D(2026, 5, 14), KAVYA_BILL.total, "Acute appendicitis", "Laparoscopic appendectomy on 11/05/2026",
           (KAVYA_BILL,), (), ("decide:APPROVED:AGREED:Documents agree and the treatment is covered under Clause 2.1.",
                               "revise:PARTIALLY_APPROVED:-2550:AGREED:Nursing charges are part of room rent under the tariff; revised on audit."),
           wave=1),
-    Claim("C02", "02-clean-fracture-partial", "Clean claim, partly approved", "Synthetic Patient Rohan", MEADOW,
+    Claim("C02", "02-clean-fracture-partial", "Clean claim, partly approved", "Rohan Mehta", MEADOW,
           D(2026, 6, 2), D(2026, 6, 5), ROHAN_BILL.total, "Closed fracture of the right radius",
           "Open reduction and internal fixation on 02/06/2026", (ROHAN_BILL,), (),
           ("decide:PARTIALLY_APPROVED:-3150:AGREED:Attendant charges and toiletries are non-medical items under Clause 4.4.",),
           wave=1),
-    Claim("C04", "04-clean-dengue-information", "Clean claim, waiting for a report", "Synthetic Patient Imran", CEDAR,
+    Claim("C04", "04-clean-dengue-information", "Clean claim, waiting for a report", "Imran Siddiqui", CEDAR,
           D(2026, 8, 3), D(2026, 8, 7), IMRAN_BILL.total, "Dengue fever with thrombocytopenia", "Platelet transfusion",
           (IMRAN_BILL,), (), ("request:DIAGNOSTIC_REPORT:Please upload the platelet count reports from the admission.",),
           wave=1),
-    Claim("C05", "05-large-angioplasty-senior", "Large claim, approved by a senior reviewer", "Synthetic Patient Gopal", HARBOUR,
+    Claim("C05", "05-large-angioplasty-senior", "Large claim, approved by a senior reviewer", "Gopal Krishnamurthy", HARBOUR,
           D(2026, 6, 15), D(2026, 6, 21), sum(item.total for item in GOPAL_ITEMS), "Coronary artery disease, double vessel",
           "Coronary angioplasty with two drug-eluting stents on 16/06/2026",
-          (bill_for("Synthetic Patient Gopal", HARBOUR, "HB-2026-60231", D(2026, 6, 15), D(2026, 6, 21), GOPAL_ITEMS),), (),
+          (bill_for("Gopal Krishnamurthy", HARBOUR, "HB-2026-60231", D(2026, 6, 15), D(2026, 6, 21), GOPAL_ITEMS),), (),
           ("decide:APPROVED:AGREED:Above the reviewer limit. Documents agree and the procedure is covered.",), wave=1),
-    Claim("E-BLATANT", "earlier-blatant-femur-fracture", "Earlier claim the blatant demonstration copies", "Synthetic Patient Kiran",
+    Claim("E-BLATANT", "earlier-blatant-femur-fracture", "Earlier claim the blatant demonstration copies", "Kiran Patil",
           CRESCENT, D(2026, 8, 4), D(2026, 8, 8), KIRAN_BILL.total, "Fracture of the left femur shaft",
           "Open reduction and internal fixation on 04/08/2026", (KIRAN_BILL,), (),
           ("decide:APPROVED:AGREED:Documents agree and the treatment is covered.",), wave=1),
     Claim("E-DISGUISED-1", "earlier-disguised-viral-fever", "Earlier claim for the disguised demonstration's patient",
-          "Synthetic Patient Raghav", SEAVIEW, D(2026, 4, 20), D(2026, 4, 23), 47_160, "Viral fever", "Supportive care",
-          (bill_for("Synthetic Patient Raghav", SEAVIEW, "SV-2026-03318", D(2026, 4, 20), D(2026, 4, 23), items(
+          "Raghav Hegde", SEAVIEW, D(2026, 4, 20), D(2026, 4, 23), 47_160, "Viral fever", "Supportive care",
+          (bill_for("Raghav Hegde", SEAVIEW, "SV-2026-03318", D(2026, 4, 20), D(2026, 4, 23), items(
               ("Room rent (single private)", 3, 6_300),
               ("Consultation fees", 1, 6_800),
               ("Pharmacy and consumables", 1, 12_460),
               ("Laboratory investigations", 1, 9_000),
           )),), (), ("decide:APPROVED:AGREED:Documents agree and the treatment is covered.",), wave=1),
     Claim("E-DISGUISED-2", "earlier-disguised-cholecystectomy", "Earlier claim the disguised demonstration resembles",
-          "Synthetic Patient Raghav", SEAVIEW, D(2026, 9, 14), D(2026, 9, 17), sum(item.total for item in RAGHAV_SURGERY),
+          "Raghav Hegde", SEAVIEW, D(2026, 9, 14), D(2026, 9, 17), sum(item.total for item in RAGHAV_SURGERY),
           "Acute calculous cholecystitis", "Laparoscopic cholecystectomy on 14/09/2026",
-          (bill_for("Synthetic Patient Raghav", SEAVIEW, "SV-2026-04102", D(2026, 9, 14), D(2026, 9, 17), RAGHAV_SURGERY),), (),
+          (bill_for("Raghav Hegde", SEAVIEW, "SV-2026-04102", D(2026, 9, 14), D(2026, 9, 17), RAGHAV_SURGERY),), (),
           ("decide:APPROVED:AGREED:Above the reviewer limit. Documents agree and the procedure is covered.",), wave=1),
     # Wave 2: everything else.
-    Claim("C03", "03-cataract-waiting-period", "Covered treatment inside its waiting period, denied", "Synthetic Patient Lakshmi",
+    Claim("C03", "03-cataract-waiting-period", "Covered treatment inside its waiting period, denied", "Lakshmi Subramanian",
           ORCHID, D(2026, 7, 20), D(2026, 7, 21), 61_940, "Senile cataract of the right eye",
           "Phacoemulsification with intraocular lens, right eye, on 20/07/2026",
-          (bill_for("Synthetic Patient Lakshmi", ORCHID, "OR-2026-07745", D(2026, 7, 20), D(2026, 7, 21), items(
+          (bill_for("Lakshmi Subramanian", ORCHID, "OR-2026-07745", D(2026, 7, 20), D(2026, 7, 21), items(
               ("Day care bed charges", 1, 3_400),
               ("Surgeon fee: phacoemulsification", 1, 27_500),
               ("Foldable intraocular lens", 1, 18_900),
               ("Operation theatre charges", 1, 8_260),
               ("Pharmacy and eye drops", 1, 3_880),
           )),), (), ("decide:DENIED:AGREED:Cataract has a 24-month waiting period under Clause 3.2, and cover began in April 2025.",)),
-    Claim("C06", "06-patient-differs", "The bill names a different patient", "Synthetic Patient Divya", BANYAN,
+    Claim("C06", "06-patient-differs", "The bill names a different patient", "Divya Chopra", BANYAN,
           D(2026, 7, 6), D(2026, 7, 9), 0, "Acute gastroenteritis with dehydration", "Intravenous rehydration",
-          (bill_for("Synthetic Patient Divya", BANYAN, "BN-2026-11406", D(2026, 7, 6), D(2026, 7, 9), items(
+          (bill_for("Divya Chopra", BANYAN, "BN-2026-11406", D(2026, 7, 6), D(2026, 7, 9), items(
               ("Room rent (twin sharing)", 3, 4_100),
               ("Consultation fees", 1, 6_900),
               ("Intravenous fluids and pharmacy", 1, 18_420),
               ("Laboratory investigations", 1, 13_110),
               ("Nursing charges", 3, 1_100),
               ("Dietary charges", 3, 1_100),
-          ), patient="Synthetic Patient Dhruv"),), ("CON-01",),
+          ), patient="Dhruv Sinha"),), ("CON-01",),
           ("escalate:SENIOR_REVIEW:The bill names another patient. Asking a senior reviewer before deciding.",)),
     Claim("C07", "07-hospital-and-dates-differ", "The discharge summary names another hospital and date",
-          "Synthetic Patient Neel", MAPLE, D(2026, 8, 10), D(2026, 8, 13), 0, "Lower respiratory tract infection",
+          "Neel Banerjee", MAPLE, D(2026, 8, 10), D(2026, 8, 13), 0, "Lower respiratory tract infection",
           "Intravenous antibiotics",
-          (bill_for("Synthetic Patient Neel", MAPLE, "MP-2026-30985", D(2026, 8, 10), D(2026, 8, 13), items(
+          (bill_for("Neel Banerjee", MAPLE, "MP-2026-30985", D(2026, 8, 10), D(2026, 8, 13), items(
               ("Room rent (single private)", 3, 5_400),
               ("Consultation fees", 1, 8_200),
               ("Intravenous antibiotics", 1, 21_380),
@@ -297,11 +297,11 @@ CORPUS_CLAIMS: tuple[Claim, ...] = (
               ("Laboratory investigations", 1, 12_600),
               ("Nursing charges", 3, 1_200),
           )),), ("CON-02", "CON-03"), ("take",),
-          stay=Stay(hospital="Synthetic Maple Nursing Home, Howrah (Fictional)", discharge=D(2026, 8, 14))),
+          stay=Stay(hospital="Shalmali Nursing Home, Howrah", discharge=D(2026, 8, 14))),
     Claim("C08", "08-bill-before-admission", "The bill is dated before the admission, with an old prescription",
-          "Synthetic Patient Pooja", SILVERLINE, D(2026, 9, 1), D(2026, 9, 4), 0, "Acute pyelonephritis",
+          "Pooja Jain", SILVERLINE, D(2026, 9, 1), D(2026, 9, 4), 0, "Acute pyelonephritis",
           "Intravenous antibiotics",
-          (bill_for("Synthetic Patient Pooja", SILVERLINE, "SL-2026-22719", D(2026, 9, 1), D(2026, 9, 4), items(
+          (bill_for("Pooja Jain", SILVERLINE, "SL-2026-22719", D(2026, 9, 1), D(2026, 9, 4), items(
               ("Room rent (single private)", 3, 5_900),
               ("Consultation fees", 1, 9_300),
               ("Intravenous antibiotics", 1, 24_760),
@@ -311,8 +311,8 @@ CORPUS_CLAIMS: tuple[Claim, ...] = (
           ), issued=D(2026, 8, 27)),), ("CON-04", "CON-06"), ("wait",),
           extras=(Extra("PRESCRIPTION", D(2026, 4, 10), "PRESCRIPTION", "prescription.pdf"),)),
     Claim("C09", "09-discharge-before-admission", "The documents put the discharge before the admission",
-          "Synthetic Patient Arjun", CEDAR, D(2026, 5, 20), D(2026, 5, 23), 49_870, "Acute bronchitis", "Nebulisation and oral antibiotics",
-          (bill_for("Synthetic Patient Arjun", CEDAR, "CD-2026-05132", D(2026, 5, 23), D(2026, 5, 20), items(
+          "Arjun Malik", CEDAR, D(2026, 5, 20), D(2026, 5, 23), 49_870, "Acute bronchitis", "Nebulisation and oral antibiotics",
+          (bill_for("Arjun Malik", CEDAR, "CD-2026-05132", D(2026, 5, 23), D(2026, 5, 20), items(
               ("Room rent (twin sharing)", 3, 3_700),
               ("Consultation fees", 1, 6_100),
               ("Nebulisation", 6, 650),
@@ -320,10 +320,10 @@ CORPUS_CLAIMS: tuple[Claim, ...] = (
               ("Laboratory investigations", 1, 16_900),
           ), issued=D(2026, 5, 23)),), ("CON-03", "CON-05"), ("wait",),
           stay=Stay(admission=D(2026, 5, 23), discharge=D(2026, 5, 20))),
-    Claim("C10", "10-items-do-not-add-up", "Bill items do not add up, and one is repeated", "Synthetic Patient Sneha",
+    Claim("C10", "10-items-do-not-add-up", "Bill items do not add up, and one is repeated", "Sneha Kulkarni",
           SUNRISE, D(2026, 9, 8), D(2026, 9, 12), 121_040, "Community-acquired pneumonia",
           "Intravenous antibiotics and oxygen therapy",
-          (bill_for("Synthetic Patient Sneha", SUNRISE, "SR-2026-24410", D(2026, 9, 8), D(2026, 9, 12), items(
+          (bill_for("Sneha Kulkarni", SUNRISE, "SR-2026-24410", D(2026, 9, 8), D(2026, 9, 12), items(
               ("Room rent (single private)", 4, 5_800),
               ("Consultation fees", 1, 9_900),
               ("Chest X-ray", 1, 1_850),
@@ -332,9 +332,9 @@ CORPUS_CLAIMS: tuple[Claim, ...] = (
               ("Intravenous antibiotics", 1, 31_740),
               ("Laboratory investigations", 1, 18_300),
           ), stated_total=121_040),), ("FIN-01", "FIN-02"), ("wait",)),
-    Claim("C11", "11-claimed-above-bill", "The claim asks for more than the bill", "Synthetic Patient Manoj", CEDAR,
+    Claim("C11", "11-claimed-above-bill", "The claim asks for more than the bill", "Manoj Tiwari", CEDAR,
           D(2026, 7, 14), D(2026, 7, 18), 185_000, "Acute pancreatitis", "Conservative management",
-          (bill_for("Synthetic Patient Manoj", CEDAR, "CD-2026-07220", D(2026, 7, 14), D(2026, 7, 18), items(
+          (bill_for("Manoj Tiwari", CEDAR, "CD-2026-07220", D(2026, 7, 14), D(2026, 7, 18), items(
               ("Room rent (single private)", 4, 6_200),
               ("ICU charges", 1, 26_800),
               ("Consultation fees", 1, 12_400),
@@ -343,9 +343,9 @@ CORPUS_CLAIMS: tuple[Claim, ...] = (
               ("Laboratory investigations", 1, 31_400),
           )),), ("FIN-03",),
           ("decide:PARTIALLY_APPROVED:=152400:AGREED:Approved at the billed amount; the claim asked for more than the bill.",)),
-    Claim("C12", "12-above-sum-insured", "Above the sum insured, at a very high daily amount", "Synthetic Patient Farida",
+    Claim("C12", "12-above-sum-insured", "Above the sum insured, at a very high daily amount", "Farida Ansari",
           HARBOUR, D(2026, 2, 10), D(2026, 2, 12), 0, "Subarachnoid haemorrhage", "Endovascular coiling of an aneurysm",
-          (bill_for("Synthetic Patient Farida", HARBOUR, "HB-2026-10477", D(2026, 2, 10), D(2026, 2, 12), items(
+          (bill_for("Farida Ansari", HARBOUR, "HB-2026-10477", D(2026, 2, 10), D(2026, 2, 12), items(
               ("Neuro ICU charges", 2, 38_500),
               ("Interventional neuroradiologist fee", 1, 135_000),
               ("Detachable coils", 6, 41_000),
@@ -353,9 +353,9 @@ CORPUS_CLAIMS: tuple[Claim, ...] = (
               ("Pharmacy and consumables", 1, 23_400),
               ("Laboratory and imaging", 1, 17_600),
           )),), ("FIN-04", "FIN-06"), ("wait",), note="Policy year 2025-26: sum insured INR 5,00,000."),
-    Claim("C13", "13-near-sum-insured", "Close to the whole sum insured", "Synthetic Patient Suresh", ORCHID,
+    Claim("C13", "13-near-sum-insured", "Close to the whole sum insured", "Suresh Pillai", ORCHID,
           D(2026, 1, 5), D(2026, 1, 12), 0, "Necrotising pancreatitis", "Percutaneous drainage and intensive care",
-          (bill_for("Synthetic Patient Suresh", ORCHID, "OR-2026-00318", D(2026, 1, 5), D(2026, 1, 12), items(
+          (bill_for("Suresh Pillai", ORCHID, "OR-2026-00318", D(2026, 1, 5), D(2026, 1, 12), items(
               ("ICU charges", 7, 29_000),
               ("Intensivist fee", 1, 64_000),
               ("Interventional radiology", 1, 58_500),
@@ -363,40 +363,40 @@ CORPUS_CLAIMS: tuple[Claim, ...] = (
               ("Laboratory and imaging", 1, 44_200),
               ("Nursing charges", 7, 1_800),
           )),), ("FIN-05",), ("wait",), note="Policy year 2025-26: sum insured INR 5,00,000."),
-    Claim("C14", "14-copied-bill", "The bill is another claim's file, unchanged", "Synthetic Patient Tanvi", SUNRISE,
+    Claim("C14", "14-copied-bill", "The bill is another claim's file, unchanged", "Tanvi Mishra", SUNRISE,
           D(2026, 9, 21), D(2026, 9, 24), KAVYA_BILL.total, "Acute appendicitis", "Laparoscopic appendectomy on 21/09/2026",
           (), ("DUP-01", "CON-01", "CON-03", "CON-04"),
           ("finding:CONFIRMED_FRAUD:The bill is the same file as another patient's claim; the hospital confirmed it issued no such bill for this patient.",
            "decide:DENIED:AGREED:The investigator confirmed the bill belongs to another claim."),
           copied_bill="01-clean-appendectomy/hospital-bill.pdf"),
     Claim("C15", "15-invoice-number-reused", "The bill number belongs to another claim at the same hospital",
-          "Synthetic Patient Vivek", MEADOW, D(2026, 9, 2), D(2026, 9, 5), 64_890, "Acute cholecystitis", "Conservative management",
-          (bill_for("Synthetic Patient Vivek", MEADOW, "MW-2026-15520", D(2026, 9, 2), D(2026, 9, 5), items(
+          "Vivek Saxena", MEADOW, D(2026, 9, 2), D(2026, 9, 5), 64_890, "Acute cholecystitis", "Conservative management",
+          (bill_for("Vivek Saxena", MEADOW, "MW-2026-15520", D(2026, 9, 2), D(2026, 9, 5), items(
               ("Room rent (twin sharing)", 3, 4_400),
               ("Consultation fees", 1, 7_300),
               ("Ultrasound abdomen", 1, 5_150),
               ("Pharmacy and consumables", 1, 19_640),
               ("Laboratory investigations", 1, 19_600),
           )),), ("DUP-02",), ("wait",)),
-    Claim("C16", "16-near-identical-bill", "A lightly altered copy of another patient's bill", "Synthetic Patient Ramesh",
+    Claim("C16", "16-near-identical-bill", "A lightly altered copy of another patient's bill", "Ramesh Gowda",
           HARBOUR, D(2026, 10, 5), D(2026, 10, 11), 0, "Coronary artery disease, double vessel",
           "Coronary angioplasty with two drug-eluting stents on 06/10/2026",
-          (bill_for("Synthetic Patient Ramesh", HARBOUR, "HB-2026-71940", D(2026, 10, 5), D(2026, 10, 11), (
+          (bill_for("Ramesh Gowda", HARBOUR, "HB-2026-71940", D(2026, 10, 5), D(2026, 10, 11), (
               *GOPAL_ITEMS[:5], Item("Pharmacy and consumables", 1, 35_900), GOPAL_ITEMS[6], GOPAL_ITEMS[7],
           )),), ("DUP-03",),
           ("finding:NO_CONCERN:The hospital confirmed both bills follow its fixed angioplasty package, which explains the matching lines.",
            "wait")),
-    Claim("C17", "17-overlapping-stay", "The same patient was in another hospital at the same time", "Synthetic Patient Kavya",
+    Claim("C17", "17-overlapping-stay", "The same patient was in another hospital at the same time", "Kavya Reddy",
           MAPLE, D(2026, 5, 13), D(2026, 5, 16), 57_310, "Post-operative wound infection", "Wound debridement",
-          (bill_for("Synthetic Patient Kavya", MAPLE, "MP-2026-12053", D(2026, 5, 13), D(2026, 5, 16), items(
+          (bill_for("Kavya Reddy", MAPLE, "MP-2026-12053", D(2026, 5, 13), D(2026, 5, 16), items(
               ("Room rent (twin sharing)", 3, 4_600),
               ("Surgeon fee: wound debridement", 1, 21_000),
               ("Dressings and consumables", 1, 9_880),
               ("Intravenous antibiotics", 1, 12_630),
           )),), ("DUP-04",), ("wait",)),
-    Claim("C18", "18-similar-claim-soon-after", "A similar claim at the same hospital weeks later", "Synthetic Patient Imran", CEDAR,
+    Claim("C18", "18-similar-claim-soon-after", "A similar claim at the same hospital weeks later", "Imran Siddiqui", CEDAR,
           D(2026, 8, 25), D(2026, 8, 29), 76_420, "Dengue fever", "Supportive care",
-          (bill_for("Synthetic Patient Imran", CEDAR, "CD-2026-09203", D(2026, 8, 25), D(2026, 8, 29), items(
+          (bill_for("Imran Siddiqui", CEDAR, "CD-2026-09203", D(2026, 8, 25), D(2026, 8, 29), items(
               ("Room rent (twin sharing)", 4, 4_050),
               ("Consultation fees", 1, 8_100),
               ("Intravenous fluids", 1, 9_460),
@@ -405,9 +405,9 @@ CORPUS_CLAIMS: tuple[Claim, ...] = (
               ("Nursing charges", 4, 500),
           )),), ("DUP-05",),
           ("decide:APPROVED:PARTLY_AGREED:A second admission is plausible after dengue; reports confirm a relapse.",)),
-    Claim("C19", "19-document-type-differs", "A report uploaded as a prescription", "Synthetic Patient Meher", BANYAN,
+    Claim("C19", "19-document-type-differs", "A report uploaded as a prescription", "Meher Bhatt", BANYAN,
           D(2026, 10, 2), D(2026, 10, 4), 44_620, "Acute gastritis", "Endoscopy and medical management",
-          (bill_for("Synthetic Patient Meher", BANYAN, "BN-2026-13392", D(2026, 10, 2), D(2026, 10, 4), items(
+          (bill_for("Meher Bhatt", BANYAN, "BN-2026-13392", D(2026, 10, 2), D(2026, 10, 4), items(
               ("Room rent (twin sharing)", 2, 4_250),
               ("Consultation fees", 1, 5_600),
               ("Upper GI endoscopy", 1, 14_900),
@@ -416,23 +416,23 @@ CORPUS_CLAIMS: tuple[Claim, ...] = (
           )),), ("DOC-01",),
           ("decide:APPROVED:AGREED:The report was uploaded under the wrong type; its content supports the claim.",),
           extras=(Extra("DIAGNOSTIC_REPORT", D(2026, 10, 2), "PRESCRIPTION", "endoscopy-report.pdf"),)),
-    Claim("C20", "20-bill-without-details", "A bill with no number and no items", "Synthetic Patient Yusuf", SILVERLINE,
+    Claim("C20", "20-bill-without-details", "A bill with no number and no items", "Yusuf Khan", SILVERLINE,
           D(2026, 10, 12), D(2026, 10, 15), 68_500, "Renal colic", "Medical management",
-          (bill_for("Synthetic Patient Yusuf", SILVERLINE, None, D(2026, 10, 12), D(2026, 10, 15), (), stated_total=68_500),),
+          (bill_for("Yusuf Khan", SILVERLINE, None, D(2026, 10, 12), D(2026, 10, 15), (), stated_total=68_500),),
           ("DOC-02", "DOC-03"),
           ("request:ITEMIZED_INVOICE:The bill has no number or items. Please upload the itemized invoice.",)),
-    Claim("C21", "21-missing-discharge-summary", "The discharge summary was never supplied", "Synthetic Patient Bhavna", MAPLE,
+    Claim("C21", "21-missing-discharge-summary", "The discharge summary was never supplied", "Bhavna Shah", MAPLE,
           D(2026, 10, 19), D(2026, 10, 22), 53_960, "", "",
-          (bill_for("Synthetic Patient Bhavna", MAPLE, "MP-2026-33108", D(2026, 10, 19), D(2026, 10, 22), items(
+          (bill_for("Bhavna Shah", MAPLE, "MP-2026-33108", D(2026, 10, 19), D(2026, 10, 22), items(
               ("Room rent (twin sharing)", 3, 4_600),
               ("Consultation fees", 1, 6_200),
               ("Pharmacy and consumables", 1, 18_460),
               ("Laboratory investigations", 1, 15_500),
           )),), (), ("wait",), discharge_summary=False,
           note="Waits for the discharge summary. It is screened, and MIS-01 raised, only if the 14-day wait expires."),
-    Claim("C22", "22-diagnosis-not-stated", "The discharge summary gives no diagnosis", "Synthetic Patient Harini", ORCHID,
+    Claim("C22", "22-diagnosis-not-stated", "The discharge summary gives no diagnosis", "Harini Raman", ORCHID,
           D(2026, 10, 26), D(2026, 10, 28), 0, "", "Observation and intravenous fluids",
-          (bill_for("Synthetic Patient Harini", ORCHID, "OR-2026-09961", D(2026, 10, 26), D(2026, 10, 28), items(
+          (bill_for("Harini Raman", ORCHID, "OR-2026-09961", D(2026, 10, 26), D(2026, 10, 28), items(
               ("Room rent (twin sharing)", 2, 4_350),
               ("Consultation fees", 1, 5_900),
               ("Intravenous fluids and pharmacy", 1, 11_740),
@@ -444,9 +444,9 @@ CORPUS_CLAIMS: tuple[Claim, ...] = (
 
 BLATANT = Claim(
     "DEMO-BLATANT", "1-blatant-fraud", "Blatant: plainly inconsistent, with a bill copied from another claim",
-    "Synthetic Patient Aditya", CRESCENT, D(2026, 10, 12), D(2026, 10, 13), 1_060_000,
+    "Aditya Joshi", CRESCENT, D(2026, 10, 12), D(2026, 10, 13), 1_060_000,
     "Fracture of the left femur shaft", "Open reduction and internal fixation on 12/10/2026",
-    (bill_for("Synthetic Patient Aditya", CRESCENT, "CR-2026-40712", D(2026, 10, 12), D(2026, 10, 13), items(
+    (bill_for("Aditya Joshi", CRESCENT, "CR-2026-40712", D(2026, 10, 12), D(2026, 10, 13), items(
         ("ICU charges", 1, 86_000),
         ("ICU charges", 1, 86_000),
         ("Surgeon fee: open reduction of femur fracture", 1, 188_000),
@@ -459,9 +459,9 @@ BLATANT = Claim(
 )
 
 CLEAN = Claim(
-    "DEMO-CLEAN", "2-clean-claim", "Clean: an ordinary, consistent claim", "Synthetic Patient Ananya", GREENLEAF,
+    "DEMO-CLEAN", "2-clean-claim", "Clean: an ordinary, consistent claim", "Ananya Iyer", GREENLEAF,
     D(2026, 10, 5), D(2026, 10, 8), 96_870, "Acute appendicitis", "Laparoscopic appendectomy on 05/10/2026",
-    (bill_for("Synthetic Patient Ananya", GREENLEAF, "GL-2026-06684", D(2026, 10, 5), D(2026, 10, 8), items(
+    (bill_for("Ananya Iyer", GREENLEAF, "GL-2026-06684", D(2026, 10, 5), D(2026, 10, 8), items(
         ("Room rent (single private)", 3, 5_350),
         ("Surgeon fee: laparoscopic appendectomy", 1, 41_200),
         ("Anaesthetist fee", 1, 10_900),
@@ -474,9 +474,9 @@ CLEAN = Claim(
 
 DISGUISED = Claim(
     "DEMO-DISGUISED", "3-disguised-fraud", "Disguised: consistent documents, but the bill is a light copy of an earlier one",
-    "Synthetic Patient Raghav", SEAVIEW, D(2026, 10, 5), D(2026, 10, 7), 0, "Acute calculous cholecystitis",
+    "Raghav Hegde", SEAVIEW, D(2026, 10, 5), D(2026, 10, 7), 0, "Acute calculous cholecystitis",
     "Laparoscopic cholecystectomy on 05/10/2026",
-    (bill_for("Synthetic Patient Raghav", SEAVIEW, "SV-2026-04377", D(2026, 10, 5), D(2026, 10, 7), (
+    (bill_for("Raghav Hegde", SEAVIEW, "SV-2026-04377", D(2026, 10, 5), D(2026, 10, 7), (
         Item("Room rent (single private)", 2, 8_200),
         *RAGHAV_SURGERY[1:5],
         Item("Pharmacy", 1, 38_900),
@@ -487,11 +487,7 @@ DISGUISED = Claim(
 # --- Documents -----------------------------------------------------------------------------------------------
 
 
-def code_line(code: str) -> Paragraph:
-    return Paragraph(f"Synthetic document code: {code}", BODY)
-
-
-def claim_form(claim: Claim, code: str) -> list[Any]:
+def claim_form(claim: Claim) -> list[Any]:
     stay = claim.with_stay()
     return [
         Paragraph(INSURER, TITLE),
@@ -506,15 +502,14 @@ def claim_form(claim: Claim, code: str) -> list[Any]:
             ("Discharge date", printed(stay.discharge)),
             ("Claim type", "Reimbursement"),
             ("Total amount claimed", f"INR {amount(claim.claimed)}"),
-            ("Bank details", "Withheld in synthetic data"),
+            ("Bank details", "On file"),
         ]),
         Spacer(1, 12),
-        Paragraph("I declare that the information given here is true. Signed: <i>Synthetic signature</i>", BODY),
-        code_line(code),
+        Paragraph("I declare that the information given here is true. Signature of claimant: <i>(signed)</i>", BODY),
     ]
 
 
-def bill_document(bill: Bill, code: str) -> list[Any]:
+def bill_document(bill: Bill) -> list[Any]:
     title = "Itemized Invoice" if bill.itemized else "Final In-patient Bill"
     details: list[tuple[str, str]] = []
     if bill.number:
@@ -532,11 +527,10 @@ def bill_document(bill: Bill, code: str) -> list[Any]:
     else:
         # Only a total: a "charges, all inclusive" line beside it is read, reasonably, as a line item.
         story.append(key_values([("Total payable", f"INR {amount(bill.total)}")]))
-    story += [Spacer(1, 8), code_line(code)]
     return story
 
 
-def discharge_summary(claim: Claim, code: str) -> list[Any]:
+def discharge_summary(claim: Claim) -> list[Any]:
     stay = claim.with_stay()
     return [
         Paragraph(stay.hospital, TITLE),
@@ -550,21 +544,20 @@ def discharge_summary(claim: Claim, code: str) -> list[Any]:
             ("Procedure", claim.procedure),
         ] if value]),
         Paragraph("Course in hospital", HEADING),
-        Paragraph("Fictional narrative: treated as planned and discharged in a stable condition.", BODY),
+        Paragraph("Treated as planned and discharged in a stable condition.", BODY),
         Paragraph("Advice on discharge", HEADING),
-        Paragraph("Fictional advice: review in the outpatient clinic after seven days.", BODY),
-        code_line(code),
+        Paragraph("Review in the outpatient clinic after seven days.", BODY),
     ]
 
 
-def extra_document(claim: Claim, extra: Extra, code: str) -> list[Any]:
+def extra_document(claim: Claim, extra: Extra) -> list[Any]:
     if extra.kind == "PRESCRIPTION":
         body = [
             key_values([("Patient", claim.patient), ("Date", printed(extra.issued)), ("Doctor", DOCTOR)]),
             Spacer(1, 6),
             table([["Medicine", "Dose", "Duration"],
-                   ["Tab. Synthetic Nitrofurantoin 100 mg", "Twice daily", "5 days"],
-                   ["Tab. Synthetic Paracetamol 650 mg", "When needed", "3 days"]], [80, 50, 44]),
+                   ["Tab. Nitrofurantoin 100 mg", "Twice daily", "5 days"],
+                   ["Tab. Paracetamol 650 mg", "When needed", "3 days"]], [80, 50, 44]),
         ]
         heading = "Outpatient Prescription"
     else:
@@ -572,12 +565,12 @@ def extra_document(claim: Claim, extra: Extra, code: str) -> list[Any]:
             key_values([("Patient", claim.patient), ("Report date", printed(extra.issued)), ("Reported by", DOCTOR),
                         ("Investigation", "Upper GI endoscopy")]),
             Paragraph("Findings", HEADING),
-            Paragraph("Fictional findings: diffuse antral erythema. No ulcer. No bleeding.", BODY),
+            Paragraph("Diffuse antral erythema. No ulcer. No bleeding.", BODY),
             Paragraph("Impression", HEADING),
-            Paragraph("Fictional impression: acute gastritis.", BODY),
+            Paragraph("Acute gastritis.", BODY),
         ]
         heading = "Diagnostic Report"
-    return [Paragraph(claim.hospital, TITLE), Paragraph(heading, HEADING), *body, Spacer(1, 8), code_line(code)]
+    return [Paragraph(claim.hospital, TITLE), Paragraph(heading, HEADING), *body]
 
 
 def write_claim(claim: Claim, folder: Path, source_root: Path) -> list[dict[str, str]]:
@@ -585,22 +578,21 @@ def write_claim(claim: Claim, folder: Path, source_root: Path) -> list[dict[str,
     if folder.exists():
         shutil.rmtree(folder)
     folder.mkdir(parents=True)
-    prefix = f"PRISM-{claim.key}"
     files: list[dict[str, str]] = []
-    write_pdf(folder / "claim-form.pdf", claim_form(claim, f"{prefix}-FORM"))
+    write_pdf(folder / "claim-form.pdf", claim_form(claim))
     files.append({"file": "claim-form.pdf", "type": "CLAIM_FORM"})
     if claim.copied_bill:
         shutil.copyfile(source_root / claim.copied_bill, folder / "hospital-bill.pdf")
         files.append({"file": "hospital-bill.pdf", "type": "HOSPITAL_BILL"})
-    for index, bill in enumerate(claim.bills):
+    for bill in claim.bills:
         name = "itemized-invoice.pdf" if bill.itemized else "hospital-bill.pdf"
-        write_pdf(folder / name, bill_document(bill, f"{prefix}-BILL{index + 1}"))
+        write_pdf(folder / name, bill_document(bill))
         files.append({"file": name, "type": "ITEMIZED_INVOICE" if bill.itemized else "HOSPITAL_BILL"})
     if claim.discharge_summary:
-        write_pdf(folder / "discharge-summary.pdf", discharge_summary(claim, f"{prefix}-DISCHARGE"))
+        write_pdf(folder / "discharge-summary.pdf", discharge_summary(claim))
         files.append({"file": "discharge-summary.pdf", "type": "DISCHARGE_SUMMARY"})
     for extra in claim.extras:
-        write_pdf(folder / extra.file, extra_document(claim, extra, f"{prefix}-{extra.kind}"))
+        write_pdf(folder / extra.file, extra_document(claim, extra))
         files.append({"file": extra.file, "type": extra.declared})
     return files
 
@@ -666,7 +658,7 @@ DEMO_STORY = {
         "HIGH",
         "Investigation queue",
         [
-            "`hospital-bill.pdf` is byte-for-byte the bill from claim *Synthetic Patient Kiran* (loaded by demo-prepare). "
+            "`hospital-bill.pdf` is byte-for-byte the bill from claim *Kiran Patil* (loaded by demo-prepare). "
             "It names Kiran, not Aditya, and different dates.",
             "`itemized-invoice.pdf` reuses Kiran's invoice number at the same hospital, is dated five days before the "
             "admission, repeats the ICU line, and its items do not add up to its total.",
@@ -725,7 +717,7 @@ def demo_readme(claim: Claim, files: list[dict[str, str]]) -> str:
 
 ## 1. Create the claim
 
-Sign in as `claims.processor@synthetic.prism.test`, open **Claims**, and choose **New claim**. Enter exactly:
+Sign in as `claims.processor@prism.local`, open **Claims**, and choose **New claim**. Enter exactly:
 
 | Field | Value |
 |---|---|
@@ -752,8 +744,6 @@ Rules expected to fire:
 {show}
 
 The person who created a claim can never review it. Sign in as `reviewer`, `senior.reviewer`, or `investigator` to work it.
-
-All names, hospitals, and amounts are fictional.
 """
 
 
@@ -791,7 +781,6 @@ python scripts/prism.py db-reset
 python scripts/prism.py demo-prepare
 ```
 
-Every person, hospital, policy, and amount here is fictional. The documents are watermarked.
 """
 
 # --- Policy wordings for the policies registered without one -------------------------------------------------
@@ -855,17 +844,17 @@ def main() -> None:
     (DEMO / "README.md").write_text(DEMO_INDEX, encoding="utf-8")
 
     manifest = {
-        "note": "Synthetic presentation data for Prism. Fictional people, hospitals, and amounts.",
+        "note": "Presentation claims for Prism, loaded by demo-prepare.",
         "claims": corpus_entries,
         "demonstrations": demo_entries,
     }
     (CORPUS / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
     write_pdf(POLICIES / "individual-silver.pdf", simple_wording(
-        "Individual Silver", "SYN-IND-2026-0002", "Synthetic Policyholder Two", "1 January 2026 to 31 December 2026",
+        "Individual Silver", "NGI-IND-2026-0002", "Meena Kapoor", "1 January 2026 to 31 December 2026",
         "3,00,000", "1% of Sum Insured per day", "Nil"))
     write_pdf(POLICIES / "family-health-plus.pdf", simple_wording(
-        "Family Health Plus", "SYN-RSK-2026-0003", "Synthetic Policyholder Four", "1 January 2026 to 31 December 2026",
+        "Family Health Plus", "NGI-RSK-2026-0003", "Sunita Rao", "1 January 2026 to 31 December 2026",
         "5,00,000", "Single private room", "10% of each admissible claim where the Insured Person is aged 61 or above"))
     print(f"Wrote {len(corpus_entries)} corpus claims, 3 demonstrations, and 2 policy wordings.")
 

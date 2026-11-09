@@ -78,7 +78,7 @@
       ["5.2", "PROCEDURE", "Claim documents", 4, "Submit claim documents within 15 days of discharge.", []]
     ],
     "shield": [
-      ["S", "SCHEDULE", "Schedule", 1, "Plan: Comprehensive Health Shield (fictional). Sum Insured INR 15,00,000 per policy year on a floater basis. Co-payment: 15% of each admissible claim for Insured Persons who enter the policy at age 60 or above. Deductible: nil. Room category: single private air-conditioned room. Cumulative bonus: 10% of the base Sum Insured for each claim-free year, up to 50%.", []],
+      ["S", "SCHEDULE", "Schedule", 1, "Plan: Comprehensive Health Shield. Sum Insured INR 15,00,000 per policy year on a floater basis. Co-payment: 15% of each admissible claim for Insured Persons who enter the policy at age 60 or above. Deductible: nil. Room category: single private air-conditioned room. Cumulative bonus: 10% of the base Sum Insured for each claim-free year, up to 50%.", []],
       ["1.1", "DEFINITION", "Accident", 2, "Accident means a sudden, unforeseen, and involuntary event caused by external, visible, and violent means.", []],
       ["1.2", "DEFINITION", "AYUSH Hospital", 2, "AYUSH Hospital means a healthcare facility registered for Ayurveda, Yoga and Naturopathy, Unani, Siddha, or Homeopathy treatment, with at least 5 in-patient beds and qualified practitioners available around the clock.", []],
       ["1.3", "DEFINITION", "Cashless Facility", 2, "Cashless Facility means a facility under which the Insurer pays a Network Provider directly for treatment approved in advance, up to the amount authorized.", [["1.10", "DEFINES"]]],

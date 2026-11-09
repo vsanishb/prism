@@ -8,7 +8,7 @@ import { READING_TIMEOUT, account, accountByEmail, signIn, uploadFreshVersion } 
 
 async function openGoldVersion(page: Page, version: 1 | 2): Promise<void> {
   await page.goto("/policies");
-  await page.getByRole("link", { name: /SYN-FFG-2026-0001/ }).first().click();
+  await page.getByRole("link", { name: /NGI-FFG-2026-0001/ }).first().click();
   await page.getByRole("group", { name: `Version ${version}`, exact: true }).getByRole("link", { name: /knowledge/ }).click();
   await expect(page.getByRole("heading", { name: `Version ${version}` })).toBeVisible();
 }
@@ -67,7 +67,7 @@ test("a new wording is read, confirmed, corrected, and published by a second man
   await signIn(approver, accountByEmail("policy.approver"));
   await approver.goto(versionUrl);
   await approver.getByRole("button", { name: "Publish" }).click();
-  await expect(approver.getByText(/Published by Synthetic Policy Approver/)).toBeVisible();
+  await expect(approver.getByText(/Published by Deepak Menon/)).toBeVisible();
   await expect(approver.getByRole("button", { name: "Confirm again", exact: true })).toHaveCount(0);
   await expect(approver.getByRole("button", { name: "Correct", exact: true })).toHaveCount(0);
   await approverContext.close();

@@ -55,7 +55,7 @@ class RiskScreeningFlowTest extends IntegrationTest {
         processor = fixtures.processor();
         policy = fixtures.createPolicy();
         fixtures.addVersion(policy, "2026-01-01", "2026-12-31");
-        hospital = "Synthetic Hospital " + UUID.randomUUID().toString().substring(0, 8);
+        hospital = "Vrinda Care Hospital " + UUID.randomUUID().toString().substring(0, 8);
         doAnswer(call -> new RiskScreening.SummaryResult(call.<RiskScreening.SummaryRequest>getArgument(0).claimId(), "UNAVAILABLE",
                 null, List.of(), "model_unavailable", "risk_summary.v1", List.of())).when(aiService).summarizeRisk(any());
         doAnswer(call -> anomaly(call.getArgument(0), false)).when(aiService).scoreRiskAnomaly(any());
@@ -72,28 +72,28 @@ class RiskScreeningFlowTest extends IntegrationTest {
     }
 
     private DocumentExtraction.Result form() {
-        return result("CLAIM_FORM", List.of(text("patient_name", "Synthetic Patient"), text("hospital_name", hospital),
+        return result("CLAIM_FORM", List.of(text("patient_name", "Anita Desai"), text("hospital_name", hospital),
                 date("admission_date", "2026-03-14"), date("discharge_date", "2026-03-17"), amount("claimed_amount", "106000.00"),
-                text("policy_number", "SYN-TEST")), List.of());
+                text("policy_number", "NGI-TEST")), List.of());
     }
 
     private DocumentExtraction.Result bill(String number) {
         return result("HOSPITAL_BILL", List.of(text("bill_number", number), date("bill_date", "2026-03-17"),
-                text("patient_name", "Synthetic Patient"), text("hospital_name", hospital), date("admission_date", "2026-03-14"),
+                text("patient_name", "Anita Desai"), text("hospital_name", hospital), date("admission_date", "2026-03-14"),
                 date("discharge_date", "2026-03-17"), amount("total_amount", "106000.00")),
                 List.of(item("Room rent", "19500.00"), item("Surgeon fee", "42000.00"), item("Anaesthetist fee", "12000.00"),
                         item("Operation theatre", "18500.00"), item("Pharmacy", "9250.00"), item("Laboratory", "4750.00")));
     }
 
     private DocumentExtraction.Result discharge() {
-        return result("DISCHARGE_SUMMARY", List.of(text("patient_name", "Synthetic Patient"), text("hospital_name", hospital),
+        return result("DISCHARGE_SUMMARY", List.of(text("patient_name", "Anita Desai"), text("hospital_name", hospital),
                 date("admission_date", "2026-03-14"), date("discharge_date", "2026-03-17"),
                 text("diagnosis", "Acute appendicitis")), List.of());
     }
 
     /** A submitted claim, extracted and consolidated as the workflow would. */
     private UUID consolidatedClaim(byte[] billFile, String billNumber) throws Exception {
-        return consolidatedClaim(billFile, billNumber, "Synthetic Patient");
+        return consolidatedClaim(billFile, billNumber, "Anita Desai");
     }
 
     private UUID consolidatedClaim(byte[] billFile, String billNumber, String patient) throws Exception {
@@ -176,7 +176,7 @@ class RiskScreeningFlowTest extends IntegrationTest {
     void aCopiedBillIsAFraudIndicatorThatNamesTheOtherClaimOnly() throws Exception {
         byte[] copied = unique(ClaimFixtures.BILL);
         // Another patient, so that only the copied file links the two claims.
-        UUID original = consolidatedClaim(copied, "INV-" + UUID.randomUUID(), "Synthetic Other Patient");
+        UUID original = consolidatedClaim(copied, "INV-" + UUID.randomUUID(), "Naveen Kumar");
         UUID copy = consolidatedClaim(copied, "INV-" + UUID.randomUUID());
         doAnswer(call -> anomaly(call.getArgument(0), true)).when(aiService).scoreRiskAnomaly(any());
         doAnswer(call -> {
@@ -203,7 +203,7 @@ class RiskScreeningFlowTest extends IntegrationTest {
         // The model saw de-identified signals only.
         ArgumentCaptor<RiskScreening.SummaryRequest> sent = ArgumentCaptor.forClass(RiskScreening.SummaryRequest.class);
         verify(aiService).summarizeRisk(sent.capture());
-        assertThat(json.writeValueAsString(sent.getValue())).doesNotContain("Synthetic Patient", hospital, originalNumber);
+        assertThat(json.writeValueAsString(sent.getValue())).doesNotContain("Anita Desai", hospital, originalNumber);
         assertThat(sent.getValue().signals()).extracting(RiskScreening.Signal::id).containsExactly("S1", "S2", "S3");
 
         assertThat(jdbc.sql("SELECT action FROM core.audit_events WHERE stream = ?").param("claim:" + copy).query(String.class).list())
@@ -215,7 +215,7 @@ class RiskScreeningFlowTest extends IntegrationTest {
     @Test
     void anUnavailableSummaryLeavesTheScreeningComplete() throws Exception {
         byte[] copied = unique(ClaimFixtures.BILL);
-        consolidatedClaim(copied, "INV-" + UUID.randomUUID(), "Synthetic Other Patient");
+        consolidatedClaim(copied, "INV-" + UUID.randomUUID(), "Naveen Kumar");
         UUID copy = consolidatedClaim(copied, "INV-" + UUID.randomUUID());
         doThrow(new Failure("ai_service_unavailable", true, List.of())).when(aiService).summarizeRisk(any());
 
@@ -229,7 +229,7 @@ class RiskScreeningFlowTest extends IntegrationTest {
     @Test
     void theSummaryCannotChangeTheScreening() throws Exception {
         byte[] copied = unique(ClaimFixtures.BILL);
-        consolidatedClaim(copied, "INV-" + UUID.randomUUID(), "Synthetic Other Patient");
+        consolidatedClaim(copied, "INV-" + UUID.randomUUID(), "Naveen Kumar");
         UUID copy = consolidatedClaim(copied, "INV-" + UUID.randomUUID());
         // A summary citing a signal that was never sent is refused, and nothing about the screening moves.
         doAnswer(call -> new RiskScreening.SummaryResult(

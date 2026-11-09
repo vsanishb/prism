@@ -107,7 +107,7 @@ class SignInFlowTest extends IntegrationTest {
 
         MockHttpServletResponse response = admin.postWithoutCsrf(
                 "/api/v1/invitations",
-                Map.of("email", uniqueEmail(), "fullName", "Synthetic Person", "roles", new String[] {"REVIEWER"}));
+                Map.of("email", uniqueEmail(), "fullName", "Amit Chauhan", "roles", new String[] {"REVIEWER"}));
 
         assertThat(response.getStatus()).isEqualTo(403);
         assertThat(admin.bodyOf(response).get("code").asString()).isEqualTo("csrf_invalid");

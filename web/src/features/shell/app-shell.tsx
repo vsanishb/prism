@@ -17,7 +17,7 @@ interface NavItem {
   permission?: Permission;
   /** Shown to anyone with any of these. */
   anyOf?: Permission[];
-  /** Shown only in the local, synthetic environment. Core refuses the page anywhere else. */
+  /** Shown only in the local environment. Core refuses the page anywhere else. */
   localOnly?: boolean;
 }
 
@@ -61,11 +61,11 @@ function NavLink({ item, active }: { item: NavItem; active: boolean }) {
 
 export function AppShell({
   user,
-  syntheticEnvironment,
+  localEnvironment,
   children,
 }: {
   user: CurrentUser;
-  syntheticEnvironment: boolean;
+  localEnvironment: boolean;
   children: ReactNode;
 }) {
   const pathname = usePathname();
@@ -74,7 +74,7 @@ export function AppShell({
   const visible = (item: NavItem) =>
     (!item.permission || user.permissions.includes(item.permission)) &&
     (!item.anyOf || item.anyOf.some((permission) => user.permissions.includes(permission))) &&
-    (!item.localOnly || syntheticEnvironment);
+    (!item.localOnly || localEnvironment);
   const sections = SECTIONS.map((section) => ({ ...section, items: section.items.filter(visible) })).filter(
     (section) => section.items.length > 0,
   );
@@ -106,12 +106,6 @@ export function AppShell({
           ))}
         </nav>
         <div className="hidden border-t border-line p-4 md:block">
-          {syntheticEnvironment ? (
-            <p className="mb-3 flex items-center gap-2 rounded-control bg-caution-soft px-3 py-2 text-xs font-medium text-caution">
-              <span aria-hidden className="size-1.5 rounded-full bg-caution" />
-              Synthetic data only
-            </p>
-          ) : null}
           <div className="flex items-center gap-3 rounded-control px-1 py-1">
             <span aria-hidden className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent-soft text-sm font-semibold text-accent">
               {initials(user.fullName)}

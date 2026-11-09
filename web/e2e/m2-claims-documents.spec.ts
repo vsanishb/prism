@@ -8,10 +8,10 @@ const BILL = "claims/appendectomy/hospital-bill.pdf";
 
 async function createClaim(page: Page, patient: string): Promise<void> {
   await page.goto("/claims/new");
-  await page.getByLabel("Policy", { exact: true }).selectOption({ label: "SYN-FFG-2026-0001: Family Floater Gold (Synthetic)" });
-  await page.getByLabel("Claimant").fill("Synthetic Policyholder One");
+  await page.getByLabel("Policy", { exact: true }).selectOption({ label: "NGI-FFG-2026-0001: Family Floater Gold" });
+  await page.getByLabel("Claimant").fill("Rajesh Iyer");
   await page.getByLabel("Patient").fill(patient);
-  await page.getByLabel("Hospital").fill("Synthetic Care Hospital");
+  await page.getByLabel("Hospital").fill("Vrinda Care Hospital");
   await page.getByLabel("Admission date").fill("2026-03-14");
   await page.getByLabel("Discharge date").fill("2026-03-17");
   await page.getByLabel("Claimed amount").fill("106000");
@@ -26,7 +26,7 @@ async function upload(page: Page, relative: string, type: string) {
 
 test("a processor creates a claim, adds documents, and submits it", async ({ page }) => {
   await signIn(page, account("CLAIMS_PROCESSOR"));
-  await createClaim(page, "Synthetic Patient Flow");
+  await createClaim(page, "Rekha Das");
 
   await expect(page.getByText("Add at least one document.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Submit claim" })).toBeDisabled();
@@ -60,9 +60,9 @@ test("a discharge before admission is explained", async ({ page }) => {
   await signIn(page, account("CLAIMS_PROCESSOR"));
   await page.goto("/claims/new");
   await page.getByLabel("Policy", { exact: true }).selectOption({ index: 1 });
-  await page.getByLabel("Claimant").fill("Synthetic Claimant");
-  await page.getByLabel("Patient").fill("Synthetic Patient");
-  await page.getByLabel("Hospital").fill("Synthetic Hospital");
+  await page.getByLabel("Claimant").fill("Rohit Verma");
+  await page.getByLabel("Patient").fill("Anita Desai");
+  await page.getByLabel("Hospital").fill("Vrinda Care Hospital");
   await page.getByLabel("Admission date").fill("2026-03-14");
   await page.getByLabel("Discharge date").fill("2026-03-10");
   await page.getByLabel("Claimed amount").fill("1000");
@@ -72,7 +72,7 @@ test("a discharge before admission is explained", async ({ page }) => {
 
 test("unsafe files are refused with a clear reason", async ({ page }) => {
   await signIn(page, account("CLAIMS_PROCESSOR"));
-  await createClaim(page, "Synthetic Patient Invalid");
+  await createClaim(page, "Om Prakash");
 
   const cases: [string, string][] = [
     ["invalid/spoofed-text-named-as.pdf", "This file type is not supported."],
@@ -90,14 +90,14 @@ test("unsafe files are refused with a clear reason", async ({ page }) => {
 
 test("a file over the limit passes the proxy and gets a clear refusal", async ({ page }) => {
   await signIn(page, account("CLAIMS_PROCESSOR"));
-  await createClaim(page, "Synthetic Patient Oversized");
+  await createClaim(page, "Jaya Menon");
   await page.getByLabel("Upload documents").setInputFiles(path.resolve(process.cwd(), "../.data/oversized-synthetic.pdf"));
   await expect(page.getByText("This file is larger than the 25 MB limit.")).toBeVisible();
 });
 
 test("a large valid scan uploads through the proxy", async ({ page }) => {
   await signIn(page, account("CLAIMS_PROCESSOR"));
-  await createClaim(page, "Synthetic Patient Large");
+  await createClaim(page, "Ira Chatterjee");
   await page.getByLabel("Upload documents").setInputFiles(path.resolve(process.cwd(), "../.data/large-valid-scan.png"));
   await expect(page.getByRole("link", { name: "large-valid-scan.png" })).toBeVisible({ timeout: 20_000 });
   await expect(page.getByText(/2\d\.\d MB/)).toBeVisible();
@@ -105,7 +105,7 @@ test("a large valid scan uploads through the proxy", async ({ page }) => {
 
 test("uploading the same file twice is refused", async ({ page }) => {
   await signIn(page, account("CLAIMS_PROCESSOR"));
-  await createClaim(page, "Synthetic Patient Duplicate");
+  await createClaim(page, "Pallavi Rane");
   await upload(page, BILL, "Hospital bill");
   await expect(page.getByRole("link", { name: "hospital-bill.pdf" })).toBeVisible();
   await upload(page, BILL, "Other");
@@ -114,7 +114,7 @@ test("uploading the same file twice is refused", async ({ page }) => {
 
 test("a draft document can be replaced and removed", async ({ page }) => {
   await signIn(page, account("CLAIMS_PROCESSOR"));
-  await createClaim(page, "Synthetic Patient Replace");
+  await createClaim(page, "Gautam Roy");
   await upload(page, BILL, "Hospital bill");
   await expect(page.getByRole("link", { name: "hospital-bill.pdf" })).toBeVisible();
 
@@ -130,7 +130,7 @@ test("a draft document can be replaced and removed", async ({ page }) => {
 
 test("the viewer shows every page of a multi-page scan", async ({ page }) => {
   await signIn(page, account("CLAIMS_PROCESSOR"));
-  await createClaim(page, "Synthetic Patient Viewer");
+  await createClaim(page, "Irfan Ali");
   await upload(page, "claims/scanned/discharge-note.tiff", "Discharge summary");
   await page.getByRole("link", { name: "discharge-note.tiff" }).click();
 
@@ -154,17 +154,17 @@ test("the viewer shows every page of a multi-page scan", async ({ page }) => {
 
 test("a draft can be edited", async ({ page }) => {
   await signIn(page, account("CLAIMS_PROCESSOR"));
-  await createClaim(page, "Synthetic Patient Edit");
+  await createClaim(page, "Sameer Joshi");
   await page.getByRole("link", { name: "Edit" }).click();
-  await page.getByLabel("Patient").fill("Synthetic Patient Edited");
+  await page.getByLabel("Patient").fill("Sana Mirza");
   await page.getByRole("button", { name: "Save changes" }).click();
-  await expect(page.getByText("Synthetic Patient Edited · ₹1,06,000.00")).toBeVisible();
+  await expect(page.getByText("Sana Mirza · ₹1,06,000.00")).toBeVisible();
   await expect(page.getByText("Claim edited")).toBeVisible();
 });
 
 test("a claim can be withdrawn with a reason", async ({ page }) => {
   await signIn(page, account("CLAIMS_PROCESSOR"));
-  await createClaim(page, "Synthetic Patient Withdraw");
+  await createClaim(page, "Tarun Ghosh");
   await page.getByRole("button", { name: "Withdraw" }).click();
   await expect(page.getByRole("button", { name: "Withdraw claim" })).toBeDisabled();
   await page.getByLabel("Reason").selectOption({ label: "Duplicate entry" });
@@ -185,7 +185,7 @@ test("the claims list filters and searches", async ({ page }) => {
   await page.getByLabel("Search claims").fill("CLM-2026-000001");
   await page.getByLabel("Search claims").press("Enter");
   await expect(page).toHaveURL(/search=CLM-2026-000001/);
-  await expect(page.getByRole("cell", { name: "Synthetic Patient Asha" })).toHaveCount(1);
+  await expect(page.getByRole("cell", { name: "Asha Kulkarni" })).toHaveCount(1);
   await expect(page.getByRole("link", { name: "CLM-2026-000002" })).toHaveCount(0);
 });
 
@@ -218,8 +218,8 @@ test("a policy manager registers a policy, adds versions, and uploads a wording"
   await page.goto("/policies");
   await page.getByRole("button", { name: "Register policy" }).click();
   await page.getByLabel("Policy number").fill(`SYN-E2E-${Date.now()}`);
-  await page.getByLabel("Product").fill("Synthetic E2E Product");
-  await page.getByLabel("Policyholder").fill("Synthetic Holder");
+  await page.getByLabel("Product").fill("Health Shield Classic");
+  await page.getByLabel("Policyholder").fill("Geeta Nair");
   await page.getByRole("dialog").getByRole("button", { name: "Register policy" }).click();
   await expect(page.getByText("No versions yet")).toBeVisible();
 
@@ -258,13 +258,13 @@ test("phones show each claim's status and amount without sideways scrolling", as
   await expect(row.getByText("₹1,06,000.00")).toBeInViewport({ ratio: 1 });
 
   await page.goto("/policies");
-  await expect(page.getByRole("link", { name: /SYN-FFG-2026-0001/ }).getByText("Synthetic Policyholder One")).toBeInViewport({ ratio: 1 });
+  await expect(page.getByRole("link", { name: /NGI-FFG-2026-0001/ }).getByText("Rajesh Iyer")).toBeInViewport({ ratio: 1 });
 });
 
 test("an auditor sees who viewed a document", async ({ page }) => {
   await signIn(page, account("AUDITOR"));
   await page.goto("/audit?action=DOCUMENT_VIEWED");
-  await expect(page.getByRole("cell", { name: "Synthetic Reviewer" }).first()).toBeVisible();
+  await expect(page.getByRole("cell", { name: "Rahul Verma" }).first()).toBeVisible();
   await page.getByRole("button", { name: "Verify integrity" }).click();
   await expect(page.getByText("The audit trail is intact")).toBeVisible();
 });

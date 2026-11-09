@@ -65,7 +65,7 @@ const ACTION_LABELS: Record<string, string> = {
   USER_ROLES_CHANGED: "Roles changed",
   USER_DEACTIVATED: "User deactivated",
   USER_REACTIVATED: "User reactivated",
-  SYNTHETIC_USER_SEEDED: "Synthetic user created",
+  SYNTHETIC_USER_SEEDED: "Staff account seeded",
   POLICY_CREATED: "Policy created",
   POLICY_VERSION_CREATED: "Policy version added",
   POLICY_PAGES_EXTRACTED: "Policy pages read",

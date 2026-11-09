@@ -123,7 +123,7 @@
           "category": "STATISTICAL",
           "severity": null,
           "title": "Statistically unusual compared with all baseline claims",
-          "explanation": "Isolation Forest scores this claim as more unusual than 99.82% of the synthetic baseline claims.",
+          "explanation": "Isolation Forest scores this claim as more unusual than 99.82% of the baseline claims.",
           "contribution": 10
         },
         {
@@ -133,7 +133,7 @@
           "category": "STATISTICAL",
           "severity": null,
           "title": "Statistically unusual compared with similar claims",
-          "explanation": "Local Outlier Factor scores this claim as more unusual than 100% of the synthetic baseline claims.",
+          "explanation": "Local Outlier Factor scores this claim as more unusual than 100% of the baseline claims.",
           "contribution": 10
         }
       ]
@@ -173,7 +173,7 @@
           "category": "STATISTICAL",
           "severity": null,
           "title": "Statistically unusual compared with all baseline claims",
-          "explanation": "Isolation Forest scores this claim as more unusual than 99.84% of the synthetic baseline claims.",
+          "explanation": "Isolation Forest scores this claim as more unusual than 99.84% of the baseline claims.",
           "contribution": 10
         },
         {
@@ -183,7 +183,7 @@
           "category": "STATISTICAL",
           "severity": null,
           "title": "Statistically unusual compared with similar claims",
-          "explanation": "Local Outlier Factor scores this claim as more unusual than 99.88% of the synthetic baseline claims.",
+          "explanation": "Local Outlier Factor scores this claim as more unusual than 99.88% of the baseline claims.",
           "contribution": 10
         }
       ]

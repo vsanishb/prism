@@ -104,8 +104,8 @@ def test_value_must_come_from_its_quote() -> None:
 
 
 def test_contains_tokens_needs_a_whole_run() -> None:
-    assert contains_tokens("Synthetic Care Hospital, Pune (Fictional)", "Synthetic Care Hospital")
-    assert not contains_tokens("Synthetic Care Hospital", "Synthetic Hospital")
+    assert contains_tokens("Vrinda Care Hospital, Pune", "Vrinda Care Hospital")
+    assert not contains_tokens("Vrinda Care Hospital", "Vrinda Hospital")
 
 
 def test_tokens_fold_unicode_width_and_case() -> None:

@@ -12,7 +12,7 @@ Three scenarios, and the earlier claims they are compared with (D-088):
 
 The manifest records each document's fields and line items exactly as printed. The core seeder reads
 it to create the claims, and the end-to-end model stand-in reads it to answer as a model would.
-Everything is fictional and watermarked. These are not real insurance or medical documents.
+Every person, hospital, and policy is invented, with names chosen to avoid real ones.
 """
 
 from __future__ import annotations
@@ -27,11 +27,11 @@ from generate_test_data import BODY, HEADING, INSURER, OUTPUT, TITLE, key_values
 from reportlab.platypus import Paragraph, Spacer
 
 DIRECTORY = OUTPUT / "claims" / "risk-demo"
-POLICY_NUMBER = "SYN-RSK-2026-0003"
-CLAIMANT = "Synthetic Policyholder Four"
-LOTUS = "Synthetic Lotus Hospital, Nagpur (Fictional)"
-RIVERSIDE = "Synthetic Riverside Hospital, Kochi (Fictional)"
-GREENFIELD = "Synthetic Greenfield Hospital, Jaipur (Fictional)"
+POLICY_NUMBER = "NGI-RSK-2026-0003"
+CLAIMANT = "Sunita Rao"
+LOTUS = "Kamalini Hospital, Nagpur"
+RIVERSIDE = "Nilaya Riverside Hospital, Kochi"
+GREENFIELD = "Aravalli Greenfield Hospital, Jaipur"
 
 
 def amount(value: int) -> str:
@@ -114,7 +114,7 @@ class Claim:
 
 
 E1_BILL = Bill(
-    "RDM-E1-BILL", LOTUS, "LH-2026-30418", "05/07/2026", "Synthetic Patient Meenal", "01/07/2026", "05/07/2026",
+    "RDM-E1-BILL", LOTUS, "LH-2026-30418", "05/07/2026", "Meenal Deshpande", "01/07/2026", "05/07/2026",
     (
         Item("Room rent (twin sharing)", 4, 5_500),
         Item("ICU charges", 1, 18_000),
@@ -137,13 +137,13 @@ E3_ITEMS = (
 
 CLAIMS = (
     Claim(
-        "SEVERE", "EARLIER", 1, "Synthetic Patient Meenal", LOTUS, "01/07/2026", "05/07/2026", 112_600,
+        "SEVERE", "EARLIER", 1, "Meenal Deshpande", LOTUS, "01/07/2026", "05/07/2026", 112_600,
         "Dengue fever with thrombocytopenia", "Platelet transfusion", (E1_BILL,),
     ),
     Claim(
-        "DISGUISED", "EARLIER", 1, "Synthetic Patient Vikram", RIVERSIDE, "12/04/2026", "15/04/2026", 46_800,
+        "DISGUISED", "EARLIER", 1, "Vikram Nair", RIVERSIDE, "12/04/2026", "15/04/2026", 46_800,
         "Viral fever", "Supportive care", (
-            Bill("RDM-E2-BILL", RIVERSIDE, "RH-2026-10233", "15/04/2026", "Synthetic Patient Vikram", "12/04/2026",
+            Bill("RDM-E2-BILL", RIVERSIDE, "RH-2026-10233", "15/04/2026", "Vikram Nair", "12/04/2026",
                  "15/04/2026", (
                      Item("Room rent (single private)", 3, 6_000),
                      Item("Consultation fees", 1, 6_400),
@@ -153,16 +153,16 @@ CLAIMS = (
         ),
     ),
     Claim(
-        "DISGUISED", "EARLIER", 2, "Synthetic Patient Vikram", RIVERSIDE, "28/08/2026", "31/08/2026", 384_500,
+        "DISGUISED", "EARLIER", 2, "Vikram Nair", RIVERSIDE, "28/08/2026", "31/08/2026", 384_500,
         "Acute calculous cholecystitis", "Laparoscopic cholecystectomy on 28/08/2026", (
-            Bill("RDM-E3-BILL", RIVERSIDE, "RH-2026-11702", "31/08/2026", "Synthetic Patient Vikram", "28/08/2026",
+            Bill("RDM-E3-BILL", RIVERSIDE, "RH-2026-11702", "31/08/2026", "Vikram Nair", "28/08/2026",
                  "31/08/2026", E3_ITEMS),
         ),
     ),
     Claim(
-        "SEVERE", "SCENARIO", 1, "Synthetic Patient Farhan", LOTUS, "10/08/2026", "11/08/2026", 740_000,
+        "SEVERE", "SCENARIO", 1, "Farhan Shaikh", LOTUS, "10/08/2026", "11/08/2026", 740_000,
         "Acute gastroenteritis with dehydration", "Intravenous rehydration", (
-            Bill("RDM-S1-INVOICE", LOTUS, "LH-2026-30418", "06/08/2026", "Synthetic Patient Farhan", "10/08/2026",
+            Bill("RDM-S1-INVOICE", LOTUS, "LH-2026-30418", "06/08/2026", "Farhan Shaikh", "10/08/2026",
                  "11/08/2026", (
                      Item("ICU charges", 1, 45_000),
                      Item("ICU charges", 1, 45_000),
@@ -175,9 +175,9 @@ CLAIMS = (
         copied=("severe-earlier-1/hospital-bill.pdf",),
     ),
     Claim(
-        "CLEAN", "SCENARIO", 1, "Synthetic Patient Nisha", GREENFIELD, "07/07/2026", "10/07/2026", 98_400,
+        "CLEAN", "SCENARIO", 1, "Nisha Agarwal", GREENFIELD, "07/07/2026", "10/07/2026", 98_400,
         "Acute appendicitis", "Laparoscopic appendectomy on 07/07/2026", (
-            Bill("RDM-C1-BILL", GREENFIELD, "GF-2026-05521", "10/07/2026", "Synthetic Patient Nisha", "07/07/2026",
+            Bill("RDM-C1-BILL", GREENFIELD, "GF-2026-05521", "10/07/2026", "Nisha Agarwal", "07/07/2026",
                  "10/07/2026", (
                      Item("Room rent (single private)", 3, 5_200),
                      Item("Surgeon fee: laparoscopic appendectomy", 1, 42_000),
@@ -190,9 +190,9 @@ CLAIMS = (
         ),
     ),
     Claim(
-        "DISGUISED", "SCENARIO", 1, "Synthetic Patient Vikram", RIVERSIDE, "18/09/2026", "20/09/2026", 392_000,
+        "DISGUISED", "SCENARIO", 1, "Vikram Nair", RIVERSIDE, "18/09/2026", "20/09/2026", 392_000,
         "Acute calculous cholecystitis", "Laparoscopic cholecystectomy on 18/09/2026", (
-            Bill("RDM-D1-BILL", RIVERSIDE, "RH-2026-11873", "20/09/2026", "Synthetic Patient Vikram", "18/09/2026",
+            Bill("RDM-D1-BILL", RIVERSIDE, "RH-2026-11873", "20/09/2026", "Vikram Nair", "18/09/2026",
                  "20/09/2026", (
                      Item("Room rent (single private)", 2, 8_500),
                      *E3_ITEMS[1:5],
@@ -205,7 +205,7 @@ CLAIMS = (
 
 
 def code_line(code: str) -> Paragraph:
-    return Paragraph(f"Synthetic document code: {code}", BODY)
+    return Paragraph(f"Document reference: {code}", BODY)
 
 
 def stated(value: str) -> dict[str, str]:
@@ -230,7 +230,7 @@ def claim_form(claim: Claim) -> tuple[list[Any], dict[str, Any]]:
             ]
         ),
         Spacer(1, 12),
-        Paragraph("I declare that the information given here is true. Signed: <i>Synthetic signature</i>", BODY),
+        Paragraph("I declare that the information given here is true. Signature of claimant: <i>(signed)</i>", BODY),
         code_line(code),
     ]
     fields = {
@@ -280,7 +280,7 @@ def bill_document(bill: Bill) -> tuple[list[Any], dict[str, Any]]:
 
 def discharge_summary(claim: Claim) -> tuple[list[Any], dict[str, Any]]:
     code = f"RDM-{claim.folder.upper()}-DISCHARGE"
-    doctor = "Dr Synthetic Physician (Fictional)"
+    doctor = "Dr Kavita Joshi"
     story = [
         Paragraph(claim.hospital, TITLE),
         Paragraph("Discharge Summary", HEADING),
@@ -295,7 +295,7 @@ def discharge_summary(claim: Claim) -> tuple[list[Any], dict[str, Any]]:
             ]
         ),
         Paragraph("Course in hospital", HEADING),
-        Paragraph("Fictional narrative: treated and discharged in a stable condition.", BODY),
+        Paragraph("Treated and discharged in a stable condition.", BODY),
         code_line(code),
     ]
     fields = {
@@ -356,10 +356,10 @@ def main() -> None:
             }
         )
     manifest = {
-        "note": "Synthetic demonstration data for Prism M7. Fictional people, hospitals, and policy.",
+        "note": "Risk demonstration claims for Prism (M7).",
         "policy": {
             "policyNumber": POLICY_NUMBER,
-            "product": "Family Health Plus (Synthetic)",
+            "product": "Family Health Plus",
             "policyholder": CLAIMANT,
             "effectiveFrom": "2026-01-01",
             "effectiveTo": "2026-12-31",

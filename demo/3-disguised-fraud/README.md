@@ -6,15 +6,15 @@ Consistent documents, but the bill is a light copy of an earlier one.
 
 ## 1. Create the claim
 
-Sign in as `claims.processor@synthetic.prism.test`, open **Claims**, and choose **New claim**. Enter exactly:
+Sign in as `claims.processor@prism.local`, open **Claims**, and choose **New claim**. Enter exactly:
 
 | Field | Value |
 |---|---|
 | Claim type | Reimbursement |
-| Policy | SYN-FFG-2026-0001 (Family Floater Gold) |
-| Claimant | Synthetic Policyholder One |
-| Patient | Synthetic Patient Raghav |
-| Hospital | Synthetic Seaview Hospital, Mangaluru (Fictional) |
+| Policy | NGI-FFG-2026-0001 (Family Floater Gold) |
+| Claimant | Rajesh Iyer |
+| Patient | Raghav Hegde |
+| Hospital | Kadal Seaview Hospital, Mangaluru |
 | Admission date | 05/10/2026 |
 | Discharge date | 07/10/2026 |
 | Claimed amount | INR 3,82,650.00 |
@@ -46,5 +46,3 @@ Rules expected to fire:
 Open the **Risk** tab and show the score breakdown: the rules alone give MEDIUM, and the two anomaly detectors add the points that make it HIGH. This is the case the ML layer exists for.
 
 The person who created a claim can never review it. Sign in as `reviewer`, `senior.reviewer`, or `investigator` to work it.
-
-All names, hospitals, and amounts are fictional.

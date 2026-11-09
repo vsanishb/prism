@@ -12,10 +12,10 @@ const PROCESSING_TIMEOUT = 45_000;
 
 async function createClaim(page: Page, patient: string): Promise<void> {
   await page.goto("/claims/new");
-  await page.getByLabel("Policy", { exact: true }).selectOption({ label: "SYN-FFG-2026-0001: Family Floater Gold (Synthetic)" });
-  await page.getByLabel("Claimant").fill("Synthetic Policyholder One");
+  await page.getByLabel("Policy", { exact: true }).selectOption({ label: "NGI-FFG-2026-0001: Family Floater Gold" });
+  await page.getByLabel("Claimant").fill("Rajesh Iyer");
   await page.getByLabel("Patient").fill(patient);
-  await page.getByLabel("Hospital").fill("Synthetic Care Hospital");
+  await page.getByLabel("Hospital").fill("Vrinda Care Hospital");
   await page.getByLabel("Admission date").fill("2026-03-14");
   await page.getByLabel("Discharge date").fill("2026-03-17");
   await page.getByLabel("Claimed amount").fill("106000");
@@ -40,7 +40,7 @@ async function expectStatus(page: Page, label: string | RegExp): Promise<void> {
 
 test("a complete claim is processed to review, with each fact traced to its source", async ({ page }) => {
   await signIn(page, account("CLAIMS_PROCESSOR"));
-  await createClaim(page, "Synthetic Patient Asha");
+  await createClaim(page, "Asha Kulkarni");
   await upload(page, "claims/appendectomy/claim-form.pdf", "Claim form");
   await upload(page, "claims/appendectomy/hospital-bill.pdf", "Hospital bill");
   await upload(page, "claims/appendectomy/discharge-summary.pdf", "Discharge summary");
@@ -64,7 +64,7 @@ test("a complete claim is processed to review, with each fact traced to its sour
 
 test("documents that disagree are shown as a conflict, with every source and no chosen value", async ({ page }) => {
   await signIn(page, account("CLAIMS_PROCESSOR"));
-  await createClaim(page, "Synthetic Patient Asha");
+  await createClaim(page, "Asha Kulkarni");
   await upload(page, "claims/appendectomy/claim-form.pdf", "Claim form");
   await upload(page, "claims/conflicting/hospital-bill.pdf", "Hospital bill");
   await upload(page, "claims/conflicting/discharge-summary.pdf", "Discharge summary");
@@ -83,7 +83,7 @@ test("documents that disagree are shown as a conflict, with every source and no 
 
 test("a claim missing documents waits, then resumes when they are added", async ({ page }) => {
   await signIn(page, account("CLAIMS_PROCESSOR"));
-  await createClaim(page, "Synthetic Patient Asha");
+  await createClaim(page, "Asha Kulkarni");
   await upload(page, "claims/appendectomy/hospital-bill.pdf", "Hospital bill");
   await submit(page);
 
@@ -98,7 +98,7 @@ test("a claim missing documents waits, then resumes when they are added", async 
 
 test("a failed document is shown with its reason, and a retry finishes it", async ({ page }) => {
   await signIn(page, account("CLAIMS_PROCESSOR"));
-  await createClaim(page, "Synthetic Patient Tara");
+  await createClaim(page, "Tara Bose");
   await upload(page, "claims/hard/injected-bill.pdf", "Hospital bill");
   await submit(page);
 
@@ -111,7 +111,7 @@ test("a failed document is shown with its reason, and a retry finishes it", asyn
 
 test("a scan has no highlight, and says why", async ({ page }) => {
   await signIn(page, account("CLAIMS_PROCESSOR"));
-  await createClaim(page, "Synthetic Patient Asha");
+  await createClaim(page, "Asha Kulkarni");
   await upload(page, "claims/scanned/prescription.png", "Prescription");
   await submit(page);
   await expectStatus(page, "Awaiting information");
@@ -126,7 +126,7 @@ test("a reviewer can read facts but cannot retry, and an administrator cannot se
   const processorContext = await browser.newContext();
   const processorPage = await processorContext.newPage();
   await signIn(processorPage, account("CLAIMS_PROCESSOR"));
-  await createClaim(processorPage, "Synthetic Patient Asha");
+  await createClaim(processorPage, "Asha Kulkarni");
   await upload(processorPage, "claims/appendectomy/hospital-bill.pdf", "Hospital bill");
   await submit(processorPage);
   await expectStatus(processorPage, "Awaiting information");
@@ -152,7 +152,7 @@ test("a reviewer can read facts but cannot retry, and an administrator cannot se
 
 test("the review screen fits a phone, and choosing a fact brings its source into view", async ({ page }) => {
   await signIn(page, account("CLAIMS_PROCESSOR"));
-  await createClaim(page, "Synthetic Patient Asha");
+  await createClaim(page, "Asha Kulkarni");
   await upload(page, "claims/appendectomy/hospital-bill.pdf", "Hospital bill");
   await submit(page);
   await expectStatus(page, "Awaiting information");

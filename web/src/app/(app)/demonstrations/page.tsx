@@ -37,16 +37,16 @@ export default async function DemonstrationsPage() {
     <>
       <PageHeader
         title="Risk demonstrations"
-        description="Three prepared synthetic claims that exercise all of risk screening: rules, both anomaly detectors, scoring, and the AI summary. Submitting one runs it through the normal pipeline, with no upload needed."
+        description="Three prepared claims that exercise all of risk screening: rules, both anomaly detectors, scoring, and the AI summary. Submitting one runs it through the normal pipeline, with no upload needed."
       />
       <p className="mb-6 max-w-3xl text-sm text-ink-muted" role="note">
-        Synthetic data, available only in the local environment. Each scenario runs once per database: reset the database to run it again.
+        Available only in the local environment. Each scenario runs once per database: reset the database to run it again.
         Results are screening signals for a reviewer. None of them is a finding of fraud.
       </p>
       {scenarios.length === 0 ? (
         <Panel>
           <EmptyState icon={FlaskConical} title="No demonstrations seeded">
-            Reset the database to seed them: they are created with the synthetic data.
+            Reset the database to seed them: they are created with the seed data.
           </EmptyState>
         </Panel>
       ) : (

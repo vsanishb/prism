@@ -19,8 +19,8 @@ import org.springframework.stereotype.Component;
 @Order(20)
 class SyntheticPolicySeeder implements ApplicationRunner {
 
-    private static final String ACTOR = "policy.manager@synthetic.prism.test";
-    private static final String DEMONSTRATION_POLICY = "SYN-RSK-2026-0003";
+    private static final String ACTOR = "policy.manager@prism.local";
+    private static final String DEMONSTRATION_POLICY = "NGI-RSK-2026-0003";
 
     private final PolicyService policies;
     private final SyntheticActors actors;
@@ -39,22 +39,22 @@ class SyntheticPolicySeeder implements ApplicationRunner {
             // which the demonstration seeder checks. It has no wording: screening does not need one.
             actors.runAs(ACTOR, () -> {
                 PolicySummary plus = policies.create(
-                        DEMONSTRATION_POLICY, "Family Health Plus (Synthetic)", "Synthetic Policyholder Four");
+                        DEMONSTRATION_POLICY, "Family Health Plus", "Sunita Rao");
                 policies.addVersion(
                         plus.id(), LocalDate.parse("2026-01-01"), LocalDate.parse("2026-12-31"), new BigDecimal("500000.00"));
             });
         }
-        if (policies.exists("SYN-FFG-2026-0001")) {
+        if (policies.exists("NGI-FFG-2026-0001")) {
             return;
         }
         actors.runAs(ACTOR, () -> {
             PolicySummary gold = policies.create(
-                    "SYN-FFG-2026-0001", "Family Floater Gold (Synthetic)", "Synthetic Policyholder One");
+                    "NGI-FFG-2026-0001", "Family Floater Gold", "Rajesh Iyer");
             addVersion(gold, "2025-04-01", "2026-03-31", "500000.00", "family-floater-gold-v1.pdf");
             addVersion(gold, "2026-04-01", "2027-03-31", "1000000.00", "family-floater-gold-v2.pdf");
 
             PolicySummary silver = policies.create(
-                    "SYN-IND-2026-0002", "Individual Silver (Synthetic)", "Synthetic Policyholder Two");
+                    "NGI-IND-2026-0002", "Individual Silver", "Meena Kapoor");
             policies.addVersion(
                     silver.id(), LocalDate.parse("2026-01-01"), LocalDate.parse("2026-12-31"), new BigDecimal("300000.00"));
         });

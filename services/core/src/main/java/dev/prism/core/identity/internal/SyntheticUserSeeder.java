@@ -32,15 +32,15 @@ import org.springframework.util.StringUtils;
 class SyntheticUserSeeder implements ApplicationRunner {
 
     private static final List<Seed> SEEDS = List.of(
-            new Seed("admin", "Synthetic Administrator", Role.ADMIN),
-            new Seed("policy.manager", "Synthetic Policy Manager", Role.POLICY_MANAGER),
+            new Seed("admin", "Karan Malhotra", Role.ADMIN),
+            new Seed("policy.manager", "Priya Sharma", Role.POLICY_MANAGER),
             // A second manager, because the person who uploads a wording may not publish it.
-            new Seed("policy.approver", "Synthetic Policy Approver", Role.POLICY_MANAGER),
-            new Seed("claims.processor", "Synthetic Claims Processor", Role.CLAIMS_PROCESSOR),
-            new Seed("reviewer", "Synthetic Reviewer", Role.REVIEWER),
-            new Seed("senior.reviewer", "Synthetic Senior Reviewer", Role.SENIOR_REVIEWER),
-            new Seed("investigator", "Synthetic Fraud Investigator", Role.FRAUD_INVESTIGATOR),
-            new Seed("auditor", "Synthetic Auditor", Role.AUDITOR));
+            new Seed("policy.approver", "Deepak Menon", Role.POLICY_MANAGER),
+            new Seed("claims.processor", "Neha Gupta", Role.CLAIMS_PROCESSOR),
+            new Seed("reviewer", "Rahul Verma", Role.REVIEWER),
+            new Seed("senior.reviewer", "Shalini Iyer", Role.SENIOR_REVIEWER),
+            new Seed("investigator", "Farah Qureshi", Role.FRAUD_INVESTIGATOR),
+            new Seed("auditor", "Mohan Pillai", Role.AUDITOR));
 
     private final UserRepository users;
     private final PasswordEncoder encoder;
@@ -72,15 +72,15 @@ class SyntheticUserSeeder implements ApplicationRunner {
         }
 
         StringBuilder sheet = new StringBuilder("""
-                # Synthetic test accounts
+                # Staff accounts
 
-                Local testing only. These accounts are synthetic, and the passwords change on every seed.
+                Local environment only. The passwords change on every seed.
 
                 | Role | Email | Password |
                 |---|---|---|
                 """);
         for (Seed seed : SEEDS) {
-            String email = seed.localPart() + "@synthetic.prism.test";
+            String email = seed.localPart() + "@prism.local";
             String password = randomPassword();
             transactions.executeWithoutResult(status -> upsert(seed, email, password));
             sheet.append("| %s | %s | `%s` |%n".formatted(seed.role(), email, password));

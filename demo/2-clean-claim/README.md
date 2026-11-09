@@ -6,15 +6,15 @@ An ordinary, consistent claim.
 
 ## 1. Create the claim
 
-Sign in as `claims.processor@synthetic.prism.test`, open **Claims**, and choose **New claim**. Enter exactly:
+Sign in as `claims.processor@prism.local`, open **Claims**, and choose **New claim**. Enter exactly:
 
 | Field | Value |
 |---|---|
 | Claim type | Reimbursement |
-| Policy | SYN-FFG-2026-0001 (Family Floater Gold) |
-| Claimant | Synthetic Policyholder One |
-| Patient | Synthetic Patient Ananya |
-| Hospital | Synthetic Greenleaf Hospital, Mysuru (Fictional) |
+| Policy | NGI-FFG-2026-0001 (Family Floater Gold) |
+| Claimant | Rajesh Iyer |
+| Patient | Ananya Iyer |
+| Hospital | Patravali Hospital, Mysuru |
 | Admission date | 05/10/2026 |
 | Discharge date | 08/10/2026 |
 | Claimed amount | INR 96,870.00 |
@@ -44,5 +44,3 @@ Rules expected to fire:
 Show the policy analysis (appendicitis is covered under Clause 2.1), the empty indicator list, and the claim waiting in the ordinary review queue. A LOW band changes nothing but how closely it is reviewed.
 
 The person who created a claim can never review it. Sign in as `reviewer`, `senior.reviewer`, or `investigator` to work it.
-
-All names, hospitals, and amounts are fictional.

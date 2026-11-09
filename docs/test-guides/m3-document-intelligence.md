@@ -39,7 +39,7 @@ Temporal's own screen is at http://localhost:8233, if you want to watch the work
 | `scanned/` | Image documents, with no text layer |
 | `hard/` | Dense, degraded, handwritten-style, sparse, and injected documents |
 
-When creating claims, use patient `Synthetic Patient Asha`, admission 14 Mar 2026, discharge 17 Mar 2026, and amount 106000.
+When creating claims, use patient `Asha Kulkarni`, admission 14 Mar 2026, discharge 17 Mar 2026, and amount 106000.
 
 ## Flows
 

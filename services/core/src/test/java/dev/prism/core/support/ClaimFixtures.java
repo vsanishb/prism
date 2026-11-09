@@ -50,8 +50,8 @@ public final class ClaimFixtures {
                 "/api/v1/policies",
                 Map.of(
                         "policyNumber", "SYN-" + UUID.randomUUID(),
-                        "productName", "Synthetic Test Product",
-                        "policyholderName", "Synthetic Holder"));
+                        "productName", "Health Shield Basic",
+                        "policyholderName", "Geeta Nair"));
         return manager.bodyOf(response).get("id").asString();
     }
 
@@ -77,9 +77,9 @@ public final class ClaimFixtures {
         Map<String, Object> body = new HashMap<>();
         body.put("type", "REIMBURSEMENT");
         body.put("policyId", policy);
-        body.put("claimantName", "Synthetic Claimant");
-        body.put("patientName", "Synthetic Patient");
-        body.put("hospitalName", "Synthetic Hospital");
+        body.put("claimantName", "Rohit Verma");
+        body.put("patientName", "Anita Desai");
+        body.put("hospitalName", "Vrinda Care Hospital");
         body.put("admissionDate", "2026-03-14");
         body.put("dischargeDate", "2026-03-17");
         body.put("claimedAmount", "106000.00");

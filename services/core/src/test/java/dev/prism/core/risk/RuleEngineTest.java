@@ -47,13 +47,13 @@ class RuleEngineTest {
 
     @Test
     void conflictingPatientsAcrossDocumentsAreAnInconsistency() {
-        RiskInputs inputs = RiskInputs.clean().claimFactState("patient_name", "CONFLICTING", "Synthetic Patient Vikram",
-                "Synthetic Patient Meenal");
+        RiskInputs inputs = RiskInputs.clean().claimFactState("patient_name", "CONFLICTING", "Vikram Nair",
+                "Meenal Deshpande");
         Indicator indicator = only(inputs.build(), "CON-01");
         assertThat(indicator.kind()).isEqualTo(IndicatorKind.DATA_INCONSISTENCY);
         assertThat(indicator.severity()).isEqualTo(Severity.HIGH);
         assertThat(indicator.evidence()).extracting(Evidence::detail)
-                .containsExactly("Reads: Synthetic Patient Vikram", "Reads: Synthetic Patient Meenal");
+                .containsExactly("Reads: Vikram Nair", "Reads: Meenal Deshpande");
         // The explanation is summarized by a model, so it never carries the names.
         assertThat(indicator.explanation()).doesNotContain("Vikram", "Meenal");
     }
@@ -61,8 +61,8 @@ class RuleEngineTest {
     @Test
     void aPatientDifferingFromTheEnteredDetailsIsAnInconsistency() {
         RiskInputs inputs = RiskInputs.clean()
-                .finding("DIFFERS_FROM_ENTERED_DETAILS", "patient_name", null, "Synthetic Patient Vikram", "Synthetic Patient Vikas");
-        assertThat(only(inputs.build(), "CON-01").evidence().getFirst().detail()).isEqualTo("Synthetic Patient Vikram");
+                .finding("DIFFERS_FROM_ENTERED_DETAILS", "patient_name", null, "Vikram Nair", "Vikas Yadav");
+        assertThat(only(inputs.build(), "CON-01").evidence().getFirst().detail()).isEqualTo("Vikram Nair");
     }
 
     @Test
@@ -220,7 +220,7 @@ class RuleEngineTest {
     void anInvoiceNumberReusedAtTheSameHospitalIsRaised() {
         RiskInputs inputs = RiskInputs.clean();
         inputs.otherBills.add(new OtherBill(UUID.randomUUID(), "CLM-2026-000007", UUID.randomUUID(),
-                "SYNTHETIC RIVERSIDE HOSPITAL KOCHI (FICTIONAL)", "gf 2026/05521", List.of()));
+                "NILAYA RIVERSIDE HOSPITAL KOCHI", "gf 2026/05521", List.of()));
         assertThat(rules(inputs.build())).containsExactly("DUP-02");
     }
 
@@ -228,7 +228,7 @@ class RuleEngineTest {
     void theSameInvoiceNumberAtAnotherHospitalIsNotRaised() {
         RiskInputs inputs = RiskInputs.clean();
         inputs.otherBills.add(new OtherBill(UUID.randomUUID(), "CLM-2026-000007", UUID.randomUUID(),
-                "Synthetic Lotus Hospital, Nagpur (Fictional)", "GF-2026-05521", List.of()));
+                "Kamalini Hospital, Nagpur", "GF-2026-05521", List.of()));
         assertThat(rules(inputs.build())).isEmpty();
     }
 
@@ -271,7 +271,7 @@ class RuleEngineTest {
     @Test
     void anOverlappingStayForTheSamePatientIsRaised() {
         RiskInputs inputs = RiskInputs.clean();
-        inputs.otherClaim("Mr Synthetic Patient Vikram", "Elsewhere", "2026-07-09", "2026-07-12", "20000.00");
+        inputs.otherClaim("Mr Vikram Nair", "Elsewhere", "2026-07-09", "2026-07-12", "20000.00");
         assertThat(rules(inputs.build())).containsExactly("DUP-04");
     }
 
@@ -285,11 +285,11 @@ class RuleEngineTest {
         RiskInputs otherAmount = RiskInputs.clean();
         otherAmount.otherClaim(RiskInputs.PATIENT, RiskInputs.HOSPITAL, "2026-06-15", "2026-06-19", "40000.00");
         RiskInputs otherHospital = RiskInputs.clean();
-        otherHospital.otherClaim(RiskInputs.PATIENT, "Synthetic Lotus Hospital", "2026-06-15", "2026-06-19", "95000.00");
+        otherHospital.otherClaim(RiskInputs.PATIENT, "Kamalini Hospital", "2026-06-15", "2026-06-19", "95000.00");
         RiskInputs longAgo = RiskInputs.clean();
         longAgo.otherClaim(RiskInputs.PATIENT, RiskInputs.HOSPITAL, "2026-03-01", "2026-03-04", "95000.00");
         RiskInputs otherPatient = RiskInputs.clean();
-        otherPatient.otherClaim("Synthetic Patient Nisha", RiskInputs.HOSPITAL, "2026-06-15", "2026-06-19", "95000.00");
+        otherPatient.otherClaim("Nisha Agarwal", RiskInputs.HOSPITAL, "2026-06-15", "2026-06-19", "95000.00");
         for (RiskInputs negative : List.of(otherAmount, otherHospital, longAgo, otherPatient)) {
             assertThat(rules(negative.build())).isEmpty();
         }

@@ -99,7 +99,7 @@ public abstract class IntegrationTest {
     }
 
     protected static String uniqueEmail() {
-        return "user." + UUID.randomUUID() + "@synthetic.prism.test";
+        return "user." + UUID.randomUUID() + "@prism.local";
     }
 
     /** A browser stand-in: keeps cookies and attaches the CSRF header, as the web client does. */

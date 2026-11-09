@@ -71,8 +71,8 @@ public final class ExtractionFixtures {
         return result(
                 "CLAIM_FORM",
                 List.of(
-                        text("patient_name", "Synthetic Patient"),
-                        text("hospital_name", "Synthetic Hospital"),
+                        text("patient_name", "Anita Desai"),
+                        text("hospital_name", "Vrinda Care Hospital"),
                         date("admission_date", admission),
                         date("discharge_date", "2026-03-17"),
                         amount("claimed_amount", amount)),
@@ -83,8 +83,8 @@ public final class ExtractionFixtures {
         return result(
                 "HOSPITAL_BILL",
                 List.of(
-                        text("patient_name", "Synthetic Patient"),
-                        text("hospital_name", "Synthetic Hospital, Pune"),
+                        text("patient_name", "Anita Desai"),
+                        text("hospital_name", "Vrinda Care Hospital, Pune"),
                         date("admission_date", "2026-03-14"),
                         date("discharge_date", "2026-03-17"),
                         amount("total_amount", total)),
@@ -95,7 +95,7 @@ public final class ExtractionFixtures {
         return result(
                 "DISCHARGE_SUMMARY",
                 List.of(
-                        text("patient_name", "Synthetic Patient"),
+                        text("patient_name", "Anita Desai"),
                         date("admission_date", admission),
                         date("discharge_date", "2026-03-17"),
                         text("diagnosis", "Acute appendicitis")),

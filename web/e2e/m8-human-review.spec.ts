@@ -28,8 +28,8 @@ async function freshPolicy(browser: Browser): Promise<string> {
   await manager.goto("/policies");
   await manager.getByRole("button", { name: "Register policy" }).click();
   await manager.getByLabel("Policy number").fill(number);
-  await manager.getByLabel("Product").fill("Review Test Cover (Synthetic)");
-  await manager.getByLabel("Policyholder").fill("Synthetic Policyholder One");
+  await manager.getByLabel("Product").fill("Review Test Cover");
+  await manager.getByLabel("Policyholder").fill("Rajesh Iyer");
   await manager.getByRole("button", { name: "Register policy" }).last().click();
   await expect(manager.getByRole("heading", { name: number })).toBeVisible();
   await manager.getByRole("button", { name: "Add version" }).click();
@@ -64,9 +64,9 @@ async function freshClaim(page: Page, browser: Browser, amount = "106000"): Prom
   const policy = page.getByLabel("Policy", { exact: true });
   const option = (await policy.locator("option").allTextContents()).find((text) => text.includes(number));
   await policy.selectOption({ label: option ?? "" });
-  await page.getByLabel("Claimant").fill("Synthetic Policyholder One");
-  await page.getByLabel("Patient").fill("Synthetic Patient Asha");
-  await page.getByLabel("Hospital").fill("Synthetic Care Hospital, Pune (Fictional)");
+  await page.getByLabel("Claimant").fill("Rajesh Iyer");
+  await page.getByLabel("Patient").fill("Asha Kulkarni");
+  await page.getByLabel("Hospital").fill("Vrinda Care Hospital, Pune");
   await page.getByLabel("Admission date").fill("2026-03-14");
   await page.getByLabel("Discharge date").fill("2026-03-17");
   await page.getByLabel("Claimed amount").fill(amount);

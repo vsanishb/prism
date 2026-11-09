@@ -21,7 +21,7 @@ public class IdentityFixtures {
 
     @Transactional
     public UUID createUser(String email, Role role, String password) {
-        return users.save(new UserEntity(email, "Synthetic Test User", encoder.encode(password), Set.of(role))).id();
+        return users.save(new UserEntity(email, "Pooja Rawat", encoder.encode(password), Set.of(role))).id();
     }
 
     @Transactional

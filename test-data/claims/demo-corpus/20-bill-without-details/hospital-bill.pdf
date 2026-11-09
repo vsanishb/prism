@@ -18,11 +18,7 @@ endobj
 4 0 obj
 <<
 /Contents 8 0 R /MediaBox [ 0 0 595.2756 841.8898 ] /Parent 7 0 R /Resources <<
-/ExtGState <<
-/gRLs0 <<
-/ca .11
->>
->> /Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
 >> /Rotate 0 /Trans <<
 
 >> 
@@ -36,8 +32,8 @@ endobj
 endobj
 6 0 obj
 <<
-/Author (Prism test data generator) /CreationDate (D:20000101000000+00'00') /Creator (\(unspecified\)) /Keywords () /ModDate (D:20000101000000+00'00') /Producer (ReportLab PDF Library - \(opensource\)) 
-  /Subject (\(unspecified\)) /Title (Synthetic test document: hospital-bill) /Trapped /False
+/Author (Document management system) /CreationDate (D:20000101000000+00'00') /Creator (\(unspecified\)) /Keywords () /ModDate (D:20000101000000+00'00') /Producer (ReportLab PDF Library - \(opensource\)) 
+  /Subject (\(unspecified\)) /Title (Hospital Bill) /Trapped /False
 >>
 endobj
 7 0 obj
@@ -47,10 +43,10 @@ endobj
 endobj
 8 0 obj
 <<
-/Filter [ /ASCII85Decode /FlateDecode ] /Length 827
+/Filter [ /ASCII85Decode /FlateDecode ] /Length 591
 >>
 stream
-Gau0A?#SF^&:F5UR)c!0a6i]J++5XgBrD:Hi''QOMe`a3aOnEhNUlP=ZS;I`JPoK7S@j3X1V5GU'0%tMqN'c(-U@Q`5Q\b9,ah'I7lRYYX=>G;\]IB\'kaZN,P0)k<dQai(EBcu@P2k]]4fb2hi.p!AWH/(OFf8q8fuI9@+8-]/`@?f!KLQJMt+\-\EsL6CBWI5J?M2?J)5;Q_'O\G"J6*b@82jA11_=!%7.tTG6kfr52/IMQS\%Y)o?*nFJMj/hWUof=W/WSKOosRQD;Nuj_L7(.-%&Ol&9&4PmEMm@02u8b</In(g2lE4OK9ORRPDFS<duDm#0Bo/!k6a3s)SF0kDkL`pdH*,i@S%;6_l#OCMH._Y!%'j!;`(PFCE=r0EXEEN(1AFn.W>':m.Qc&.3-_rM/qVecqlG^SuInZj=hg+HA7Fh!d=jF>"R[Sg\(M]6N1fh5P-YgdYrU8*o_9>rJJ=og[eIfQ].CLp(iZa+=ehLVJ`382A%2+t]-%G;Ij_ocX6+/D@90qTt=.K\u[OD5GI$SIs%&<7@t*;9."Cl`X%Z2QBMGDiSbn?=I0dgmA%cg'Q6A?LhWB.:t3'4""%@6Qb=')Od[7&,QhqbWpR(?*qUSoCMMm&m+%(:3OGV;P0&k)d=%K^`gLP[I`Bph$%7Kr\-p?t77V1:FZ[Ye>12r65B?WrskOcc?f*5HG2%&)DHMV=jN9Im92Xms^j@N$'Xg"H2b$r0@1=5P,.)38Tq[S8nO(-9.[;&JJ!IDncU=8@hD8Q;l$*P--_LFn?](_Af6FqB=!.nRpX<HK2Wg[G\/^YMZ7KZ,6>>qK(jC~>endstream
+Gau1*95iQ=&;9NM'm"JTK]_hOku\%1S$j^X8!b87gTfj4nk29rIpZ$8"\5t:=$\J``8U-3i%,09!`XWH))-q&*"tjeIKjMh&V%^=Qu-!."Pe5NWqX%9'NmbLh(="?eX%CG_ZQYW6a!fH(3,)F]j&]HmguZ6^\>D_fTmO-9Yc?]<[+ak2p,f-1U^k$'WpL!A\[2+JuiUKd_h3q>ZiR#&C3%t\<SRfo:J[2cg1NV.9q1Od;lp?klKc:F\,/HRRrEe@&g@boLsmWP.MEPq<c0:aZM419%(`ZDaUN6D%Lh,Q=5Wu5rMR\l7Fi`@oPY8MDD2@,unE#.a2-PmmJBn4;,Y=lTd$,1.)[A.AZ@<YWg,lo_6nl?=psXJ"-DWbPpT@?^EB0_le<ZJ!afhI\3]_'PkpUrH.:IM^q\%rBcU$&A6iP8A6dpMXaLIg(<!(j:gP\^K:sH'-Mpf'ULRSr\)6#.>[#4nS5\;W]#l4S8P+=@mPg.5gci%;([kaeK+I?btm0bU$IQiJ=79uqFMUYmn*3lN-JX<'H?f$4f/0q*q$a<@)Ep.";g&l6dUt7Kct-TSK<@jOk+Of.G,a%QZ]G~>endstream
 endobj
 xref
 0 9
@@ -59,14 +55,14 @@ xref
 0000000102 00000 n 
 0000000209 00000 n 
 0000000321 00000 n 
-0000000562 00000 n 
-0000000630 00000 n 
-0000000947 00000 n 
-0000001006 00000 n 
+0000000524 00000 n 
+0000000592 00000 n 
+0000000885 00000 n 
+0000000944 00000 n 
 trailer
 <<
 /ID 
-[<b291f08ab646fb346677b000a564453f><b291f08ab646fb346677b000a564453f>]
+[<008010552bf61ff482e8d182635a0316><008010552bf61ff482e8d182635a0316>]
 % ReportLab generated PDF document -- digest (opensource)
 
 /Info 6 0 R
@@ -74,5 +70,5 @@ trailer
 /Size 9
 >>
 startxref
-1923
+1625
 %%EOF

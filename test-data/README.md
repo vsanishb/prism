@@ -1,6 +1,6 @@
-# Synthetic Test Data
+# Claims Data
 
-**Everything here is fictional.** Every person, hospital, insurer, and policy is invented, and every page is watermarked. These files must never be presented as real insurance or medical documents.
+**Everything here is synthetic.** Every person, hospital, insurer, and policy is invented, with names chosen to avoid real ones ([D-100](../docs/decisions.md)). The documents carry no watermark, so that the system looks as it would in use; they must never be presented as real insurance or medical documents outside this project.
 
 Regenerate with:
 

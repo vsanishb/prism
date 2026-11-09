@@ -235,7 +235,7 @@ def test_an_unsure_classification_keeps_the_upload_label() -> None:
 
 def scan_fields(**overrides: dict[str, Any]) -> dict[str, Any]:
     fields = {spec.name: ABSENT for spec in PRESCRIPTION}
-    fields["patient_name"] = field_output("Synthetic Patient Asha", quote="Patient: Synthetic Patient Asha")
+    fields["patient_name"] = field_output("Asha Kulkarni", quote="Patient: Asha Kulkarni")
     return fields | overrides
 
 
@@ -253,7 +253,7 @@ def run_scan(second_reading: str) -> tuple[ExtractResponse, ScriptedProvider]:
 
 
 def test_a_critical_value_on_a_scan_must_survive_a_second_reading() -> None:
-    response, provider = run_scan("Synthetic Patient Asha")
+    response, provider = run_scan("Asha Kulkarni")
     patient = by_name(response)["patient_name"]
     assert patient.state == ValueState.PRESENT
     assert patient.grounding == Grounding.PAGE_ONLY
@@ -262,7 +262,7 @@ def test_a_critical_value_on_a_scan_must_survive_a_second_reading() -> None:
 
 
 def test_the_second_reading_does_not_see_the_first() -> None:
-    _, provider = run_scan("Synthetic Patient Asha")
+    _, provider = run_scan("Asha Kulkarni")
     instructions = [
         part["text"]
         for message in provider.bodies[2]["messages"]
@@ -270,11 +270,11 @@ def test_the_second_reading_does_not_see_the_first() -> None:
         for part in message["content"]
         if part["type"] == "text"
     ]
-    assert not any("Synthetic Patient Asha" in text for text in instructions)
+    assert not any("Asha Kulkarni" in text for text in instructions)
 
 
 def test_a_disagreeing_second_reading_makes_the_value_uncertain() -> None:
-    response, _ = run_scan("Synthetic Patient Usha")
+    response, _ = run_scan("Usha Pandey")
     patient = by_name(response)["patient_name"]
     assert patient.state == ValueState.UNCERTAIN
     assert patient.reason == UncertaintyReason.REREAD_DISAGREES

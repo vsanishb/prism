@@ -194,7 +194,7 @@ class PolicyAnalysisFlowTest extends IntegrationTest {
         assertThat(request.facts()).extracting(PolicyAnalysis.Fact::name)
                 .contains("admission_date", "diagnosis", "claimed_amount")
                 .doesNotContain("patient_name", "hospital_name", "claimant_name", "policy_number");
-        assertThat(json.writeValueAsString(request)).doesNotContain("Synthetic Patient", "Synthetic Hospital", "Synthetic Claimant");
+        assertThat(json.writeValueAsString(request)).doesNotContain("Anita Desai", "Vrinda Care Hospital", "Rohit Verma");
         assertThat(request.coverStart()).hasToString("2024-04-01");
         assertThat(request.sumInsured()).isEqualByComparingTo("500000.00");
         assertThat(request.policyValues()).extracting(PolicyAnalysis.PolicyValue::kind).doesNotContain("TEXT").isNotEmpty();

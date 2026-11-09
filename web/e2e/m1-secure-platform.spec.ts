@@ -56,7 +56,7 @@ test("pages carry a nonce-based content security policy", async ({ page }) => {
 test("an invited person sets a password, signs in, and sees only their own access", async ({ page, browser }) => {
   await signIn(page, account("ADMIN"));
   const email = uniqueEmail("invited.reviewer");
-  const link = await inviteUser(page, "Synthetic Invited Reviewer", email, "Reviewer");
+  const link = await inviteUser(page, "Nikhil Bansal", email, "Reviewer");
   await expect(page.getByText(email)).toBeVisible();
 
   const fresh = await browser.newContext();
@@ -65,7 +65,7 @@ test("an invited person sets a password, signs in, and sees only their own acces
   expect(invitee.url()).not.toContain("token=");
 
   await signIn(invitee, { email, password: PASSPHRASE });
-  await expect(invitee.getByRole("heading", { name: "Welcome, Synthetic Invited Reviewer" })).toBeVisible();
+  await expect(invitee.getByRole("heading", { name: "Welcome, Nikhil Bansal" })).toBeVisible();
   const navigation = invitee.getByRole("navigation", { name: "Main" });
   await expect(navigation.getByRole("link", { name: "Overview" })).toBeVisible();
   await expect(navigation.getByRole("link", { name: "Users" })).toHaveCount(0);
@@ -78,7 +78,7 @@ test("an invited person sets a password, signs in, and sees only their own acces
 
 test("an invitation link cannot be used twice", async ({ page, browser }) => {
   await signIn(page, account("ADMIN"));
-  const link = await inviteUser(page, "Synthetic One Use", uniqueEmail("one.use"), "Auditor");
+  const link = await inviteUser(page, "Manish Arora", uniqueEmail("one.use"), "Auditor");
 
   const fresh = await browser.newContext();
   const invitee = await fresh.newPage();
@@ -91,7 +91,7 @@ test("an invitation link cannot be used twice", async ({ page, browser }) => {
 
 test("a weak password is refused with a clear reason", async ({ page, browser }) => {
   await signIn(page, account("ADMIN"));
-  const link = await inviteUser(page, "Synthetic Weak", uniqueEmail("weak"), "Auditor");
+  const link = await inviteUser(page, "Varun Kohli", uniqueEmail("weak"), "Auditor");
 
   const fresh = await browser.newContext();
   const invitee = await fresh.newPage();
@@ -114,8 +114,8 @@ test("invitation validation errors appear beside their fields", async ({ page })
 
 test("an administrator cannot remove their own access", async ({ page }) => {
   await signIn(page, account("ADMIN"));
-  await page.goto("/admin/users?search=admin@synthetic");
-  await page.getByRole("button", { name: "Actions for Synthetic Administrator" }).click();
+  await page.goto("/admin/users?search=admin@prism");
+  await page.getByRole("button", { name: "Actions for Karan Malhotra" }).click();
   await page.getByRole("menuitem", { name: "Deactivate" }).click();
   await expect(page.getByText("You cannot remove your own administrator access.")).toBeVisible();
 });
@@ -123,18 +123,18 @@ test("an administrator cannot remove their own access", async ({ page }) => {
 test("changing a user's role ends their session and applies at once", async ({ page, browser }) => {
   await signIn(page, account("ADMIN"));
   const email = uniqueEmail("role.change");
-  const link = await inviteUser(page, "Synthetic Role Change", email, "Reviewer");
+  const link = await inviteUser(page, "Ritu Saxena", email, "Reviewer");
   const fresh = await browser.newContext();
   const user = await fresh.newPage();
   await acceptInvitation(user, link);
   await signIn(user, { email, password: PASSPHRASE });
 
   await page.goto(`/admin/users?search=${encodeURIComponent(email)}`);
-  await page.getByRole("button", { name: "Actions for Synthetic Role Change" }).click();
+  await page.getByRole("button", { name: "Actions for Ritu Saxena" }).click();
   await page.getByRole("menuitem", { name: "Change roles" }).click();
   await page.getByRole("checkbox", { name: /^Auditor/ }).check();
   await page.getByRole("button", { name: "Save roles" }).click();
-  await expect(page.getByRole("row", { name: /Synthetic Role Change/ }).getByText("Auditor")).toBeVisible();
+  await expect(page.getByRole("row", { name: /Ritu Saxena/ }).getByText("Auditor")).toBeVisible();
 
   await user.goto("/overview");
   await expect(user).toHaveURL(/\/sign-in/);

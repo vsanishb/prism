@@ -52,7 +52,7 @@ Open <http://localhost:3000>.
 
 ## Synthetic data
 
-Seeding creates one account per role, such as `admin@synthetic.prism.test`. Passwords are random and listed in `.data/synthetic-users.md`, which is gitignored. Running the seed command again generates new passwords.
+Seeding creates one account per role, such as `admin@prism.local`. Passwords are random and listed in `.data/synthetic-users.md`, which is gitignored. Running the seed command again generates new passwords.
 
 To return to a clean state at any time, which also removes the audit history:
 
@@ -79,7 +79,7 @@ python -m uv run --project services/ai python scripts/prism.py db-reset
 
 1. As administrator, open **Users** and choose **Invite**.
 2. Submit the empty form. **Expect:** errors beside each field.
-3. Fill it in with a `@synthetic.prism.test` email, pick **Reviewer**, and create it. **Expect:** a one-time link, and the person listed under Pending invitations.
+3. Fill it in with a `@prism.local` email, pick **Reviewer**, and create it. **Expect:** a one-time link, and the person listed under Pending invitations.
 4. Open the link in a private window. Try the password `password1234`. **Expect:** it is refused as too common.
 5. Finish with a long passphrase, then sign in. **Expect:** only Overview in the sidebar.
 6. Visit `/admin/users` directly. **Expect:** "You do not have access to this page."

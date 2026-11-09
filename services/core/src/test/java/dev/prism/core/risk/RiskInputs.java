@@ -24,8 +24,8 @@ import java.util.UUID;
  */
 final class RiskInputs {
 
-    static final String HOSPITAL = "Synthetic Riverside Hospital, Kochi (Fictional)";
-    static final String PATIENT = "Synthetic Patient Vikram";
+    static final String HOSPITAL = "Nilaya Riverside Hospital, Kochi";
+    static final String PATIENT = "Vikram Nair";
 
     final UUID claimId = UUID.randomUUID();
     final UUID form = UUID.randomUUID();
@@ -56,7 +56,7 @@ final class RiskInputs {
         inputs.documents.add(new Document(inputs.form, "CLAIM_FORM"));
         inputs.documents.add(new Document(inputs.bill, "HOSPITAL_BILL"));
         inputs.documents.add(new Document(inputs.discharge, "DISCHARGE_SUMMARY"));
-        inputs.claimFact("policy_number", "SYN-RSK-2026-0003");
+        inputs.claimFact("policy_number", "NGI-RSK-2026-0003");
         inputs.claimFact("patient_name", PATIENT);
         inputs.claimFact("hospital_name", HOSPITAL);
         inputs.claimFact("admission_date", "2026-07-07");

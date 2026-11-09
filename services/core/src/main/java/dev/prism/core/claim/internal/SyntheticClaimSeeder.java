@@ -25,8 +25,8 @@ import org.springframework.stereotype.Component;
 @Order(30)
 class SyntheticClaimSeeder implements ApplicationRunner {
 
-    private static final String ACTOR = "claims.processor@synthetic.prism.test";
-    private static final String HOSPITAL = "Synthetic Care Hospital, Pune (Fictional)";
+    private static final String ACTOR = "claims.processor@prism.local";
+    private static final String HOSPITAL = "Vrinda Care Hospital, Pune";
 
     private final ClaimService claims;
     private final SyntheticActors actors;
@@ -47,11 +47,11 @@ class SyntheticClaimSeeder implements ApplicationRunner {
         if (claims.anyExist()) {
             return;
         }
-        UUID policy = jdbc.sql("SELECT id FROM core.policies WHERE policy_number = 'SYN-FFG-2026-0001'")
+        UUID policy = jdbc.sql("SELECT id FROM core.policies WHERE policy_number = 'NGI-FFG-2026-0001'")
                 .query(UUID.class)
                 .single();
         actors.runAs(ACTOR, () -> {
-            ClaimDetail submitted = create(policy, "Synthetic Patient Asha", "106000.00", "2026-03-14", "2026-03-17");
+            ClaimDetail submitted = create(policy, "Asha Kulkarni", "106000.00", "2026-03-14", "2026-03-17");
             UUID submittedId = submitted.summary().id();
             claims.addDocument(submittedId, DocumentType.CLAIM_FORM, appendectomy.resolve("claim-form.pdf"));
             claims.addDocument(submittedId, DocumentType.HOSPITAL_BILL, appendectomy.resolve("hospital-bill.pdf"));
@@ -59,13 +59,13 @@ class SyntheticClaimSeeder implements ApplicationRunner {
             claims.addDocument(submittedId, DocumentType.PRESCRIPTION, scanned.resolve("prescription.png"));
             claims.submit(submittedId);
 
-            ClaimDetail withdrawn = create(policy, "Synthetic Patient Ravi", "24500.00", "2026-05-02", "2026-05-03");
+            ClaimDetail withdrawn = create(policy, "Ravi Shankar", "24500.00", "2026-05-02", "2026-05-03");
             claims.withdraw(withdrawn.summary().id(), WithdrawalReason.ENTERED_IN_ERROR);
 
-            ClaimDetail draft = create(policy, "Synthetic Patient Meera", "68250.50", "2026-06-10", "2026-06-12");
+            ClaimDetail draft = create(policy, "Meera Nambiar", "68250.50", "2026-06-10", "2026-06-12");
             claims.addDocument(draft.summary().id(), DocumentType.DISCHARGE_SUMMARY, scanned.resolve("discharge-note.tiff"));
 
-            create(policy, "Synthetic Patient Kabir", "15000.00", "2026-07-21", "2026-07-21");
+            create(policy, "Kabir Sethi", "15000.00", "2026-07-21", "2026-07-21");
         });
     }
 
@@ -74,7 +74,7 @@ class SyntheticClaimSeeder implements ApplicationRunner {
                 new Details(
                         Type.REIMBURSEMENT,
                         policy,
-                        "Synthetic Policyholder One",
+                        "Rajesh Iyer",
                         patient,
                         HOSPITAL,
                         LocalDate.parse(admission),

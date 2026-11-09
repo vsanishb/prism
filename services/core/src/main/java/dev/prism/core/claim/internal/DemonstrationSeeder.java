@@ -33,7 +33,7 @@ import tools.jackson.databind.json.JsonMapper;
 @Order(40)
 class DemonstrationSeeder implements ApplicationRunner {
 
-    private static final String ACTOR = "claims.processor@synthetic.prism.test";
+    private static final String ACTOR = "claims.processor@prism.local";
 
     private final ClaimService claims;
     private final SyntheticActors actors;

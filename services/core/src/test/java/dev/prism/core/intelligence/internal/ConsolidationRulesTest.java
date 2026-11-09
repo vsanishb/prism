@@ -33,8 +33,8 @@ class ConsolidationRulesTest {
 
     private static ClaimRecord claim(String type, String amount) {
         return new ClaimRecord(
-                UUID.randomUUID(), type, "PROCESSING", false, "Synthetic Claimant", "Synthetic Patient",
-                "Synthetic Hospital", LocalDate.parse("2026-03-14"), LocalDate.parse("2026-03-17"),
+                UUID.randomUUID(), type, "PROCESSING", false, "Rohit Verma", "Anita Desai",
+                "Vrinda Care Hospital", LocalDate.parse("2026-03-14"), LocalDate.parse("2026-03-17"),
                 new BigDecimal(amount), "INR", UUID.randomUUID(), UUID.randomUUID(), "CLM-2026-000001", UUID.randomUUID());
     }
 
@@ -136,12 +136,12 @@ class ConsolidationRulesTest {
     void aFullerNameIsTheSameValueAndIsTheOneKept() {
         Fact hospital = fact(
                 FactConsolidator.facts(documents(
-                        result("CLAIM_FORM", List.of(text("hospital_name", "Synthetic Hospital")), List.of()),
-                        result("HOSPITAL_BILL", List.of(text("hospital_name", "Synthetic Hospital, Pune")), List.of()))),
+                        result("CLAIM_FORM", List.of(text("hospital_name", "Vrinda Care Hospital")), List.of()),
+                        result("HOSPITAL_BILL", List.of(text("hospital_name", "Vrinda Care Hospital, Pune")), List.of()))),
                 "hospital_name");
 
         assertThat(hospital.state()).isEqualTo("PRESENT");
-        assertThat(hospital.value()).isEqualTo("Synthetic Hospital, Pune");
+        assertThat(hospital.value()).isEqualTo("Vrinda Care Hospital, Pune");
     }
 
     @Test

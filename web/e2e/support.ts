@@ -38,7 +38,7 @@ export async function signIn(page: Page, { email, password }: SyntheticAccount) 
 }
 
 export function uniqueEmail(prefix: string): string {
-  return `${prefix}.${Date.now()}@synthetic.prism.test`;
+  return `${prefix}.${Date.now()}@prism.local`;
 }
 
 const DATA = path.resolve(process.cwd(), "../test-data");
@@ -55,7 +55,7 @@ export const REACHED_REVIEW = /^(In review|Escalated)$/;
 export async function uploadFreshVersion(page: Page): Promise<void> {
   const year = 2100 + (Date.now() % 800);
   await page.goto("/policies");
-  await page.getByRole("link", { name: /SYN-IND-2026-0002/ }).first().click();
+  await page.getByRole("link", { name: /NGI-IND-2026-0002/ }).first().click();
   await page.getByRole("button", { name: "Add version" }).click();
   await page.getByLabel("Effective from").fill(`${year}-01-01`);
   await page.getByLabel("Effective to").fill(`${year}-12-31`);

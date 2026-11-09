@@ -8,7 +8,6 @@ const PRINCIPLES = [
 ];
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
-  const synthetic = process.env.PRISM_ENVIRONMENT === "local";
   return (
     <main className="grid min-h-screen lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
       <section className="hidden flex-col justify-between border-r border-line bg-subtle px-14 py-12 lg:flex">
@@ -39,12 +38,6 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       <section className="flex flex-col items-center justify-center px-4 py-12 sm:px-8">
         <Logo size="lg" className="mb-10 lg:hidden" />
         <div className="w-full max-w-[25rem]">{children}</div>
-        {synthetic ? (
-          <p className="mt-8 flex items-center gap-2 text-xs text-caution">
-            <span aria-hidden className="size-1.5 rounded-full bg-caution" />
-            Local environment. Synthetic data only.
-          </p>
-        ) : null}
       </section>
     </main>
   );

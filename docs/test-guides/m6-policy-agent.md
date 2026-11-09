@@ -30,9 +30,9 @@ Open http://localhost:3000. Passwords are in `.data/synthetic-users.md`.
 
 ## Flows
 
-**1. Publish the policy first.** Analysis needs the claim's policy version published and searchable. As `policy.manager`, confirm every value of Gold version 1 (`SYN-FFG-2026-0001`), then as `policy.approver` publish it. Wait for **Searchable** on the version page.
+**1. Publish the policy first.** Analysis needs the claim's policy version published and searchable. As `policy.manager`, confirm every value of Gold version 1 (`NGI-FFG-2026-0001`), then as `policy.approver` publish it. Wait for **Searchable** on the version page.
 
-**2. Process a claim.** As `claims.processor`, create a claim on `SYN-FFG-2026-0001` with admission 14 March 2026, upload the three files in `test-data/claims/appendectomy/`, and submit. The processing panel now ends with **Reading the policy against the facts**. The claim reaches **In review**.
+**2. Process a claim.** As `claims.processor`, create a claim on `NGI-FFG-2026-0001` with admission 14 March 2026, upload the three files in `test-data/claims/appendectomy/`, and submit. The processing panel now ends with **Reading the policy against the facts**. The claim reaches **In review**.
 
 **3. Read the analysis.** Choose **Read policy analysis**. The page says it is not a claim decision. Each issue (cover, waiting period, exclusions, cost sharing, and any others the plan raised) shows, separately:
 - **Claim facts used**, with any that are not established marked.

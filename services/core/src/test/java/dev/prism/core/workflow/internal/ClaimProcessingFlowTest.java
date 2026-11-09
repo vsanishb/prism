@@ -331,7 +331,7 @@ class ClaimProcessingFlowTest extends IntegrationTest {
                         .param("claim:" + claim)
                         .query(String.class)
                         .single())
-                .doesNotContain("Synthetic", "appendicitis", "106000");
+                .doesNotContain("Anita Desai", "appendicitis", "106000");
     }
 
     @Test

@@ -77,7 +77,7 @@ def checked(output: SummaryOutput, request: ExplanationRequest) -> tuple[str, li
 class RiskSummarizer:
     def __init__(self, gateway: ModelGateway) -> None:
         self._gateway = gateway
-        self._prompt = load_prompt("risk_summary", 1)
+        self._prompt = load_prompt("risk_summary", 2)
 
     async def summarize(self, request: ExplanationRequest) -> ExplanationResponse:
         runs: list[ModelRun] = []

@@ -97,11 +97,11 @@ class ClaimLifecycleTest extends IntegrationTest {
         String id = claim.get("summary").get("id").asString();
         long version = claim.get("version").asLong();
         Map<String, Object> changed = fixtures.claimBody(fixtures.policyWithVersions());
-        changed.put("patientName", "Synthetic Corrected Name");
+        changed.put("patientName", "Anil Kumar Desai");
 
         assertThat(update(id, changed, version).getStatus()).isEqualTo(200);
         assertThat(detail(fixtures.processor(), id).get("summary").get("patientName").asString())
-                .isEqualTo("Synthetic Corrected Name");
+                .isEqualTo("Anil Kumar Desai");
 
         MockHttpServletResponse stale = update(id, changed, version);
         assertThat(stale.getStatus()).isEqualTo(409);

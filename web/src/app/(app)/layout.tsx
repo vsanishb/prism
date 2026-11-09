@@ -13,7 +13,7 @@ export default async function ApplicationLayout({ children }: { children: ReactN
     );
   }
   return (
-    <AppShell user={user} syntheticEnvironment={process.env.PRISM_ENVIRONMENT === "local"}>
+    <AppShell user={user} localEnvironment={process.env.PRISM_ENVIRONMENT === "local"}>
       {children}
     </AppShell>
   );

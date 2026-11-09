@@ -37,6 +37,13 @@ The factual record of project state. Update after meaningful work. Newest entrie
 
 ## Log
 
+### 2026-11-09: Realistic names for the presentation
+
+- No synthetic or fictional label remains in the running system, the test documents, or `demo/` ([D-100](decisions.md)). All 121 PDFs and the database were searched; the database holds only the internal audit action code, and two risk summaries noted below.
+- The generators, seeders, tests, golden sets, and the end-to-end stub use one name map. Watermarks and footers are gone from every document, and the demo documents lose their internal reference line.
+- Tests: core 460, AI 287, and 65 browser tests pass. The local database was reset and reloaded with `demo-prepare`; every planted rule fired, as before.
+- **Two prepared summaries still say "synthetic baseline"** (CLM-2026-000024 and 000025): they were written before the AI service was restarted on `risk_summary.v2`. Rebuilding needs about USD 0.85 of model credit; USD 0.51 remains, kept for the live uploads.
+
 ### 2026-11-09: Evaluation reports
 
 All evaluations rerun with the real model, and written up as eight PDFs in [evaluations/](evaluations/README.md) by `services/ai/evals/write_reports.py`.

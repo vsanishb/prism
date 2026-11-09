@@ -17,7 +17,7 @@ final class RiskSignals {
 
     static String detectorExplanation(String detector, BigDecimal percentile) {
         String method = "ISOLATION_FOREST".equals(detector) ? "Isolation Forest" : "Local Outlier Factor";
-        return "%s scores this claim as more unusual than %s%% of the synthetic baseline claims.".formatted(
+        return "%s scores this claim as more unusual than %s%% of the baseline claims.".formatted(
                 method, percentile.stripTrailingZeros().toPlainString());
     }
 }

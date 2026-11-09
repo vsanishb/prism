@@ -1,6 +1,6 @@
 # M2 Test Guide: Claims and Documents
 
-How to try Milestone 2 through the UI. Everything is synthetic, and every document is watermarked.
+How to try Milestone 2 through the UI. Everything is synthetic: every person, hospital, and policy is invented.
 
 Start Prism as described in the [M1 guide](m1-secure-platform.md#start-prism). If you have run an earlier milestone, first restart your services and rebuild the data:
 
@@ -19,7 +19,7 @@ python -m uv run --project services/ai python scripts/prism.py db-reset
 | `CLM-2026-000003` | Draft | A two-page TIFF, ready to submit |
 | `CLM-2026-000004` | Draft | No documents, so not ready to submit |
 
-**Seeded policies:** `SYN-FFG-2026-0001` has two versions with wordings, and `SYN-IND-2026-0002` has one version with no wording.
+**Seeded policies:** `NGI-FFG-2026-0001` has two versions with wordings, and `NGI-IND-2026-0002` has one version with no wording.
 
 **Files to upload,** in [`test-data/`](../../test-data/README.md):
 
@@ -38,7 +38,7 @@ Sign in with accounts from `.data/synthetic-users.md`.
 
 1. Open **Claims**, choose **New claim**, and submit the empty form. **Expect:** errors beside each field.
 2. Enter a discharge date before the admission date. **Expect:** a clear refusal.
-3. Create the claim with policy `SYN-FFG-2026-0001` and admission date 14 March 2026. **Expect:** Version 1 shown for that date, and "Add at least one document".
+3. Create the claim with policy `NGI-FFG-2026-0001` and admission date 14 March 2026. **Expect:** Version 1 shown for that date, and "Add at least one document".
 4. Upload `claims/appendectomy/hospital-bill.pdf`. **Expect:** it appears, and the claim is ready to submit.
 5. Submit. **Expect:** details lock, and the version becomes "Applicable version".
 

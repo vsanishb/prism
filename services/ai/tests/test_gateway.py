@@ -19,7 +19,7 @@ from tests.support.scripted import ScriptedProvider, catalog_entries, completion
 ROUTES = load_routes()
 ROUTE = ROUTES.route(Task.EXTRACTION)
 GOOD = {"answer": "yes"}
-DOCUMENT_TEXT = "Synthetic Patient Asha"
+DOCUMENT_TEXT = "Asha Kulkarni"
 
 
 class Answer(BaseModel):

@@ -112,7 +112,7 @@ def test_anomaly_scores_come_back_per_detector_in_camel_case(
     [
         anomaly_body() | {"featureVersion": "risk-features-0"},
         anomaly_body() | {"features": [{"name": "claimedAmount", "value": 1.0}]},
-        anomaly_body() | {"patientName": "Synthetic Patient"},
+        anomaly_body() | {"patientName": "Anita Desai"},
     ],
 )
 def test_malformed_anomaly_requests_are_refused(
@@ -149,5 +149,5 @@ def test_a_summary_is_returned_with_its_usage(client: TestClient, key: ec.Ellipt
     body = response.json()
     assert body["status"] == "AVAILABLE"
     assert body["cited"] == ["S1"]
-    assert body["promptVersion"] == "risk_summary.v1"
+    assert body["promptVersion"] == "risk_summary.v2"
     assert body["runs"][0]["task"] == "risk_summary"

@@ -91,7 +91,7 @@ class AccessControlTest extends IntegrationTest {
     void onlyAdministratorsCanInvite(Role role) throws Exception {
         MockHttpServletResponse response = signedInAs(role).postJson(
                 "/api/v1/invitations",
-                Map.of("email", uniqueEmail(), "fullName", "Synthetic Person", "roles", List.of("ADMIN")));
+                Map.of("email", uniqueEmail(), "fullName", "Amit Chauhan", "roles", List.of("ADMIN")));
 
         assertThat(response.getStatus()).isEqualTo(403);
     }

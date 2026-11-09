@@ -45,13 +45,13 @@ POLICY_TIMEOUT_SECONDS = 15 * 60
 
 # Wordings for versions registered without one. Each must state the registered sum insured.
 WORDINGS = {
-    "SYN-IND-2026-0002": "individual-silver.pdf",
-    "SYN-RSK-2026-0003": "family-health-plus.pdf",
+    "NGI-IND-2026-0002": "individual-silver.pdf",
+    "NGI-RSK-2026-0003": "family-health-plus.pdf",
 }
 PLATINUM = {
-    "policyNumber": "SYN-FHP-2026-0003",
-    "productName": "Family Health Platinum (Synthetic)",
-    "policyholderName": "Synthetic Policyholder Three",
+    "policyNumber": "NGI-FHP-2026-0003",
+    "productName": "Family Health Platinum",
+    "policyholderName": "Arvind Menon",
     "version": {"effectiveFrom": "2026-04-01", "effectiveTo": "2027-03-31", "sumInsured": "750000.00"},
     "wording": "family-health-platinum.pdf",
 }
@@ -91,11 +91,11 @@ class Session:
 
 def sessions(base_url: str) -> dict[str, Session]:
     sheet = (ROOT / ".data" / "synthetic-users.md").read_text(encoding="utf-8")
-    found = dict(re.findall(r"\| \w+ \| (\S+@synthetic\.prism\.test) \| `([^`]+)`", sheet))
+    found = dict(re.findall(r"\| \w+ \| (\S+@prism\.local) \| `([^`]+)`", sheet))
     needed = ["policy.manager", "policy.approver", "claims.processor", "reviewer", "senior.reviewer", "investigator"]
     result = {}
     for name in needed:
-        email = f"{name}@synthetic.prism.test"
+        email = f"{name}@prism.local"
         if email not in found:
             sys.exit(f"{email} is not in .data/synthetic-users.md. Run db-reset first.")
         result[name] = Session(base_url, email, found[email])

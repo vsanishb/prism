@@ -45,10 +45,10 @@ class StartupAccountsTest {
         AccountTokenService tokens = mock(AccountTokenService.class);
         Path file = directory.resolve("nested/invitation.txt");
         when(users.count()).thenReturn(0L);
-        when(tokens.inviteFirstAdministrator("first@synthetic.prism.test"))
+        when(tokens.inviteFirstAdministrator("first@prism.local"))
                 .thenReturn(new IssuedLink(UUID.randomUUID(), "http://localhost/accept-invite#token=abc", Instant.now()));
 
-        new FirstAdministratorBootstrap(users, tokens, properties("test", "first@synthetic.prism.test", file.toString(), ""))
+        new FirstAdministratorBootstrap(users, tokens, properties("test", "first@prism.local", file.toString(), ""))
                 .run(null);
 
         assertThat(Files.readString(file)).contains("#token=abc");
@@ -61,7 +61,7 @@ class StartupAccountsTest {
         Path file = directory.resolve("invitation.txt");
         when(users.count()).thenReturn(1L);
 
-        new FirstAdministratorBootstrap(users, tokens, properties("test", "first@synthetic.prism.test", file.toString(), ""))
+        new FirstAdministratorBootstrap(users, tokens, properties("test", "first@prism.local", file.toString(), ""))
                 .run(null);
 
         verify(tokens, never()).inviteFirstAdministrator(anyString());

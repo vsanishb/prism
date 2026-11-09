@@ -96,8 +96,8 @@ class Session:
     def create_claim(self, documents: tuple[tuple[str, str], ...] = DOCUMENTS) -> str:
         policy = self.get("/api/v1/policies").json()["items"][0]["id"]
         body = {
-            "type": "REIMBURSEMENT", "policyId": policy, "claimantName": "Synthetic Policyholder One",
-            "patientName": "Synthetic Patient Asha", "hospitalName": "Synthetic Care Hospital",
+            "type": "REIMBURSEMENT", "policyId": policy, "claimantName": "Rajesh Iyer",
+            "patientName": "Asha Kulkarni", "hospitalName": "Vrinda Care Hospital",
             "admissionDate": "2026-03-14", "dischargeDate": "2026-03-17", "claimedAmount": "106000.00",
         }
         claim = self.post("/api/v1/claims", json=body, headers={"Idempotency-Key": str(uuid.uuid4())})

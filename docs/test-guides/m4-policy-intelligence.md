@@ -37,7 +37,7 @@ Open http://localhost:3000. Passwords are in `.data/synthetic-users.md`. There a
 
 ## Flows
 
-**1. Reading.** As `policy.manager`, open policy `SYN-FFG-2026-0001`. Both versions show **Reading**, then **In review**. Open **Review knowledge**.
+**1. Reading.** As `policy.manager`, open policy `NGI-FFG-2026-0001`. Both versions show **Reading**, then **In review**. Open **Review knowledge**.
 
 **2. Values beside their source.** On **Values to confirm**, choose any value. Its page appears with the value outlined, and the quote above it.
 
@@ -51,7 +51,7 @@ Open http://localhost:3000. Passwords are in `.data/synthetic-users.md`. There a
 
 **7. Immutable once published.** The version shows **Published**, with no review buttons and no option to replace the wording.
 
-**8. The hard case.** Add a version to `SYN-IND-2026-0002` with a sum insured of 750000 and an unused period, and upload `family-health-platinum.pdf`. Check that clause 4.5, which crosses a page break, is whole, and that 2.7 and 2.8 carry their footnote.
+**8. The hard case.** Add a version to `NGI-IND-2026-0002` with a sum insured of 750000 and an unused period, and upload `family-health-platinum.pdf`. Check that clause 4.5, which crosses a page break, is whole, and that 2.7 and 2.8 carry their footnote.
 
 **9. Rejection.** Reject a version in review. A reason is required. A new wording can then be uploaded.
 

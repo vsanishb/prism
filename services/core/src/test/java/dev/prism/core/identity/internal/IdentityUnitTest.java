@@ -16,28 +16,28 @@ class IdentityUnitTest {
 
     @Test
     void acceptsALongPassphrase() {
-        assertThatCode(() -> policy.validate("correct horse battery staple", "user@synthetic.prism.test"))
+        assertThatCode(() -> policy.validate("correct horse battery staple", "user@prism.local"))
                 .doesNotThrowAnyException();
     }
 
     @Test
     void acceptsTheMaximumLengthAndRefusesBeyondIt() {
         String longest = "abcdefgh".repeat(16);
-        assertThatCode(() -> policy.validate(longest, "user@synthetic.prism.test")).doesNotThrowAnyException();
-        assertThatThrownBy(() -> policy.validate(longest + "x", "user@synthetic.prism.test"))
+        assertThatCode(() -> policy.validate(longest, "user@prism.local")).doesNotThrowAnyException();
+        assertThatThrownBy(() -> policy.validate(longest + "x", "user@prism.local"))
                 .isInstanceOf(ApiException.class);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"short", "password1234", "PASSWORD1234", "aaaaaaaaaaaaaaaa", "ababababababab"})
     void refusesWeakPasswords(String password) {
-        assertThatThrownBy(() -> policy.validate(password, "user@synthetic.prism.test"))
+        assertThatThrownBy(() -> policy.validate(password, "user@prism.local"))
                 .isInstanceOf(ApiException.class);
     }
 
     @Test
     void refusesPasswordsContainingTheEmailName() {
-        assertThatThrownBy(() -> policy.validate("my-priya.sharma-secret", "priya.sharma@synthetic.prism.test"))
+        assertThatThrownBy(() -> policy.validate("my-priya.sharma-secret", "priya.sharma@prism.local"))
                 .isInstanceOf(ApiException.class);
     }
 

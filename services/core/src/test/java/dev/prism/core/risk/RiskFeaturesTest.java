@@ -67,10 +67,10 @@ class RiskFeaturesTest {
     @Test
     void priorClaimsCountOnlyTheSamePatientInTheYearBefore() {
         RiskInputs inputs = RiskInputs.clean();
-        inputs.otherClaim("Synthetic Patient VIKRAM", RiskInputs.HOSPITAL, "2025-07-08", "2025-07-09", "1.00");
+        inputs.otherClaim("VIKRAM NAIR", RiskInputs.HOSPITAL, "2025-07-08", "2025-07-09", "1.00");
         inputs.otherClaim(RiskInputs.PATIENT, RiskInputs.HOSPITAL, "2025-07-06", "2025-07-07", "1.00");
         inputs.otherClaim(RiskInputs.PATIENT, RiskInputs.HOSPITAL, "2026-08-01", "2026-08-02", "1.00");
-        inputs.otherClaim("Synthetic Patient Nisha", RiskInputs.HOSPITAL, "2026-03-01", "2026-03-02", "1.00");
+        inputs.otherClaim("Nisha Agarwal", RiskInputs.HOSPITAL, "2026-03-01", "2026-03-02", "1.00");
         assertThat(RiskFeatures.priorClaims(inputs.build())).isEqualTo(1);
     }
 

@@ -26,7 +26,7 @@ class InvitationFlowTest extends IntegrationTest {
         String email = uniqueEmail();
         MockHttpServletResponse response = admin.postJson(
                 "/api/v1/invitations",
-                Map.of("email", email, "fullName", "Synthetic Invitee", "roles", List.of(role.name())));
+                Map.of("email", email, "fullName", "Sneha Bhatt", "roles", List.of(role.name())));
         assertThat(response.getStatus()).isEqualTo(201);
         JsonNode body = admin.bodyOf(response);
         String link = body.get("link").asString();
@@ -111,7 +111,7 @@ class InvitationFlowTest extends IntegrationTest {
 
         MockHttpServletResponse second = admin.postJson(
                 "/api/v1/invitations",
-                Map.of("email", first.email(), "fullName", "Synthetic Invitee", "roles", List.of("AUDITOR")));
+                Map.of("email", first.email(), "fullName", "Sneha Bhatt", "roles", List.of("AUDITOR")));
 
         assertThat(second.getStatus()).isEqualTo(201);
         assertThat(redeem(first.token(), PASSWORD).getStatus()).isEqualTo(422);
@@ -147,7 +147,7 @@ class InvitationFlowTest extends IntegrationTest {
 
         MockHttpServletResponse response = admin.postJson(
                 "/api/v1/invitations",
-                Map.of("email", admin.email, "fullName", "Synthetic Person", "roles", List.of("REVIEWER")));
+                Map.of("email", admin.email, "fullName", "Amit Chauhan", "roles", List.of("REVIEWER")));
 
         assertThat(response.getStatus()).isEqualTo(409);
     }

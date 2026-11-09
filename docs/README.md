@@ -14,6 +14,7 @@ This documentation is the durable memory of the project. Each file has one purpo
 | Why was something decided, and which versions are pinned? | [decisions.md](decisions.md) |
 | How is the system secured? | [security.md](security.md) |
 | How is it tested? | [testing.md](testing.md) |
+| How accurate is each component? | [evaluations/](evaluations/README.md) |
 | How do I test a milestone by hand? | [test-guides/](test-guides/README.md) |
 | How will a capability be built? | [plans/](plans/README.md) |
 | How does an implemented module work? | [modules/](modules/README.md) |

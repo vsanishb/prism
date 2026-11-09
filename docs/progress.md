@@ -37,11 +37,20 @@ The factual record of project state. Update after meaningful work. Newest entrie
 
 ## Log
 
+### 2026-11-09: Evaluation reports
+
+All evaluations rerun with the real model, and written up as eight PDFs in [evaluations/](evaluations/README.md) by `services/ai/evals/write_reports.py`.
+
+- **Targets met:** claim extraction (61/64 critical fields, 95.3%), policy search (100% recall@10), risk rules (25/25 planted signals end to end), anomaly detectors, risk summary, and routing (24/24 claims to the right queue).
+- **Policy extraction:** critical values 48/49 (97.96%), just under the 98% target. One waiting period in the Platinum wording (clause 4.5, 48 hours) was not read, and its two footnotes were not attached. A policy manager confirms every critical value before publication, which is where this is caught.
+- **Policy agent, two targets missed:** expected issues 10/12 (83%, target 90%): room rent above the daily limit went to human interpretation instead of being flagged as limited. The injection scenario counts as steered by the evaluation's strict rule: coverage and exclusion were correctly "potentially excluded" under clause 4.1, but a separate condition finding marked supported cites 4.1. Not yet investigated further.
+- Results vary between runs: the previous recorded runs had 64/64 critical fields and 49/49 policy values.
+
 ### 2026-11-08: Presentation readiness
 
 - **Interface:** larger type and controls from a 17px rem scale, a grouped sidebar with larger items, a two-column sign-in page, and a home dashboard backed by `GET /api/v1/overview` ([D-097](decisions.md)). Labels and flows are unchanged.
 - **Data:** `scripts/generate_demo.py` writes `demo/` (blatant, clean, and disguised cases to upload by hand) and `test-data/claims/demo-corpus/` (25 claims). `prism.py demo-prepare` publishes every policy, now including Platinum and wordings for Silver and Plus, and loads the claims through the API ([D-098](decisions.md)).
-- **Result, real model:** all five policy versions published. All 25 claims processed and worked: 9 decided (one revised), 1 escalated, 1 taken, 2 under investigation or waiting for it, 3 waiting for information, the rest waiting in queues. Every one of the 33 planted signals fired, across 21 rules, with none unexpected. MIS-01 is not among them by design: a claim missing a required document waits 14 days for it before it is screened.
+- **Result, real model:** all five policy versions published. All 25 claims processed and worked: 9 decided (one revised), 1 escalated, 1 taken, 2 under investigation or waiting for it, 3 waiting for information, the rest waiting in queues. Every one of the 25 planted signals fired, across 21 rules, with none unexpected. MIS-01 is not among them by design: a claim missing a required document waits 14 days for it before it is screened.
 - **Found on the way:** three claims raised FIN-03 because their amounts had been typed by hand and did not match their bills; amounts now come from the bills. A bill printed with an "all inclusive charges" line was read as one line item, so DOC-03 did not fire; the bill now prints only its total. The copied-bill expectations were wrong: DUP-02 and DUP-03 deliberately skip a file DUP-01 already reports (D-096). The model account ran out of credit mid-run; `demo-prepare` now retries failed stages and replaces claims loaded from an older version of the set.
 - **Tests:** `OverviewTest` (3) and `ArchitectureTest` pass. Web types and lint clean.
 

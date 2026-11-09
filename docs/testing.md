@@ -38,7 +38,7 @@ The model gateway is replaced by recorded or scripted responses. These cover sch
 
 Run before milestone completion, and when a model, prompt, or chunking strategy changes. Requires `OPENROUTER_API_KEY`, and does not run in ordinary CI. Results and versions are recorded in the module doc.
 
-Golden sets live in `services/ai/evals/`. All documents are synthetic, with known answers, and include hard cases: dense tables, multi-page clauses, poor scans, handwriting, contradictions, missing fields, and injected instructions.
+Golden sets live in `services/ai/evals/`. The latest results are written up as one PDF per component in [evaluations/](evaluations/README.md) by `evals/write_reports.py`. All documents are synthetic, with known answers, and include hard cases: dense tables, multi-page clauses, poor scans, handwriting, contradictions, missing fields, and injected instructions.
 
 Initial targets, to be adjusted through recorded decisions:
 
